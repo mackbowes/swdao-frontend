@@ -103,8 +103,8 @@ export default function AddToWalletButton({ symbol, address }: WalletButtonProps
 			_hover={{ bgColor: '#BCE7FE', color: '#000', borderColor: '#BCE7FE' }}
 			// marginRight="1rem"
 		>
-			<Image src="/images/metamask.png" alt="add to Metamask" />
-			&nbsp;{textByBreakpoint}&nbsp;
+			<Image src="/images/metamask.png" alt="add to Metamask" marginLeft="1.2rem" />
+			&nbsp;{textByBreakpoint}&nbsp;&nbsp;
 		</Button>
 	);
 }
