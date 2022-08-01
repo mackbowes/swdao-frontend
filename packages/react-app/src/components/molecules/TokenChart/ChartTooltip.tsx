@@ -11,7 +11,7 @@ export default function ChartToolTip(props: TooltipProps<any, any>): JSX.Element
 	if (!active || !payload || !payload[0]) {
 		return <></>;
 	}
-	const { timestamp, coin, eth, btc, symbol }: MergedPrice = payload[0].payload;
+	const { timestamp, coin, eth, btc, matic, symbol }: MergedPrice = payload[0].payload;
 	const ms = looksLikeMilliseconds(timestamp) ? timestamp : `${timestamp}000`;
 
 	return (
@@ -50,6 +50,16 @@ export default function ChartToolTip(props: TooltipProps<any, any>): JSX.Element
 					</Text>
 					<Text fontSize="lg" color="white" fontWeight="700" d="inline-block">
 						${utils.commify(safeFixed(eth, 2))}
+					</Text>
+				</Box>
+			)}
+			{matic > 0 && (
+				<Box>
+					<Text fontSize="md" color="maticcolor" d="inline-block" pr="0.5rem">
+						MATIC
+					</Text>
+					<Text fontSize="lg" color="white" fontWeight="700" d="inline-block">
+						${utils.commify(safeFixed(matic, 2))}
 					</Text>
 				</Box>
 			)}

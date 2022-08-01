@@ -33,6 +33,7 @@ const config = {
 		shadowsOutline: '', // more removing that blue outline
 		lightline: '#120046',
 		ethcolor: '#66A236',
+		maticcolor: '#fff',
 		ethblue: '#00A2FF',
 		btcorange: '#F7931A',
 		swdblue: '#43a7fd',

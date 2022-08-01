@@ -52,7 +52,9 @@ export function TokenChart(props: TokenChartProps): JSX.Element {
 	const [prices, setPrices] = useState<ChartData>(defaultPrices); // SWD prices
 	const [ethPrices, setEthPrices] = useState<ChartData>([]); // ethereum prices
 	const [btcPrices, setBtcPrices] = useState<ChartData>([]); // bitcoin prices
+	const [maticPrices, setMaticPrices] = useState<ChartData>([]); // matic prices
 	const [compareEth, setCompareEth] = useState(false);
+	const [compareMatic, setCompareMatic] = useState(false);
 	const [compareBtc, setCompareBtc] = useState(false);
 	const [mergedPrices, setMergedPrices] = useState<{ merged: MergedPrice[]; flat: boolean }>({
 		merged: [],
@@ -93,12 +95,20 @@ export function TokenChart(props: TokenChartProps): JSX.Element {
 						console.log('[TokenChart] Getting BTC prices');
 						return getTokenProductData(cId, 'WBTC', period);
 					}),
+					promiseThrottle.add(() => {
+						console.log('[TokenChart] Getting BTC prices');
+						return getTokenProductData(cId, 'WMATIC', period);
+					}),
 				];
 				Promise.all(promises)
-					.then(([eth, btc]) => {
+					.then(([eth, btc, matic]) => {
 						if (eth?.length > 0) {
 							console.log('setting eth prices', eth[0].prices);
 							setEthPrices(eth[0].prices);
+						}
+						if (matic?.length > 0) {
+							console.log('setting matic prices', matic[0].prices);
+							setMaticPrices(matic[0].prices);
 						}
 						if (btc?.length > 0) {
 							console.log('setting btc prices', btc[0].prices);
@@ -124,14 +134,26 @@ export function TokenChart(props: TokenChartProps): JSX.Element {
 				symbol,
 				prices,
 				ethPrices,
+				maticPrices,
 				btcPrices,
 				compareEth,
+				compareMatic,
 				compareBtc,
 				period,
 			);
 			setMergedPrices({ merged, flat });
 		}
-	}, [compareBtc, compareEth, prices, ethPrices, btcPrices, symbol, period]);
+	}, [
+		compareBtc,
+		compareEth,
+		compareMatic,
+		prices,
+		ethPrices,
+		maticPrices,
+		btcPrices,
+		symbol,
+		period,
+	]);
 
 	function handleCompareBtc(e: React.ChangeEvent<HTMLInputElement>) {
 		setCompareBtc(e.target.checked);
@@ -139,6 +161,9 @@ export function TokenChart(props: TokenChartProps): JSX.Element {
 
 	function handleCompareEth(e: React.ChangeEvent<HTMLInputElement>) {
 		setCompareEth(e.target.checked);
+	}
+	function handleCompareMatic(e: React.ChangeEvent<HTMLInputElement>) {
+		setCompareMatic(e.target.checked);
 	}
 
 	function renderCoinDot(props: DotProps) {
@@ -151,6 +176,9 @@ export function TokenChart(props: TokenChartProps): JSX.Element {
 
 	function renderEthDot(props: DotProps) {
 		return <ChartDot dotColor="#66A236" {...props} />;
+	}
+	function renderMaticDot(props: DotProps) {
+		return <ChartDot dotColor="#fff" {...props} />;
 	}
 
 	const setTimePeriod = useMemo(
@@ -254,6 +282,19 @@ export function TokenChart(props: TokenChartProps): JSX.Element {
 									animationDuration={500}
 								/>
 							)}
+							{compareMatic && maticPrices && (
+								<Line
+									dataKey="maticScaled"
+									type="monotone"
+									stroke="#fff"
+									strokeWidth={2}
+									stroke-linecap="round"
+									legendType="none"
+									dot={false}
+									activeDot={renderMaticDot}
+									animationDuration={500}
+								/>
+							)}
 							<Line
 								dataKey="coinScaled"
 								type="monotone"
@@ -307,6 +348,16 @@ export function TokenChart(props: TokenChartProps): JSX.Element {
 						ETH
 					</Checkbox>
 					<Checkbox
+						m="0 1rem 0 1rem"
+						onChange={handleCompareMatic}
+						checked={compareEth}
+						color="maticcolor"
+						borderColor="#AADCFE"
+					>
+						MATIC
+					</Checkbox>
+					<Checkbox
+						m="0 1rem 0 1rem"
 						onChange={handleCompareBtc}
 						checked={compareBtc}
 						color="btcorange"

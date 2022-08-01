@@ -32,6 +32,8 @@ export type MergedPrice = {
 	btcScaled: number;
 	eth: number;
 	ethScaled: number;
+	matic: number;
+	maticScaled: number;
 };
 
 const blankMergedPrice = {
@@ -43,6 +45,8 @@ const blankMergedPrice = {
 	btcScaled: 0,
 	eth: 0,
 	ethScaled: 0,
+	matic: 0,
+	maticScaled: 0,
 };
 
 /*
@@ -54,8 +58,10 @@ export function mergePrices(
 	symbol: string,
 	prices: ChartData,
 	ethPrices: ChartData | undefined,
+	maticPrices: ChartData | undefined,
 	btcPrices: ChartData | undefined,
 	compareEth: boolean,
+	compareMatic: boolean,
 	compareBtc: boolean,
 	period: string,
 ): { merged: MergedPrice[]; flat: boolean } {
@@ -64,13 +70,15 @@ export function mergePrices(
 		return { merged, flat: true };
 	}
 	const { map: priceMap, flat } = chartDataToMap(prices);
-	// console.log(`Compare ETH ${compareEth} with ${ethPrices?.length}`);
-	// console.log(`Compare BTC ${compareBtc} with ${btcPrices?.length}`);
 	const ethPriceMap = compareEth && ethPrices ? chartDataToMap(ethPrices).map : {};
+	const maticPriceMap = compareMatic && maticPrices ? chartDataToMap(maticPrices).map : {};
 	const btcPriceMap = compareBtc && btcPrices ? chartDataToMap(btcPrices).map : {};
 	const ethTimestamps: number[] =
 		compareEth && ethPrices ? Object.keys(ethPriceMap).map((k) => parseInt(k)) : [];
 	ethTimestamps.sort();
+	const maticTimestamps: number[] =
+		compareMatic && maticPrices ? Object.keys(maticPriceMap).map((k) => parseInt(k)) : [];
+	maticTimestamps.sort();
 	const btcTimestamps: number[] =
 		compareBtc && btcPrices ? Object.keys(btcPriceMap).map((k) => parseInt(k)) : [];
 	btcTimestamps.sort();
@@ -101,6 +109,9 @@ export function mergePrices(
 			if (ethTimestamps.length > 0) {
 				mergedPrice.eth = ethPriceMap[closest(ts, ethTimestamps)];
 			}
+			if (maticTimestamps.length > 0) {
+				mergedPrice.matic = maticPriceMap[closest(ts, maticTimestamps)];
+			}
 			if (btcTimestamps.length > 0) {
 				mergedPrice.btc = btcPriceMap[closest(ts, btcTimestamps)];
 			}
@@ -109,7 +120,7 @@ export function mergePrices(
 	});
 
 	// Don't bother scaling if we aren't comparing
-	if (!compareEth && !compareBtc) {
+	if (!compareEth && !compareBtc && !compareMatic) {
 		for (let i = 0; i < merged.length; i++) {
 			merged[i].coinScaled = merged[i].coin;
 		}
@@ -119,10 +130,14 @@ export function mergePrices(
 		let priceScale = 1;
 		let btcScale = 1;
 		let ethScale = 1;
-		const { coin: coinStart, btc: btcStart, eth: ethStart } = merged[0];
-		const maxVal = Math.max(ethStart, btcStart, coinStart);
+		let maticScale = 1;
+		const { coin: coinStart, btc: btcStart, eth: ethStart, matic: maticStart } = merged[0];
+		const maxVal = Math.max(ethStart, maticStart, btcStart, coinStart);
 		if (compareEth && ethStart > 0) {
 			ethScale = maxVal / ethStart;
+		}
+		if (compareMatic && maticStart > 0) {
+			maticScale = maxVal / maticStart;
 		}
 		if (compareBtc && btcStart > 0) {
 			btcScale = maxVal / btcStart;
@@ -131,10 +146,11 @@ export function mergePrices(
 			priceScale = maxVal / coinStart;
 		}
 		for (let i = 0; i < merged.length; i++) {
-			const { coin, btc, eth } = merged[i];
+			const { coin, btc, eth, matic } = merged[i];
 			merged[i].coinScaled = coin * priceScale;
 			merged[i].btcScaled = btc * btcScale;
 			merged[i].ethScaled = eth * ethScale;
+			merged[i].maticScaled = matic * maticScale;
 		}
 	}
 
