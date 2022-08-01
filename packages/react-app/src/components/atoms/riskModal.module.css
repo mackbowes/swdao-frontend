@@ -28,25 +28,25 @@
 
 .one {
   --size: 0.2;
-  --color: linear-gradient(45deg, #7200e6, #6c0be8);
+  --color: linear-gradient(45deg, #7200e6, #6e07e7);
 }
 .two {
   --size: 0.4;
-  --color:linear-gradient(45deg, #6c0be8, #572dee);
+  --color:linear-gradient(45deg, #6e07e7, #690fe8);
 
 }
 .three {
   --size: 0.6;
-  --color:linear-gradient(45deg, #572dee, #4d3ff1);
+  --color:linear-gradient(45deg, #690fe8, #6418ea);
  
 }
 .four {
   --size: 0.8;
-  --color:linear-gradient(45deg, #4d3ff1, #444df3);
+  --color:linear-gradient(45deg, #6418ea, #5f20eb);
 }
 .five {
   --size: 1;
-  --color: linear-gradient(45deg, #4d3ff1, #444df3);
+  --color: linear-gradient(45deg, #5f20eb, #5a28ec);
 
   /* --color: #BCE7FE; */
 }

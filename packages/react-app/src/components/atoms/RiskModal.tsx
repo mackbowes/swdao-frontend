@@ -32,7 +32,7 @@ export default function RiskModal({ symbol }: RiskModal) {
 		return null;
 	}
 	return (
-		<Box display="flex" justifyContent="flex-end">
+		<Box display="flex" justifyContent="flex-end" marginRight="-0.3rem">
 			<Box
 				display="flex"
 				justifyContent="center"
@@ -99,9 +99,9 @@ export default function RiskModal({ symbol }: RiskModal) {
 					onClick={() => setModalOpen(!modalOpen)}
 					color="white"
 					cursor="pointer"
-					paddingLeft=".5rem"
+					alignSelf="center"
 				>
-					ⓘ What does this mean?
+					ⓘ Risk Level
 				</Box>
 			</Box>
 			{modalOpen && (
