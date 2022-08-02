@@ -16,13 +16,13 @@ import { decimalsOf, getSetToken, getSymbolMap } from '../../utils/contracts';
 import { CoinIcon } from '../atoms/CoinIcon';
 import DisplayNumber from '../atoms/DisplayNumber';
 
-const currencyFormatter = new Intl.NumberFormat('en-US', {
+export const currencyFormatter = new Intl.NumberFormat('en-US', {
 	style: 'currency',
 	currency: 'USD',
 	maximumFractionDigits: 0,
 });
 
-type PositionMap = {
+export type PositionMap = {
 	[key: string]: {
 		quantity: string;
 		allocation: string;
@@ -36,7 +36,7 @@ type AllocationTableProps = {
 	symbol: string;
 };
 
-async function getPrices(componentTokens: TokenSummaryInfoMap, chainId: string) {
+export async function getPrices(componentTokens: TokenSummaryInfoMap, chainId: string) {
 	const prices: Record<string, [number, number]> = {};
 
 	const promiseThrottle = new PromiseThrottle({
@@ -162,7 +162,6 @@ export function AllocationTable(props: AllocationTableProps): JSX.Element {
 				const symbol = addressMap[address];
 				const quantity = formatUnits(balance, decimalsOf(symbol));
 				const [price, change] = priceMap[symbol] || [0, 0];
-				console.log(price, change);
 				const value = price * parseFloat(quantity);
 				map[symbol] = {
 					quantity,

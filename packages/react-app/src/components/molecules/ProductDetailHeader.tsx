@@ -2,6 +2,7 @@ import { Box, Flex, Image } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 
 import { getTokenUrl } from '../../utils';
+import { InTradeDisplay } from './InTradeDisplay';
 
 interface ProductDetailHeaderProps {
 	icon: string;
@@ -37,6 +38,7 @@ export function ProductDetailHeader({
 				<Box fontWeight={500} color="#43A7FD">
 					{symbol}
 				</Box>
+				<InTradeDisplay symbol={symbol} />
 			</Flex>
 		</Flex>
 	);

@@ -113,7 +113,6 @@ export function ProductDetailsPage({ symbol }: { symbol: string }): JSX.Element 
 		if (prices.length > 0) {
 			const cP = currentPrice;
 			const p = parseFloat(prices[0][1]);
-			console.log(symbol, cP, p);
 			return ((cP - p) / p) * 100;
 		}
 		return priceChange || product?.changePercent1Day || 0;

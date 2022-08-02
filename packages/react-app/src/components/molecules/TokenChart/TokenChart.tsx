@@ -103,15 +103,15 @@ export function TokenChart(props: TokenChartProps): JSX.Element {
 				Promise.all(promises)
 					.then(([eth, btc, matic]) => {
 						if (eth?.length > 0) {
-							console.log('setting eth prices', eth[0].prices);
+							// console.log('setting eth prices', eth[0].prices);
 							setEthPrices(eth[0].prices);
 						}
 						if (matic?.length > 0) {
-							console.log('setting matic prices', matic[0].prices);
+							// console.log('setting matic prices', matic[0].prices);
 							setMaticPrices(matic[0].prices);
 						}
 						if (btc?.length > 0) {
-							console.log('setting btc prices', btc[0].prices);
+							// console.log('setting btc prices', btc[0].prices);
 							setBtcPrices(btc[0].prices);
 							setLoadedPrices(cId);
 						}

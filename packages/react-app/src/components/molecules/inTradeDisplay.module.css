@@ -1,0 +1,77 @@
+
+@keyframes blink {
+    0%,100% {opacity: .25;}
+    50% {opacity: 1;}
+}
+
+.itdp {
+    color: yellow;
+    font-size: initial;
+    padding-left: .5rem;
+}
+.itdpa {
+    color: green;
+    font-size: initial;
+    padding-left: .5rem;
+}
+
+.blink {
+    animation: blink 4s infinite;
+
+}
+
+.loadingDotBox {
+    display: flex;
+    align-items: center;
+    padding-left: 2rem;
+}
+
+.loadingDot {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9880ff;
+    color: #9880ff;
+    animation: dotFlashing 1s infinite linear alternate;
+    animation-delay: .5s;
+  }
+  
+  .loadingDot::before, .loadingDot::after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 0;
+  }
+  
+  .loadingDot::before {
+    left: -15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9880ff;
+    color: #9880ff;
+    animation: dotFlashing 1s infinite alternate;
+    animation-delay: 0s;
+  }
+  
+  .loadingDot::after {
+    left: 15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #9880ff;
+    color: #9880ff;
+    animation: dotFlashing 1s infinite alternate;
+    animation-delay: 1s;
+  }
+  
+  @keyframes dotFlashing {
+    0% {
+      background-color: #9880ff;
+    }
+    50%,
+    100% {
+      background-color: #ebe6ff;
+    }
+  }
