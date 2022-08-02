@@ -2,6 +2,7 @@ import { Box, Text } from '@chakra-ui/react';
 import { navigate } from 'hookrouter';
 import { A } from 'hookrouter';
 import React, { useMemo, useState } from 'react';
+import { InTradeDisplay } from '../molecules/InTradeDisplay';
 
 import { CoinIcon } from './CoinIcon';
 
@@ -51,8 +52,9 @@ export function CoinLabelCell({
 			<Box display="inline-block" marginRight="1.5rem">
 				<CoinIcon symbol={symbol} src={icon} verticalAlign="middle" height={height || '2.5rem'} />
 				<A href={url}>
-					<Text as="span" fontSize={fontSize} color={hover ? 'white' : color}>
+					<Text as="span" fontSize={fontSize} color={hover ? 'white' : color} display="inline-flex">
 						{name}
+						<InTradeDisplay symbol={symbol} dotOnly={true} />
 					</Text>
 					{!hideSymbol && (
 						<Text m="0 1rem" d="inline-block" className="symbol" as="span">

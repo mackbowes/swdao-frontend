@@ -1,18 +1,12 @@
 import { Center, Spinner, Table, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
-import { useWallet } from '@raidguild/quiver';
-import { formatUnits } from 'ethers/lib/utils';
 import PromiseThrottle from 'promise-throttle';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { DEFAULT_CHAIN_ID } from '../../config';
 import { getSingleTokenPrice, getTokenSetAllocation } from '../../services/backend';
-import { getCoinDataByAddress } from '../../services/coingecko';
-import { allSwappableTokensState, breakpointState } from '../../state';
-import { PositionStructOutput } from '../../typechain/ISetToken';
+import { breakpointState, extendedTokenDetailsState } from '../../state';
 import { TokenSummaryInfoMap } from '../../types';
 import { getTokenUrl } from '../../utils';
-import { decimalsOf, getSetToken, getSymbolMap } from '../../utils/contracts';
 import { CoinIcon } from '../atoms/CoinIcon';
 import DisplayNumber from '../atoms/DisplayNumber';
 
@@ -24,6 +18,7 @@ export const currencyFormatter = new Intl.NumberFormat('en-US', {
 
 export type PositionMap = {
 	[key: string]: {
+		symbol: string;
 		quantity: string;
 		allocation: string;
 		value: string;
@@ -43,7 +38,6 @@ export async function getPrices(componentTokens: TokenSummaryInfoMap, chainId: s
 		requestsPerSecond: 120,
 		promiseImplementation: Promise,
 	});
-	// const cId = chainId ?? DEFAULT_CHAIN_ID;
 	const promises = Object.keys(componentTokens).map(async (sym) => {
 		const address = componentTokens[sym].address;
 		return promiseThrottle.add(async () => {
@@ -62,134 +56,14 @@ export async function getPrices(componentTokens: TokenSummaryInfoMap, chainId: s
 export function AllocationTable(props: AllocationTableProps): JSX.Element {
 	const { symbol } = props;
 	const breakpoint = useRecoilValue(breakpointState);
-	const [positions, setPositions] = useState<
-		{
-			component: string;
-			unit: string;
-		}[]
-	>();
-	const [componentTokens, setComponentTokens] = useState<TokenSummaryInfoMap>({});
+	const tokenDetails = useRecoilValue(extendedTokenDetailsState);
 	const [positionMap, setPositionMap] = useState<PositionMap>({});
-	const [priceMap, setPriceMap] = useState<Record<string, [number, number]>>({});
-	const [addresses, setAddresses] = useState<string[]>([]);
-
-	const [loading, setLoading] = useState<boolean>(false);
-	const [loaded, setLoaded] = useState<boolean>(false);
-	const [updated, setUpdated] = useState(0);
-	const { isConnected, provider, chainId } = useWallet();
-	const swappable = useRecoilValue(allSwappableTokensState);
-	const allowedTokens = useMemo(
-		() => ({ ...swappable.ERC20, ...swappable.TokenProducts }),
-		[swappable],
-	);
 
 	useEffect(() => {
-		if (
-			isConnected &&
-			provider &&
-			Object.keys(componentTokens).length > 0 &&
-			!loading &&
-			!loaded &&
-			new Date().getTime() - updated > 10000
-		) {
-			setUpdated(new Date().getTime());
-			setLoading(true);
-			getPrices(componentTokens, chainId || DEFAULT_CHAIN_ID)
-				.then((prices) => {
-					setPriceMap(prices);
-					setLoaded(true);
-				})
-				.finally(() => {
-					setLoading(false);
-				});
+		if (tokenDetails && tokenDetails[symbol]) {
+			setPositionMap(tokenDetails[symbol].allocationTable);
 		}
-	}, [isConnected, provider, componentTokens, chainId, loading, loaded]);
-
-	useEffect(() => {
-		if (isConnected && provider && allowedTokens[symbol] && !loading && !positions) {
-			const address = allowedTokens[symbol]?.address || '';
-			if (!address) {
-				console.warn('No address for token', symbol);
-				return;
-			}
-			// const settokenContract = getSetToken(allowedTokens[symbol].address, provider);
-			// if (!settokenContract) {
-			// 	console.warn('No settoken contract for token', symbol);
-			// }
-			// setLoading(true);
-			// settokenContract?.getComponents().then((components) => {
-			// 	setAddresses(components);
-			// 	return settokenContract.getPositions();
-			// });
-			// .then((positions: PositionStructOutput[]) => {
-			// 		setPositions(positions);
-			// 	})
-			getTokenSetAllocation(address)
-				.then((r) => {
-					setPositions(r);
-					const components: string[] = [];
-					r.forEach((c) => {
-						components.push(c.component);
-					});
-					setAddresses(components);
-				})
-				.finally(() => {
-					setLoading(false);
-				});
-		}
-	}, [allowedTokens, isConnected, loading, provider, symbol]);
-
-	// reverse the token maps to map address to symbol
-	const addressMap: Record<string, string> = useMemo(() => {
-		const map: Record<string, string> = {};
-		const tokenAddresses = {
-			...allowedTokens,
-			...componentTokens,
-		};
-		Object.keys(tokenAddresses).forEach((token) => {
-			map[tokenAddresses[token].address] = token;
-		});
-		return map;
-	}, [allowedTokens, componentTokens]);
-
-	useEffect(() => {
-		if (loaded && addressMap && positions && Object.keys(positionMap).length !== positions.length) {
-			// console.log(loaded, addressMap, Object.keys(positionMap).length, positions.length);
-			const map: PositionMap = {};
-			let total = 0;
-			positions.forEach((position) => {
-				const { component: address, unit: balance } = position;
-				const symbol = addressMap[address];
-				const quantity = formatUnits(balance, decimalsOf(symbol));
-				const [price, change] = priceMap[symbol] || [0, 0];
-				const value = price * parseFloat(quantity);
-				map[symbol] = {
-					quantity,
-					allocation: '',
-					amount: value,
-					value: currencyFormatter.format(value),
-					change: `${change.toFixed(2)}%`,
-				};
-				total += value;
-			});
-			Object.keys(map).forEach((symbol) => {
-				const percent = (map[symbol].amount / total) * 100;
-				map[symbol].allocation = `${percent.toFixed(2)}%`;
-			});
-			setPositionMap(map);
-		}
-	}, [addressMap, positions, loaded, componentTokens, priceMap, positionMap]);
-
-	useEffect(() => {
-		if (isConnected && provider && addresses.length > 0) {
-			// We've got a list of addresses of components of the tokenset
-			// but we need a symbol for all of them, so that we can use them
-			// in the main getBalance Loop
-			getSymbolMap(addresses, provider).then((symbolMap) => {
-				setComponentTokens(symbolMap);
-			});
-		}
-	}, [addresses, allowedTokens, isConnected, positions, provider, symbol]);
+	}, [tokenDetails]);
 
 	const tableRows = useMemo(() => {
 		const keys = Object.keys(positionMap);
@@ -198,19 +72,16 @@ export function AllocationTable(props: AllocationTableProps): JSX.Element {
 				<Tr>
 					<Td colSpan={breakpoint === 'sm' ? 4 : 5}>
 						<Center>
-							{isConnected ? (
-								<Spinner size="lg" />
-							) : (
-								<Text>Connect wallet to load current data.</Text>
-							)}
+							<Spinner size="lg" />
 						</Center>
 					</Td>
 				</Tr>
 			);
 		}
 		keys.sort();
-		return keys.map((symbol) => {
-			const position = positionMap[symbol];
+		return keys.map((address) => {
+			const position = positionMap[address];
+			const symbol = position.symbol;
 			if (parseFloat(position.quantity) < 0.001) {
 				return;
 			}
@@ -241,7 +112,7 @@ export function AllocationTable(props: AllocationTableProps): JSX.Element {
 				</Tr>
 			);
 		});
-	}, [breakpoint, isConnected, positionMap]);
+	}, [breakpoint, positionMap]);
 
 	return (
 		<Table

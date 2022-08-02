@@ -16,6 +16,17 @@ export interface Transaction {
   blockNumber: number;
 }
 
+export interface PositionMap {
+  [symbol: string]: {
+    symbol: string;
+    quantity: string;
+    allocation: string;
+    value: string;
+    amount: number;
+    change: string;
+  };
+}
+
 export interface Positions {
   [addr: string]: number;
 }

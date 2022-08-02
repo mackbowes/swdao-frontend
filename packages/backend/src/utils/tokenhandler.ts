@@ -26,6 +26,7 @@ const getExtendedTokenDetails = async (
         currentPrice: 0,
         marketCap: 0,
         totalSupply: 0,
+        allocationTable: {},
       };
     });
   return {
@@ -37,6 +38,7 @@ const getExtendedTokenDetails = async (
     totalSupply: prices.totalSupply,
     currentPrice: prices.currentPrice,
     tokenset: [],
+    allocationTable: prices.allocationTable,
   } as ExtendedTokenDetailResponse;
 };
 

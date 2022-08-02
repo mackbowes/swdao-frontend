@@ -3,6 +3,8 @@
  * Do not make direct changes to the file.
  */
 
+import { PositionMap } from "src/utils/0x/exports";
+
 export interface Paths {
   "/api/prices/{buyToken}/{sellToken}/{sellAmount}": {
     /** Get price for a possible sale */
@@ -175,6 +177,7 @@ export interface Components {
       totalSupply?: number;
       currentPrice?: number;
       tokenset?: Components["schemas"]["Tokenset"][];
+      allocationTable?: PositionMap;
     };
     ETHPriceResponse: {
       ETH?: string;

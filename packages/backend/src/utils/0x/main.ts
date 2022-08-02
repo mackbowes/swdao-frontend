@@ -2,43 +2,56 @@
 import axios from "axios";
 import { AbiItem } from "web3-utils";
 import TokenSetABI from "../../abi/TokenSetABI.json";
+import ERC20ABI from "../../abi/ERC20.json";
 import { baseUrl0x } from "../../settings";
 import { web3 } from "../../bin/www";
-import { ADDRESSES, COMMON_DECIMALS, PRECISION_REQUIRED, HARDCODED_SUPPLY } from "./exports";
+import {
+  ADDRESSES,
+  COMMON_DECIMALS,
+  PRECISION_REQUIRED,
+  HARDCODED_SUPPLY,
+  PositionMap,
+} from "./exports";
 import { isUndefined } from "lodash";
 
 export const getDecimals = async (address: string) => {
-  return COMMON_DECIMALS[address.toLowerCase()] ||
+  return (
+    COMMON_DECIMALS[address.toLowerCase()] ||
     (await web3.alchemy.getTokenMetadata(address)).decimals ||
-    18;
+    18
+  );
 };
 
 const getTotalSupply = async (address: string) => {
   if (ADDRESSES.includes(address.toLowerCase())) {
-    return (await (new web3.eth.Contract(TokenSetABI as AbiItem[], address))
-      .methods
-      .totalSupply()
-      .call((err: any, res: any) => {
-        if (err) {
-          console.log("An error occurred", err);
-        }
-        return res;
-      })) / 10 ** 18;
+    return (
+      (await new web3.eth.Contract(TokenSetABI as AbiItem[], address).methods
+        .totalSupply()
+        .call((err: any, res: any) => {
+          if (err) {
+            console.log("An error occurred", err);
+          }
+          return res;
+        })) /
+      10 ** 18
+    );
   } else {
     return HARDCODED_SUPPLY[address.toLowerCase()] || 0;
   }
 };
 
-const allocationAtBlock = async (address: string, block: number | undefined) => {
-  return await (new web3.eth.Contract(TokenSetABI as AbiItem[], address))
-    .methods
+const allocationAtBlock = async (
+  address: string,
+  block: number | undefined
+) => {
+  return (await new web3.eth.Contract(TokenSetABI as AbiItem[], address).methods
     .getPositions()
     .call(block, (err: any, res: any) => {
       if (err) {
         console.log("An error occurred", err);
       }
       return res;
-    }) as { component: string; unit: string }[];
+    })) as { component: string; unit: string }[];
 };
 
 export const getTokenSetAllocation = async (address: string) => {
@@ -64,72 +77,121 @@ export const getSingleTokenPrice = async (address: string) => {
       }
     });
     let precision = false;
-    const tokens = Promise.all(compsAddr.map(async (a) => {
-      if (PRECISION_REQUIRED.includes(a.toLowerCase())) {
-        precision = true;
-      }
-      const decimals = await getDecimals(a);
-      return {
-        symbol: `${a},${decimals}`,
-        decimals,
-        tokenAddress: a
-      };
-    }));
-    const prices: { symbol: string; prices: number[] }[] =
-      (await axios.post(
-        baseUrl0x + `/history`,
-        {
-          buyTokens: await tokens,
-          stepSize: 43200,
-          stepCount: 1,
-          precision
+    const tokens = Promise.all(
+      compsAddr.map(async (a) => {
+        if (PRECISION_REQUIRED.includes(a.toLowerCase())) {
+          precision = true;
         }
-      )).data;
+        const decimals = await getDecimals(a);
+        return {
+          symbol: `${a},${decimals}`,
+          decimals,
+          tokenAddress: a,
+        };
+      })
+    );
+    const prices: { symbol: string; prices: number[] }[] = (
+      await axios.post(baseUrl0x + `/history`, {
+        buyTokens: await tokens,
+        stepSize: 43200,
+        stepCount: 1,
+        precision,
+      })
+    ).data;
     const promises: Promise<void>[][] = [];
+    const allocationTable: PositionMap = {};
     let currentPrice = 0;
-    promises.push(allocToday.map(async (c) => {
-      const details = prices.find((p) => p.symbol.split(',')[0] === c.component);
-      if (isUndefined(details)) {
+    promises.push(
+      allocToday.map(async (c) => {
+        const details = prices.find(
+          (p) => p.symbol.split(",")[0] === c.component
+        );
+        if (isUndefined(details)) {
+          return;
+        }
+        currentPrice +=
+          details.prices[0] * (+c.unit / 10 ** +details.symbol.split(",")[1]);
+        const symbol = details.symbol.split(",")[0];
+        let tokenSymbol = "";
+        tokenSymbol = await new web3.eth.Contract(
+          ERC20ABI as AbiItem[],
+          symbol
+        ).methods
+          .symbol()
+          .call((err: any, res: any) => {
+            if (err) {
+              console.log("An error occurred", err);
+            }
+            return res;
+          });
+        allocationTable[c.component] = {
+          symbol: tokenSymbol,
+          quantity: (+c.unit / 10 ** +details.symbol.split(",")[1]).toString(),
+          allocation: "",
+          amount:
+            details.prices[0] * (+c.unit / 10 ** +details.symbol.split(",")[1]),
+          value: (
+            details.prices[0] *
+            (+c.unit / 10 ** +details.symbol.split(",")[1])
+          )
+            .toFixed(2)
+            .toString(),
+          change: `${(
+            ((details.prices[0] - details.prices[1]) / details.prices[1]) *
+            100
+          ).toFixed(2)}%`,
+        };
         return;
-      }
-      currentPrice +=
-        details.prices[0] * (+c.unit / 10 ** +details.symbol.split(',')[1]);
-      return;
-    }));
+      })
+    );
     let yesterdayPrice = 0;
-    promises.push(allocYesterday.map(async (c) => {
-      const details = prices.find((p) => p.symbol.split(',')[0] === c.component);
-      if (isUndefined(details)) {
+    promises.push(
+      allocYesterday.map(async (c) => {
+        const details = prices.find(
+          (p) => p.symbol.split(",")[0] === c.component
+        );
+        if (isUndefined(details)) {
+          return;
+        }
+        yesterdayPrice +=
+          details.prices[1] * (+c.unit / 10 ** +details.symbol.split(",")[1]);
+
         return;
-      }
-      yesterdayPrice +=
-        details.prices[1] * (+c.unit / 10 ** +details.symbol.split(',')[1]);
-      return;
-    }));
+      })
+    );
     await Promise.allSettled(promises.flat(2));
+    Object.keys(allocationTable).forEach((symbol) => {
+      const percent = (allocationTable[symbol].amount / currentPrice) * 100;
+      allocationTable[symbol].allocation = `${percent.toFixed(2)}%`;
+    });
     return {
       currentPrice,
-      changePercentDay: ((currentPrice - yesterdayPrice) / yesterdayPrice) * 100
+      changePercentDay:
+        ((currentPrice - yesterdayPrice) / yesterdayPrice) * 100,
+      allocationTable,
     };
   } else {
-    let precision = PRECISION_REQUIRED.includes(address.toLowerCase());
-    const prices: { symbol: string; prices: number[] }[] =
-      (await axios.post(
-        baseUrl0x + `/history`,
-        {
-          buyTokens: [{
+    const precision = PRECISION_REQUIRED.includes(address.toLowerCase());
+    const prices: { symbol: string; prices: number[] }[] = (
+      await axios.post(baseUrl0x + `/history`, {
+        buyTokens: [
+          {
             symbol: "",
             decimals: await getDecimals(address),
-            tokenAddress: address
-          }],
-          stepSize: 43200,
-          stepCount: 1,
-          precision
-        }
-      )).data;
+            tokenAddress: address,
+          },
+        ],
+        stepSize: 43200,
+        stepCount: 1,
+        precision,
+      })
+    ).data;
     return {
       currentPrice: prices[0].prices[0],
-      changePercentDay: ((prices[0].prices[0] - prices[0].prices[1]) / prices[0].prices[1]) * 100
+      changePercentDay:
+        ((prices[0].prices[0] - prices[0].prices[1]) / prices[0].prices[1]) *
+        100,
+      allocationTable: {},
     };
   }
 };
@@ -138,7 +200,7 @@ export const getPrices = async (address: string) => {
   const prices = await getSingleTokenPrice(address);
   const totalSupply = await getTotalSupply(address);
   return {
-    ... prices,
+    ...prices,
     totalSupply,
     marketCap: totalSupply * prices.currentPrice,
   };

@@ -1,6 +1,7 @@
 import { BigNumber } from 'ethers';
 import { TokenDetailPane } from './components/organisms/AboutTokenSet/tokens/types';
 import { UseToastOptions } from '@chakra-ui/react';
+import { PositionMap } from './components/molecules/AllocationTable';
 
 export type ChartData = Array<[number, string]>; // [date, value]
 
@@ -257,6 +258,7 @@ export interface ExtendedTokenDetails {
 	volume1Day: number;
 	currentPrice: number;
 	totalSupply: number;
+	allocationTable: PositionMap;
 }
 
 export interface ExtendedTokenDetailsMap {

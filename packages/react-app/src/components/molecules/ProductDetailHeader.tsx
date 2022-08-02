@@ -38,7 +38,7 @@ export function ProductDetailHeader({
 				<Box fontWeight={500} color="#43A7FD">
 					{symbol}
 				</Box>
-				<InTradeDisplay symbol={symbol} />
+				<InTradeDisplay symbol={symbol} dotOnly={false} />
 			</Flex>
 		</Flex>
 	);
