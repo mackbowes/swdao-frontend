@@ -54,7 +54,9 @@ export function CoinLabelCell({
 				<A href={url}>
 					<Text as="span" fontSize={fontSize} color={hover ? 'white' : color} display="inline-flex">
 						{name}
-						<InTradeDisplay symbol={symbol} dotOnly={true} />
+						<Box transform={'scale(0.75)'}>
+							<InTradeDisplay symbol={symbol} dotOnly={true} />
+						</Box>
 					</Text>
 					{!hideSymbol && (
 						<Text m="0 1rem" d="inline-block" className="symbol" as="span">

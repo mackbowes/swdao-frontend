@@ -38,7 +38,7 @@ export function InTradeDisplay(props: Props): JSX.Element {
 			row = (
 				<Box display="flex" alignItems="center" paddingLeft="1rem">
 					<Tooltip label={<p className={classNames.itdp}>Seeking Entry</p>}>
-						<svg height="14" width="14">
+						<svg height="14" width="14" opacity="0.8">
 							<circle cx="7" cy="7" r="7" fill="yellow" />
 						</svg>
 					</Tooltip>
@@ -47,7 +47,7 @@ export function InTradeDisplay(props: Props): JSX.Element {
 		} else {
 			row = (
 				<Box display="flex" alignItems="center" paddingLeft="1rem">
-					<svg height="14" width="14">
+					<svg height="14" width="14" opacity="0.8">
 						<circle cx="7" cy="7" r="7" fill="yellow" />
 					</svg>
 					<p className={classNames.itdp}>Seeking Entry</p>
