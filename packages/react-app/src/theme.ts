@@ -32,10 +32,10 @@ const config = {
 		bodydark: '#0d0029',
 		shadowsOutline: '', // more removing that blue outline
 		lightline: '#120046',
-		ethcolor: '#66A236',
-		maticcolor: '#8247e5',
+		ethcolor: '#2A9D8F',
+		maticcolor: '#E9C46A',
 		ethblue: '#00A2FF',
-		btcorange: '#F7931A',
+		btcorange: '#E76F51',
 		swdblue: '#43a7fd',
 		purple: '#857AFD',
 		blue5: '#1D1055',

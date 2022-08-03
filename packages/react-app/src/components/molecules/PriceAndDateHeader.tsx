@@ -46,7 +46,13 @@ export function PriceAndDateHeader(props: PriceAndDateHeaderProps): JSX.Element 
 			<Text color="#857AFD" fontSize="0.9rem">
 				{formattedDate}
 			</Text>
-			<Flex direction="row" spacing="1rem" width="100%" pos="relative">
+			<Flex
+				direction="row"
+				spacing="1rem"
+				width="100%"
+				pos="relative"
+				justifyContent="space-between"
+			>
 				<Text alignSelf="flex-end" color="white" fontSize="2rem">
 					{price === 0
 						? '$0.00'
@@ -58,7 +64,7 @@ export function PriceAndDateHeader(props: PriceAndDateHeaderProps): JSX.Element 
 						  })}
 				</Text>
 				{(change > 0 || change < 0 || showZero) && (
-					<Box className={change > 0.0 ? 'change positive' : 'change negative'}>
+					<Box className={change > 0.0 ? 'change positive' : 'change negative'} flex="auto">
 						<ChangeDisplay change={change} />
 					</Box>
 				)}

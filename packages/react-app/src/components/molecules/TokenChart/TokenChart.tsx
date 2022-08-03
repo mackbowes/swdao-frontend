@@ -260,7 +260,7 @@ export function TokenChart(props: TokenChartProps): JSX.Element {
 								<Line
 									dataKey="btcScaled"
 									type="monotone"
-									stroke="#F7931A"
+									stroke="#E76F51"
 									strokeWidth={2}
 									stroke-linecap="round"
 									legendType="none"
@@ -273,7 +273,7 @@ export function TokenChart(props: TokenChartProps): JSX.Element {
 								<Line
 									dataKey="ethScaled"
 									type="monotone"
-									stroke="#66A236"
+									stroke="#2A9D8F"
 									strokeWidth={2}
 									stroke-linecap="round"
 									legendType="none"
@@ -286,7 +286,7 @@ export function TokenChart(props: TokenChartProps): JSX.Element {
 								<Line
 									dataKey="maticScaled"
 									type="monotone"
-									stroke="#fff"
+									stroke="#E9C46A"
 									strokeWidth={2}
 									stroke-linecap="round"
 									legendType="none"
@@ -331,9 +331,11 @@ export function TokenChart(props: TokenChartProps): JSX.Element {
 					height="3em"
 					bgColor="blue5"
 					borderRadius="0 0 1.25em 1.25em"
-					padding="0 2rem"
+					padding="0 1rem"
 					textAlign="center"
 					lineHeight="3em"
+					display="flex"
+					justifyContent="center"
 				>
 					<Text fontSize="sm" color="purple" d="inline-block">
 						Compare with

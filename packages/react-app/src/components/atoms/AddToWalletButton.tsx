@@ -82,7 +82,7 @@ export default function AddToWalletButton({ symbol, address }: WalletButtonProps
 		return <></>;
 	}
 
-	let textByBreakpoint = 'Add to MetaMask +';
+	let textByBreakpoint = `Add to MetaMask +`;
 	if (breakpoint === 'sm') {
 		textByBreakpoint = '+';
 	}
@@ -91,7 +91,7 @@ export default function AddToWalletButton({ symbol, address }: WalletButtonProps
 		<Button
 			className="border-thicken"
 			onClick={handleAdd}
-			position="absolute"
+			// position="absolute"
 			right="0"
 			variant="outline"
 			bgColor="transparent"
@@ -102,6 +102,8 @@ export default function AddToWalletButton({ symbol, address }: WalletButtonProps
 			borderWidth={2}
 			_hover={{ bgColor: '#BCE7FE', color: '#000', borderColor: '#BCE7FE' }}
 			// marginRight="1rem"
+			paddingLeft="0"
+			paddingRight="0"
 		>
 			<Image src="/images/metamask.png" alt="add to Metamask" marginLeft="1.2rem" />
 			&nbsp;{textByBreakpoint}&nbsp;&nbsp;
