@@ -131,9 +131,15 @@ export default function PriceTableRow({
 				linkCell
 				hideSymbol
 			/>
-			<Box textAlign="center" color="#2089fd" {...styles.ticker} display="flex">
+			<Box
+				textAlign="center"
+				color="#2089fd"
+				{...styles.ticker}
+				display="flex"
+				justifyContent="center"
+			>
 				{row.symbol}
-				<InTradeDisplay symbol={row.symbol} dotOnly={true} />
+				{/* {breakpoint === 'sm' && <InTradeDisplay symbol={row.symbol} dotOnly={true} />} */}
 			</Box>
 			<Box textAlign="center" {...styles.price}>
 				{isZero(currentPrice) ? noData : `$${currentPrice}`}
