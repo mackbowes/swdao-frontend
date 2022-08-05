@@ -9,6 +9,7 @@ import { CoinLabelCell } from '../../atoms/CoinLabelCell';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { string } from 'prop-types';
+import { InTradeDisplay } from '../../molecules/InTradeDisplay';
 interface SuggestedProps {
 	tokenDetails: ExtendedTokenDetailsMap;
 }
@@ -140,6 +141,7 @@ export default function Suggested(props: SuggestedProps): JSX.Element {
 						<Box className="suggested-change suggested-flex">
 							<Text paddingRight=".5rem">24h Change </Text>
 							{isZero(bgmChange) ? noData : <ChangeDisplay change={bgmChange} />}
+							{breakpoint === 'sm' && <InTradeDisplay symbol={bgm} dotOnly={true} />}
 						</Box>
 					</a>
 				)}
@@ -171,6 +173,7 @@ export default function Suggested(props: SuggestedProps): JSX.Element {
 						<Box className="suggested-change suggested-flex">
 							<Text paddingRight=".5rem">1 Year Change: </Text>
 							{isZero(change) ? noData : <ChangeDisplay change={change} />}
+							{breakpoint === 'sm' && <InTradeDisplay symbol={bgm} dotOnly={true} />}
 						</Box>
 					</a>
 				)}
@@ -202,6 +205,7 @@ export default function Suggested(props: SuggestedProps): JSX.Element {
 						<Box className="suggested-change suggested-flex">
 							<Text paddingRight=".5rem">24h Change: </Text>
 							{isZero(newChange) ? noData : <ChangeDisplay change={newChange} />}
+							{breakpoint === 'sm' && <InTradeDisplay symbol={bgm} dotOnly={true} />}
 						</Box>
 					</a>
 				)}

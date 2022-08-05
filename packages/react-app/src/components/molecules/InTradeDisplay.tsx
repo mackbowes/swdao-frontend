@@ -24,10 +24,10 @@ export function InTradeDisplay(props: Props): JSX.Element {
 	}, [tokenDetails]);
 
 	useEffect(() => {
-		if ('0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174' in positionMap) {
+		if ('0x2591Bca1f2de4661ED88A30C99A5a9449Aa84154' in positionMap) {
 			setInTrade(
 				parseFloat(
-					positionMap['0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'].allocation.slice(0, -1),
+					positionMap['0x2591Bca1f2de4661ED88A30C99A5a9449Aa84154'].allocation.slice(0, -1),
 				),
 			);
 		}
@@ -38,8 +38,8 @@ export function InTradeDisplay(props: Props): JSX.Element {
 			row = (
 				<Box display="flex" alignItems="center" paddingLeft="1rem">
 					<Tooltip label={<p className={classNames.itdp}>Seeking Entry</p>}>
-						<svg height="14" width="14" opacity="0.8">
-							<circle cx="7" cy="7" r="7" fill="yellow" />
+						<svg height="10" width="10" opacity="0.8">
+							<circle cx="5" cy="5" r="5" fill="yellow" />
 						</svg>
 					</Tooltip>
 				</Box>
@@ -47,8 +47,8 @@ export function InTradeDisplay(props: Props): JSX.Element {
 		} else {
 			row = (
 				<Box display="flex" alignItems="center" paddingLeft="1rem">
-					<svg height="14" width="14" opacity="0.8">
-						<circle cx="7" cy="7" r="7" fill="yellow" />
+					<svg height="10" width="10" opacity="0.8">
+						<circle cx="5" cy="5" r="5" fill="yellow" />
 					</svg>
 					<p className={classNames.itdp}>Seeking Entry</p>
 				</Box>
@@ -60,8 +60,8 @@ export function InTradeDisplay(props: Props): JSX.Element {
 			row = (
 				<Box display="flex" alignItems="center" paddingLeft="1rem">
 					<Tooltip label={<p className={classNames.itdpa}>Partial Trade</p>}>
-						<svg height="14" width="14" className={classNames.blink}>
-							<circle cx="7" cy="7" r="7" fill="green" />
+						<svg height="10" width="10" className={classNames.blink}>
+							<circle cx="5" cy="5" r="5" fill="green" />
 						</svg>
 					</Tooltip>
 				</Box>
@@ -69,8 +69,8 @@ export function InTradeDisplay(props: Props): JSX.Element {
 		} else {
 			row = (
 				<Box display="flex" alignItems="center" paddingLeft="1rem">
-					<svg height="14" width="14" className={classNames.blink}>
-						<circle cx="7" cy="7" r="7" fill="green" />
+					<svg height="10" width="10" className={classNames.blink}>
+						<circle cx="5" cy="5" r="5" fill="green" />
 					</svg>
 					<p className={classNames.itdpa}>Partial Trade</p>
 				</Box>
@@ -82,8 +82,8 @@ export function InTradeDisplay(props: Props): JSX.Element {
 			row = (
 				<Box display="flex" alignItems="center" paddingLeft="1rem">
 					<Tooltip label={<p className={classNames.itdpa}>In Trade</p>}>
-						<svg height="14" width="14" className={classNames.blink}>
-							<circle cx="7" cy="7" r="7" fill="green" />
+						<svg height="10" width="10" className={classNames.blink}>
+							<circle cx="5" cy="5" r="5" fill="green" />
 						</svg>
 					</Tooltip>
 				</Box>
@@ -91,8 +91,8 @@ export function InTradeDisplay(props: Props): JSX.Element {
 		} else {
 			row = (
 				<Box display="flex" alignItems="center" paddingLeft="1rem">
-					<svg height="14" width="14" className={classNames.blink}>
-						<circle cx="7" cy="7" r="7" fill="green" />
+					<svg height="10" width="10" className={classNames.blink}>
+						<circle cx="5" cy="5" r="5" fill="green" />
 					</svg>
 					<p className={classNames.itdpa}>In Trade</p>
 				</Box>
@@ -114,8 +114,8 @@ export function InTradeDisplay(props: Props): JSX.Element {
 					row = (
 						<Box display="flex" alignItems="center" paddingLeft="1rem">
 							<Tooltip label={<p className={classNames.itdpa}>In Trade</p>}>
-								<svg height="14" width="14" className={classNames.blink}>
-									<circle cx="7" cy="7" r="7" fill="green" />
+								<svg height="10" width="10" className={classNames.blink}>
+									<circle cx="5" cy="5" r="5" fill="green" />
 								</svg>
 							</Tooltip>
 						</Box>
@@ -123,8 +123,8 @@ export function InTradeDisplay(props: Props): JSX.Element {
 				} else {
 					row = (
 						<Box display="flex" alignItems="center" paddingLeft="1rem">
-							<svg height="14" width="14" className={classNames.blink}>
-								<circle cx="7" cy="7" r="7" fill="green" />
+							<svg height="10" width="10" className={classNames.blink}>
+								<circle cx="5" cy="5" r="5" fill="green" />
 							</svg>
 							<p className={classNames.itdpa}>In Trade</p>
 						</Box>

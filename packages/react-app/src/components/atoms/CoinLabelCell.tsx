@@ -2,6 +2,8 @@ import { Box, Text } from '@chakra-ui/react';
 import { navigate } from 'hookrouter';
 import { A } from 'hookrouter';
 import React, { useMemo, useState } from 'react';
+import { useRecoilValue } from 'recoil';
+import { breakpointState } from '../../state';
 import { InTradeDisplay } from '../molecules/InTradeDisplay';
 
 import { CoinIcon } from './CoinIcon';
@@ -31,6 +33,7 @@ export function CoinLabelCell({
 	color = 'bodytext',
 }: CoinLabelCellProps): JSX.Element {
 	const [hover, setHover] = useState(false);
+	const breakpoint = useRecoilValue(breakpointState);
 
 	const tdProps: Record<string, any> = useMemo(
 		() =>
@@ -46,7 +49,6 @@ export function CoinLabelCell({
 	);
 
 	if (width) tdProps.width = width;
-
 	return (
 		<Box className="nobreak coin" {...tdProps} textAlign="left">
 			<Box display="inline-block" marginRight="1.5rem">
@@ -54,9 +56,11 @@ export function CoinLabelCell({
 				<A href={url}>
 					<Text as="span" fontSize={fontSize} color={hover ? 'white' : color} display="inline-flex">
 						{name}
-						<Box transform={'scale(0.75)'}>
-							<InTradeDisplay symbol={symbol} dotOnly={true} />
-						</Box>
+						{breakpoint !== 'sm' && (
+							<Box>
+								<InTradeDisplay symbol={symbol} dotOnly={true} />
+							</Box>
+						)}
 					</Text>
 					{!hideSymbol && (
 						<Text m="0 1rem" d="inline-block" className="symbol" as="span">
