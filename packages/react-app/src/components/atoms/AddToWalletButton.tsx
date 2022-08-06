@@ -1,4 +1,4 @@
-import { Button, Image, useToast } from '@chakra-ui/react';
+import { Box, Button, Image, useToast } from '@chakra-ui/react';
 import { useWallet } from '@raidguild/quiver';
 import React, { useCallback, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -105,8 +105,14 @@ export default function AddToWalletButton({ symbol, address }: WalletButtonProps
 			paddingLeft="0"
 			paddingRight="0"
 		>
-			<Image src="/images/metamask.png" alt="add to Metamask" marginLeft="1.2rem" />
-			&nbsp;{textByBreakpoint}&nbsp;&nbsp;
+			<Image
+				src="/images/metamask.png"
+				alt="add to Metamask"
+				marginLeft={breakpoint === 'sm' ? '1.2rem' : '2rem'}
+			/>
+			<Box marginRight={breakpoint !== 'sm' ? '1.2rem' : ''}>
+				&nbsp;{textByBreakpoint}&nbsp;&nbsp;
+			</Box>
 		</Button>
 	);
 }
