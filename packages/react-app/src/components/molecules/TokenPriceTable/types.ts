@@ -17,7 +17,7 @@ export const DEFAULT_COL_STYLES: SizedColumnStyles = {
 		},
 		ticker: {
 			width: '40%',
-			ml: '4.5rem',
+			ml: '2.7rem',
 			mt: '-1.3rem',
 			textAlign: 'left',
 		},

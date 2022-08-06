@@ -139,7 +139,7 @@ export default function PriceTableRow({
 				justifyContent="center"
 			>
 				{row.symbol}
-				{/* {breakpoint === 'sm' && <InTradeDisplay symbol={row.symbol} dotOnly={true} />} */}
+				{breakpoint === 'sm' && <InTradeDisplay symbol={row.symbol} dotOnly={true} />}
 			</Box>
 			<Box textAlign="center" {...styles.price}>
 				{isZero(currentPrice) ? noData : `$${currentPrice}`}
