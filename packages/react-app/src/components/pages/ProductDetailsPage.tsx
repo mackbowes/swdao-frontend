@@ -1,6 +1,6 @@
-import { Box, Center, Heading, Text, VStack } from '@chakra-ui/react';
 import { useQueryParams } from 'hookrouter';
-import React, { useEffect, useMemo, useState } from 'react';
+import { Box, Center, Heading, Text, VStack } from '@chakra-ui/react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { useWindowSize } from '../../hooks/useWindowSize';
@@ -10,7 +10,7 @@ import {
 	periodState,
 	tokenDetailsForCurrentPeriod,
 } from '../../state';
-import { ChartData, TokenDetails } from '../../types';
+import { ChartData, ChartDataMap, TokenDetails } from '../../types';
 import { getOverriddenDetails } from '../../utils';
 import { HoveringArrowLink } from '../molecules/HoveringArrowLink';
 import { PriceAndDateHeader } from '../molecules/PriceAndDateHeader';
@@ -24,7 +24,6 @@ import { FullHeightPage } from '../templates/FullHeightPage';
 import RiskModal from '../atoms/RiskModal';
 import AddToWalletButton from '../atoms/AddToWalletButton';
 import { useRedirect } from 'hookrouter';
-
 const currencyFormatter = new Intl.NumberFormat('en-US', {
 	style: 'currency',
 	currency: 'USD',
@@ -33,8 +32,9 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 
 export function ProductDetailsPage({ symbol }: { symbol: string }): JSX.Element {
 	const [query, setQuery] = useQueryParams();
-	const { period = '1Y' } = query;
-	const [periodVal, setPeriodState] = useRecoilState(periodState);
+	// const { period: string = 'MAX' } = query;
+	const [period, setPeriod] = useState('MAX');
+	// const [periodVal, setPeriodState] = useRecoilState(periodState);
 	const windowSize = useWindowSize();
 	const tokenPrices = useRecoilValue(tokenDetailsForCurrentPeriod);
 	const tokenDetails = useRecoilValue(tokenDetailsForCurrentPeriod);
@@ -42,6 +42,7 @@ export function ProductDetailsPage({ symbol }: { symbol: string }): JSX.Element 
 	const [prices, setPrices] = useState<ChartData>([]); // SWD prices
 	const [product, setProduct] = useState<TokenDetails | null>(null);
 	const breakpoint = useRecoilValue(breakpointState);
+	const [charts, setCharts] = useState<ChartDataMap>({});
 
 	useRedirect('/product/SWD', '/token'); // redirects from /product/SWD to /token
 
@@ -62,18 +63,18 @@ export function ProductDetailsPage({ symbol }: { symbol: string }): JSX.Element 
 				setProduct(token);
 			}
 		}
-	}, [tokenPrices, symbol, periodVal, tokenDetails]);
+	}, [tokenPrices, symbol, period, tokenDetails]);
 
-	useEffect(() => {
-		if (periodVal !== period) {
-			setPeriodState(period);
-		}
-	}, [periodVal, period, setPeriodState]);
+	// useEffect(() => {
+	// 	if (periodVal !== period) {
+	// 		setPeriodState(period);
+	// 	}
+	// }, [periodVal, period, setPeriodState]);
 
-	const setPeriod = (p: string) => {
-		setQuery({ ...query, period: p });
-		setPeriodState(p);
-	};
+	// const setPeriod = (p: string) => {
+	// 	setQuery({ ...query, period: p });
+	// 	setPeriodState(p);
+	// };
 
 	const { image: icon, name } = getOverriddenDetails(symbol);
 
@@ -108,15 +109,30 @@ export function ProductDetailsPage({ symbol }: { symbol: string }): JSX.Element 
 			},
 		[windowSize],
 	);
-
-	const change = useMemo(() => {
-		if (prices.length > 0) {
+	const [change, setChange] = useState(0);
+	const updateChange = () => {
+		if (prices.length > 0 && charts[period].length > 0) {
 			const cP = currentPrice;
-			const p = parseFloat(prices[0][1]);
-			return ((cP - p) / p) * 100;
-		}
-		return priceChange || product?.changePercent1Day || 0;
-	}, [product, currentPrice, prices]);
+			const p = parseFloat(charts[period][0][1]);
+			setChange(((cP - p) / p) * 100);
+			return true;
+		} else setChange(0);
+	};
+	useEffect(() => {
+		const interval = setInterval(() => {
+			if (updateChange()) {
+				clearInterval(interval);
+			}
+		}, 1000);
+		return () => clearInterval(interval);
+	}, [product, currentPrice, prices, charts, period]);
+	useEffect(() => {
+		updateChange();
+	}, [period]);
+
+	const handleChartChange = async (newChart: ChartDataMap) => {
+		setCharts(newChart);
+	};
 
 	const swdDetailCells = [
 		<TokenDetailBox
@@ -169,13 +185,17 @@ export function ProductDetailsPage({ symbol }: { symbol: string }): JSX.Element 
 									change={change}
 									price={currentPrice}
 									date={Date.now()}
-									showZero={true}
+									showZero={false}
 								/>
 								<RiskModal symbol={symbol} />
 							</Box>
 						</VStack>
 						<VStack spacing="2rem" margin="0 auto">
-							<ChartAndBuy symbol={symbol} handleDateChange={setPeriod} period={periodVal} />
+							<ChartAndBuy
+								symbol={symbol}
+								handleDateChange={setPeriod}
+								setCharts={handleChartChange}
+							/>
 							<StyledGrid
 								cells={swdDetailCells}
 								display="table"

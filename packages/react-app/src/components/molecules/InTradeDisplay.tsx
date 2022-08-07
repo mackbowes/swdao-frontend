@@ -24,7 +24,6 @@ export function InTradeDisplay(props: Props): JSX.Element {
 	}, [tokenDetails]);
 
 	useEffect(() => {
-		console.log(positionMap);
 		if ('0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174' in positionMap) {
 			setInTrade(
 				parseFloat(

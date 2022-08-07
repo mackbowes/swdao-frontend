@@ -1,9 +1,10 @@
 import { Stack } from '@chakra-ui/react';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { isTokenset, PRODUCTS_BY_SYMBOL } from '../../config/products';
 import { allSwappableTokensState, breakpointState } from '../../state';
+import { ChartDataMap } from '../../types';
 import { BuyTokenForm } from '../molecules/BuyTokenForm';
 import { IssueRedeemForm } from '../molecules/IssueRedeemForm';
 import { TokenChart } from '../molecules/TokenChart';
@@ -13,7 +14,7 @@ import TokenContainer from '../molecules/TokenChart/TokenContainer';
 interface ChartAndBuyProps {
 	symbol: string;
 	handleDateChange: (date: string) => void;
-	period: string;
+	setCharts: (newChart: ChartDataMap) => void;
 }
 
 const WIDTHS: Record<string, [number, number | string, string, boolean]> = {
@@ -24,11 +25,11 @@ const WIDTHS: Record<string, [number, number | string, string, boolean]> = {
 };
 
 export function ChartAndBuy(props: ChartAndBuyProps): JSX.Element {
-	const { symbol, handleDateChange } = props;
+	const { symbol, handleDateChange, setCharts } = props;
 
 	const swappable = useRecoilValue(allSwappableTokensState);
 	const breakpoint = useRecoilValue(breakpointState);
-	const [period, setPeriod] = useState();
+	const [period, setPeriod] = useState('MAX');
 	const [chartLoadingEffect, setChartLoadingEffect] = useState(true);
 	const [chartsAllLoaded, setChartsAllLoaded] = useState(false);
 	const contract = {
@@ -37,17 +38,6 @@ export function ChartAndBuy(props: ChartAndBuyProps): JSX.Element {
 		tokenTicker: symbol,
 		tokenset: undefined,
 	};
-
-	const TokenForm = useMemo(() => (isTokenset(symbol) ? IssueRedeemForm : BuyTokenForm), [symbol]);
-	const allowedTokens = useMemo(
-		() => ({ ...swappable.ERC20, ...swappable.TokenProducts }),
-		[swappable],
-	);
-
-	const [width, formWidth, formMargin, singleLine] = useMemo(
-		() => WIDTHS[breakpoint],
-		[breakpoint],
-	);
 
 	const [chartData, setChartData] = useState({
 		chartToken: {
@@ -63,6 +53,21 @@ export function ChartAndBuy(props: ChartAndBuyProps): JSX.Element {
 			...PERIODS.reduce((a, v) => ({ ...a, [v]: [] }), {}),
 		},
 	});
+	useEffect(() => {
+		handleDateChange(period);
+		setCharts(chartData.chartToken);
+	}, [period, chartData, chartsAllLoaded]);
+
+	const TokenForm = useMemo(() => (isTokenset(symbol) ? IssueRedeemForm : BuyTokenForm), [symbol]);
+	const allowedTokens = useMemo(
+		() => ({ ...swappable.ERC20, ...swappable.TokenProducts }),
+		[swappable],
+	);
+
+	const [width, formWidth, formMargin, singleLine] = useMemo(
+		() => WIDTHS[breakpoint],
+		[breakpoint],
+	);
 
 	return (
 		<Stack

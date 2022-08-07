@@ -10,7 +10,7 @@ import {
 	periodState,
 	tokenDetailsForCurrentPeriod,
 } from '../../state';
-import { ChartData, TokenDetails } from '../../types';
+import { ChartData, ChartDataMap, TokenDetails } from '../../types';
 import AddToWalletButton from '../atoms/AddToWalletButton';
 import { EtherscanLink } from '../atoms/EtherscanLink';
 import RiskModal from '../atoms/RiskModal';
@@ -24,6 +24,7 @@ import { TokenDetailBox } from '../molecules/TokenDetailBox';
 import FeeBox from '../organisms/AboutTokenSet/tokens/FeeBox';
 import { ChartAndBuy } from '../organisms/ChartAndBuy';
 import { FullHeightPage } from '../templates/FullHeightPage';
+import { PERIODS } from './ProductListPage/TimeButton';
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
 	style: 'currency',
@@ -35,7 +36,7 @@ const symbol = 'SWD';
 
 export function SWDTokenPage(): JSX.Element {
 	const [query, setQuery] = useQueryParams();
-	const { period = '1Y' } = query;
+	const [period, setPeriod] = useState('MAX');
 	const [periodVal, setPeriodState] = useRecoilState(periodState);
 	const detailMap = useRecoilValue(extendedTokenDetailsState);
 	const tokenDetails = useRecoilValue(tokenDetailsForCurrentPeriod);
@@ -44,6 +45,7 @@ export function SWDTokenPage(): JSX.Element {
 	const [prices, setPrices] = useState<ChartData>([]); // SWD prices
 	const [product, setProduct] = useState<TokenDetails | null>(null);
 	const breakpoint = useRecoilValue(breakpointState);
+	const [charts, setCharts] = useState<ChartDataMap>({});
 
 	useEffect(() => {
 		if (tokenPrices) {
@@ -63,16 +65,16 @@ export function SWDTokenPage(): JSX.Element {
 			}
 		}
 	}, [period, prices, symbol, tokenDetails]);
-	useEffect(() => {
-		if (periodVal !== period) {
-			setPeriodState(period);
-		}
-	}, [periodVal, period, setPeriodState]);
+	// useEffect(() => {
+	// 	if (periodVal !== period) {
+	// 		setPeriodState(period);
+	// 	}
+	// }, [periodVal, period, setPeriodState]);
 
-	const setPeriod = (p: string) => {
-		setQuery({ ...query, period: p });
-		setPeriodState(p);
-	};
+	// const setPeriod = (p: string) => {
+	// 	setQuery({ ...query, period: p });
+	// 	setPeriodState(p);
+	// };
 
 	const { currentPrice, marketCap, priceChange, volume, totalSupply } = useMemo(() => {
 		if (!detailMap.SWD) {
@@ -95,15 +97,30 @@ export function SWDTokenPage(): JSX.Element {
 		};
 	}, [detailMap]);
 
-	const change = useMemo(() => {
-		if (prices.length > 0) {
+	const [change, setChange] = useState(0);
+	const updateChange = () => {
+		if (prices.length > 0 && charts[period].length > 0) {
 			const cP = currentPrice;
-			const p = parseFloat(prices[0][1]);
-			console.log(symbol, cP, p);
-			return ((cP - p) / p) * 100;
-		}
-		return priceChange || product?.changePercent1Day || 0;
-	}, [product, currentPrice, prices]);
+			const p = parseFloat(charts[period][0][1]);
+			setChange(((cP - p) / p) * 100);
+			return true;
+		} else setChange(0);
+	};
+	useEffect(() => {
+		const interval = setInterval(() => {
+			if (updateChange()) {
+				clearInterval(interval);
+			}
+		}, 1000);
+		return () => clearInterval(interval);
+	}, [product, currentPrice, prices, charts, period]);
+	useEffect(() => {
+		updateChange();
+	}, [period]);
+
+	const handleChartChange = async (newChart: ChartDataMap) => {
+		setCharts(newChart);
+	};
 
 	const swdDetailCells = [
 		<TokenDetailBox
@@ -224,11 +241,16 @@ export function SWDTokenPage(): JSX.Element {
 									price={currentPrice}
 									change={change}
 									date={Date.now()}
+									showZero={false}
 								/>
 							</Box>
 						</VStack>
 						<VStack spacing="2rem" margin="0 auto">
-							<ChartAndBuy symbol={symbol} handleDateChange={setPeriod} period={periodVal} />
+							<ChartAndBuy
+								symbol={symbol}
+								handleDateChange={setPeriod}
+								setCharts={handleChartChange}
+							/>
 							<StyledGrid
 								cells={swdDetailCells}
 								display="table"

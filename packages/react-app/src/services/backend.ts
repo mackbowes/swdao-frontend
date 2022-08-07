@@ -226,7 +226,6 @@ export const getChart = async (
 	periodRequest = '',
 	reqBody = { address: '', days: 0 },
 ) => {
-	console.log(symbol, periodRequest, reqBody);
 	if (symbol !== '') {
 		const product = PRODUCTS_BY_SYMBOL[symbol];
 		const epoch = new Date().getTime() / 1000;
