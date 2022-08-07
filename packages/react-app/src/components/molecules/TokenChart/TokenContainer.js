@@ -190,7 +190,6 @@ export default function TokenContainer(props) {
 			if (pricePromises[0]) chartDataTemp.chartToken[periodRequest] = await pricePromises[0];
 			if ((compEth || loadAll) && pricePromises[1])
 				chartDataTemp.chartEth[periodRequest] = await pricePromises[1];
-			console.log(chartDataTemp);
 			if ((compBtc || loadAll) && pricePromises[2])
 				chartDataTemp.chartBtc[periodRequest] = await pricePromises[2];
 			if ((compMATIC || loadAll) && pricePromises[3])

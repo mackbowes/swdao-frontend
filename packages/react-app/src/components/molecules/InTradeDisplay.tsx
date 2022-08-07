@@ -24,10 +24,11 @@ export function InTradeDisplay(props: Props): JSX.Element {
 	}, [tokenDetails]);
 
 	useEffect(() => {
-		if ('0x2591Bca1f2de4661ED88A30C99A5a9449Aa84154' in positionMap) {
+		console.log(positionMap);
+		if ('0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174' in positionMap) {
 			setInTrade(
 				parseFloat(
-					positionMap['0x2591Bca1f2de4661ED88A30C99A5a9449Aa84154'].allocation.slice(0, -1),
+					positionMap['0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'].allocation.slice(0, -1),
 				),
 			);
 		}
