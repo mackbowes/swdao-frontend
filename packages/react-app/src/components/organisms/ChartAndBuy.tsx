@@ -1,12 +1,14 @@
 import { Stack } from '@chakra-ui/react';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { isTokenset } from '../../config/products';
+import { isTokenset, PRODUCTS_BY_SYMBOL } from '../../config/products';
 import { allSwappableTokensState, breakpointState } from '../../state';
 import { BuyTokenForm } from '../molecules/BuyTokenForm';
 import { IssueRedeemForm } from '../molecules/IssueRedeemForm';
 import { TokenChart } from '../molecules/TokenChart';
+import { PERIODS } from '../molecules/TokenChart/TimeFilter';
+import TokenContainer from '../molecules/TokenChart/TokenContainer';
 
 interface ChartAndBuyProps {
 	symbol: string;
@@ -22,10 +24,19 @@ const WIDTHS: Record<string, [number, number | string, string, boolean]> = {
 };
 
 export function ChartAndBuy(props: ChartAndBuyProps): JSX.Element {
-	const { symbol, period, handleDateChange } = props;
+	const { symbol, handleDateChange } = props;
 
 	const swappable = useRecoilValue(allSwappableTokensState);
 	const breakpoint = useRecoilValue(breakpointState);
+	const [period, setPeriod] = useState();
+	const [chartLoadingEffect, setChartLoadingEffect] = useState(true);
+	const [chartsAllLoaded, setChartsAllLoaded] = useState(false);
+	const contract = {
+		creationEpoch: PRODUCTS_BY_SYMBOL[symbol].creationEpoch,
+		tokenAddress: PRODUCTS_BY_SYMBOL[symbol].addresses,
+		tokenTicker: symbol,
+		tokenset: undefined,
+	};
 
 	const TokenForm = useMemo(() => (isTokenset(symbol) ? IssueRedeemForm : BuyTokenForm), [symbol]);
 	const allowedTokens = useMemo(
@@ -38,6 +49,21 @@ export function ChartAndBuy(props: ChartAndBuyProps): JSX.Element {
 		[breakpoint],
 	);
 
+	const [chartData, setChartData] = useState({
+		chartToken: {
+			...PERIODS.reduce((a, v) => ({ ...a, [v]: [] }), {}),
+		},
+		chartEth: {
+			...PERIODS.reduce((a, v) => ({ ...a, [v]: [] }), {}),
+		},
+		chartBtc: {
+			...PERIODS.reduce((a, v) => ({ ...a, [v]: [] }), {}),
+		},
+		chartMATIC: {
+			...PERIODS.reduce((a, v) => ({ ...a, [v]: [] }), {}),
+		},
+	});
+
 	return (
 		<Stack
 			direction={singleLine ? 'row' : 'column'}
@@ -47,11 +73,22 @@ export function ChartAndBuy(props: ChartAndBuyProps): JSX.Element {
 			justifyContent="space-between"
 			spacing="1rem"
 		>
-			<TokenChart
+			{/* <TokenChart
 				symbol={symbol}
 				onDateChange={handleDateChange}
 				period={period}
 				size={[width, 500]}
+			/> */}
+			<TokenContainer
+				contract={contract}
+				chartData={chartData}
+				setChartData={setChartData}
+				period={period}
+				setPeriod={setPeriod}
+				chartLoadingEffect={chartLoadingEffect}
+				setChartLoadingEffect={setChartLoadingEffect}
+				chartsAllLoaded={chartsAllLoaded}
+				setChartsAllLoaded={setChartsAllLoaded}
 			/>
 			<TokenForm
 				breakpoint={breakpoint}

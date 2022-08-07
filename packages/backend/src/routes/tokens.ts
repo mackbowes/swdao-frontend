@@ -9,7 +9,8 @@ import {
 import NodeCache from "node-cache";
 import { ExtendedTokenDetailResponse, TokenDetailsResponse } from "src/types";
 import { getSingleTokenPrice, getTokenSetAllocation } from "../utils/0x/main";
-
+import controllerAbi from "../abi/TokenSetController.json";
+import { AbiItem } from "web3-utils";
 import {
   SupportedCurrencies,
   SwappableTokens,
@@ -21,6 +22,8 @@ import {
   getExtendedTokenDetails,
   getTokenPriceData,
 } from "../utils/tokenhandler";
+import { web3 } from "../bin/www";
+import { getChart0xToken, getChartTokenset } from "../utils/0x/charts";
 
 const cache = new NodeCache({ stdTTL: 15 });
 
@@ -165,7 +168,11 @@ router.get(
     }
 
     await getTokenSetAllocation(req.params.address).then((r) => {
-      res.json(r.map((c) => { return { component: c.component, unit: c.unit } }));
+      res.json(
+        r.map((c) => {
+          return { component: c.component, unit: c.unit };
+        })
+      );
     });
     // console.log(`Getting Token Price`, positionsRequest);
   }
@@ -261,5 +268,18 @@ router.get(
     res.json(tokenPriceData);
   }
 );
+
+router.post("/getChart", async (req: Request, res: Response) => {
+  const { address, days } = req.body;
+  const setContract = new web3.eth.Contract(
+    controllerAbi as AbiItem[],
+    "0x75FBBDEAfE23a48c0736B2731b956b7a03aDcfB2"
+  );
+  const tokenset = await setContract.methods.isSet(address).call();
+  const chart = tokenset
+    ? await getChartTokenset(address, days)
+    : await getChart0xToken(address, days);
+  res.status(chart ? 201 : 500).json(chart);
+});
 
 export default router;

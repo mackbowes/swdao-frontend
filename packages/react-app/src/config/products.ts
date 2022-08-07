@@ -16,6 +16,7 @@ import { ProductSetupDescription } from '../types';
 export const PRODUCTS: ProductSetupDescription[] = [
 	{
 		name: 'SW Governance',
+		creationEpoch: 1642095865,
 		risk: 'one',
 		description:
 			"SW DAO's native token that aligns the DAO with its holders, enabling communityled ownership and governance.",
@@ -27,6 +28,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	{
 		name: 'Alpha Portfolio',
+		creationEpoch: 1641995393,
 		risk: 'four',
 		description:
 			'A discretionarily managed investment vehicle for those who want to outperform the market.',
@@ -39,6 +41,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	{
 		name: 'Macro Trend BTC',
+		creationEpoch: 1648309709,
 		risk: 'five',
 		description:
 			'An automated trend-following strategy that seeks to capitalize on the larger price movements of Bitcoin.',
@@ -51,6 +54,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	{
 		name: 'Macro Trend ETH',
+		creationEpoch: 1648310251,
 		risk: 'five',
 		description:
 			'An automated trend-following strategy that seeks to capitalize on the larger price movements of Ethereum.',
@@ -63,6 +67,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	{
 		name: 'Quantum Momentum BTC',
+		creationEpoch: 1646746004,
 		risk: 'five',
 		description:
 			'An automated high-frequency strategy that leverages machine learning to seek out the strongest risk-adjusted returns in Bitcoin.',
@@ -75,6 +80,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	{
 		name: 'Quantum Momentum ETH',
+		creationEpoch: 1646746834,
 		risk: 'five',
 		description:
 			'An automated high-frequency strategy that leverages machine learning to seek out the strongest risk-adjusted returns in Ethereum.',
@@ -87,6 +93,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	{
 		name: 'Quantum Momentum MATIC',
+		creationEpoch: 1646749194,
 		risk: 'five',
 		description:
 			'An automated high-frequency strategy that leverages machine learning to seek out the strongest risk-adjusted returns in MATIC.',
@@ -99,6 +106,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	{
 		name: 'Buy the Dip BTC',
+		creationEpoch: 1647782306,
 		risk: 'two',
 		description:
 			'An automated strategy that allows you to take advantage of lower Bitcoin prices and build your portfolio with ease.',
@@ -111,6 +119,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	{
 		name: 'Buy the Dip ETH',
+		creationEpoch: 1647782712,
 		risk: 'two',
 		description:
 			'An automated strategy that allows you to take advantage of lower Ethereum prices and build your portfolio with ease.',
@@ -123,6 +132,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	{
 		name: 'Buy the Dip MATIC',
+		creationEpoch: 1647783822,
 		risk: 'two',
 		description:
 			'An automated strategy that allows you to take advantage of lower MATIC prices and build your portfolio with ease.',
@@ -135,7 +145,8 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	// {
 	// 	name: 'Discretionary BTC',
-	// 	risk: 'five',
+	// 	creationEpoch: 1648038542,
+	//  risk: 'five',
 	// 	symbol: 'DBTC',
 	// 	addresses: { '0x89': '0xf2aa5ccea80c246a71e97b418173fcc956408d3f' },
 	// 	is_tokenset: true,
@@ -145,7 +156,8 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	// },
 	// {
 	// 	name: 'Discretionary ETH',
-	// 	risk: 'five',
+	// 	creationEpoch: 1648038766,
+	//  risk: 'five',
 	// 	symbol: 'DETH',
 	// 	addresses: { '0x89': '0x72b467cacbdbec5918d8eec0371ca33e6xfd42421' },
 	// 	is_tokenset: true,
@@ -155,6 +167,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	// },
 	// {
 	// 	name: 'Discretionary MATIC',
+	//  creationEpoch: 1647783822,
 	//  risk: 'five',
 	// 	symbol: 'DMATI',
 	// 	addresses: { '0x89': '0xab80a6e2909c8089ebd84f331c05bbefa3276cd2' },
@@ -165,7 +178,8 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	// },
 	// {
 	// 	name: 'DeFi Value Index',
-	// 	risk: 'three',
+	// 	creationEpoch: 1648393586,
+	//  risk: 'three',
 	// 	symbol: 'DVI',
 	// 	addresses: { '0x89': '0x62135f85899d97aed95f4405d710208e68b99f39' },
 	// 	is_tokenset: true,
@@ -175,6 +189,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	// },
 	// {
 	// 	name: 'BTC Momentum Index',
+	//  creationEpoch: 1647792042,
 	//  risk: 'three',
 	// 	symbol: 'BMI',
 	// 	addresses: { '0x89': '0xB4f78a05ab16CD3e6d0100112D0CC431942859Bb' },
@@ -185,7 +200,8 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	// },
 	// {
 	// 	name: 'ETH Momentum Index',
-	// 	risk: 'three',
+	// 	creationEpoch: 1647792354,
+	//  risk: 'three',
 	// 	symbol: 'EMI',
 	// 	addresses: { '0x89': '0xd3ef811331a98d24a2B2FB64cEBeEa5aF31b2568' },
 	// 	is_tokenset: true,
@@ -195,7 +211,8 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	// },
 	// {
 	// 	name: 'MATIC Momentum Index',
-	// risk: 'three',
+	//  creationEpoch: 1647792472,
+	//  risk: 'three',
 	// 	symbol: 'MMI',
 	// 	addresses: { '0x89': '0xDFdDd9811796F72bA32a031724f5B1403CD48B91' },
 	// 	is_tokenset: true,
@@ -205,7 +222,8 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	// },
 	// {
 	// 	name: 'DPI Momentum Index',
-	// risk: 'three',
+	//  creationEpoch: 1648319297,
+	//  risk: 'three',
 	// 	symbol: 'DMI',
 	// 	addresses: { '0x89': '0xB5253C58b8a361d9901922b23eC9fB9E7d38C98a' },
 	// 	is_tokenset: true,
@@ -215,7 +233,8 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	// },
 	// {
 	// 	name: 'SWD Momentum Index',
-	// risk: 'three',
+	//  creationEpoch: 1646752944,
+	//  risk: 'three',
 	// 	symbol: 'SMI',
 	// 	addresses: { '0x89': '0xad2b726fd2bd3a7f8f4b3929152438eba637ef19' },
 	// 	is_tokenset: true,
@@ -225,6 +244,8 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	// },
 	/* {
 		name: 'SW Index',
+		creationEpoch: 1656016132,
+		risk: 'three',
 		symbol: 'SWX',
 		addresses: { '0x89': '0x24ec3c300ff53b96937c39b686844db9e471421e' },
 		is_tokenset: false,
@@ -234,6 +255,8 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	}, */
 	// {
 	// 	name: 'Polygon Ecosystem Index',
+	//  creationEpoch: 1650109806,
+	//  risk: 'three',
 	// 	symbol: 'PEI',
 	// 	addresses: { '0x89': '0x55a40b33CFf2eb062e7aa76506B7De711F2B2aff' },
 	// 	is_tokenset: true,
@@ -243,6 +266,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	// },
 	{
 		name: 'USDC Yield Fund',
+		creationEpoch: 1642096511,
 		risk: 'one',
 		description:
 			'A discretionarily managed yield farming fund that seeks to generate yield denominated in USDC.',
@@ -255,6 +279,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	{
 		name: 'BTC Yield Fund',
+		creationEpoch: 1647087722,
 		risk: 'one',
 		description:
 			'A discretionarily managed yield farming fund that seeks to generate yield denominated in Bitcoin.',
@@ -267,6 +292,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	{
 		name: 'ETH Yield Fund',
+		creationEpoch: 1647087854,
 		risk: 'one',
 		description:
 			'A discretionarily managed yield farming fund that seeks to generate yield denominated in Ethereum.',
@@ -279,6 +305,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	},
 	{
 		name: 'MATIC Yield Fund',
+		creationEpoch: 1647094796,
 		risk: 'one',
 		description:
 			'A discretionarily managed yield farming fund that seeks to generate yield denominated in Matic.',

@@ -12,7 +12,7 @@ import { breakpointState, tokenDetailsForCurrentPeriod } from '../../../state';
 import { ChartData } from '../../../types';
 import { MergedPrice, mergePrices } from './calculations';
 import ChartDot from './ChartDot';
-import ChartTooltip from './ChartTooltip';
+import ChartTooltip from './old.ChartTooltip';
 import { ErrorFallback } from './ErrorFallback';
 import { TimeButton } from './TimeButton';
 

@@ -267,6 +267,7 @@ export interface ExtendedTokenDetailsMap {
 
 export type ProductSetupDescription = {
 	name: string;
+	creationEpoch: number;
 	risk: 'one' | 'two' | 'three' | 'four' | 'five';
 	description?: string;
 	symbol: string;

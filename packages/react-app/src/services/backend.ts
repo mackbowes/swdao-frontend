@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { BigNumber } from 'ethers';
 
-import { BACKEND_SERVER_URL, TIMEOUT } from '../config';
+import { BACKEND_SERVER_URL, TIMEOUT, TIME_PERIODS } from '../config';
+import { PRODUCTS_BY_SYMBOL } from '../config/products';
 import {
 	BuySellMap,
 	ExtendedTokenDetails,
@@ -216,6 +217,35 @@ export const getTokenSetAllocation = async (
 		.get(`/api/tokens/tokenset/${address}`)
 		.then((res) => {
 			return res['data'];
+		})
+		.catch(handleError);
+};
+
+export const getChart = async (
+	symbol = '',
+	periodRequest = '',
+	reqBody = { address: '', days: 0 },
+) => {
+	console.log(symbol, periodRequest, reqBody);
+	if (symbol !== '') {
+		const product = PRODUCTS_BY_SYMBOL[symbol];
+		const epoch = new Date().getTime() / 1000;
+		if (!product) {
+			return [];
+		}
+		reqBody = {
+			address: product.addresses['0x89'],
+			days:
+				periodRequest == 'MAX'
+					? Math.round((epoch - product.creationEpoch) / 86400)
+					: TIME_PERIODS[periodRequest].seconds / 60 / 60 / 24,
+		};
+	}
+
+	return request
+		.post(`/api/tokens/getChart`, JSON.stringify(reqBody))
+		.then((res) => {
+			return res.data;
 		})
 		.catch(handleError);
 };
