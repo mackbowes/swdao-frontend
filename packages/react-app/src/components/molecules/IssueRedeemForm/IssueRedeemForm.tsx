@@ -686,7 +686,7 @@ export function IssueRedeemForm({
 				<TabPanels bgColor="blue7" pb="2rem" borderRadius="0 0 1.3rem 1.3rem">
 					<TabPanel>
 						<Box>
-							<CheckboxToggle
+							{/* <CheckboxToggle
 								label="use underlying"
 								checked={showUnderlying}
 								onChange={setShowUnderlying}
@@ -706,31 +706,31 @@ export function IssueRedeemForm({
 									onBuyAmountChange={handleBuyAmountChange}
 									positions={positionMap}
 								/>
-							) : (
-								<IssueExactForm
-									allowedTokens={allowedTokens}
-									approvals={zeroExApprovals}
-									balances={balances}
-									breakpoint={breakpoint}
-									buttonEnabled={issueButtonEnabled}
-									buyAmount={buyAmount}
-									buySymbol={symbol}
-									disabled={buying || !isConnected}
-									disabledLabel={buying ? 'Issuing...' : 'Not connected'}
-									isBusy={quoting || buying}
-									loaded={balancesLoaded && !loading}
-									onBuy={handleIssueExact}
-									onBuyAmountChange={handleIssueExactAmountChange}
-									onSellTokenChange={handleIssueExactTokenChange}
-									sellSymbol={exactTradeSymbol}
-									sellVal={exactTradeVal}
-								/>
-							)}
+							) : ( */}
+							<IssueExactForm
+								allowedTokens={allowedTokens}
+								approvals={zeroExApprovals}
+								balances={balances}
+								breakpoint={breakpoint}
+								buttonEnabled={issueButtonEnabled}
+								buyAmount={buyAmount}
+								buySymbol={symbol}
+								disabled={buying || !isConnected}
+								disabledLabel={buying ? 'Issuing...' : 'Not connected'}
+								isBusy={quoting || buying}
+								loaded={balancesLoaded && !loading}
+								onBuy={handleIssueExact}
+								onBuyAmountChange={handleIssueExactAmountChange}
+								onSellTokenChange={handleIssueExactTokenChange}
+								sellSymbol={exactTradeSymbol}
+								sellVal={exactTradeVal}
+							/>
+							{/* )} */}
 						</Box>
 					</TabPanel>
 					<TabPanel>
 						<Box>
-							<CheckboxToggle
+							{/* <CheckboxToggle
 								label="use underlying"
 								checked={showUnderlying}
 								onChange={setShowUnderlying}
@@ -749,25 +749,25 @@ export function IssueRedeemForm({
 									sellAmount={sellAmount}
 									sellSymbol={symbol}
 								/>
-							) : (
-								<RedeemExactForm
-									allowedTokens={allowedTokens}
-									approvals={zeroExApprovals}
-									balances={balances}
-									breakpoint={breakpoint}
-									buttonEnabled={issueButtonEnabled}
-									disabled={buying || !isConnected}
-									isBusy={quoting || buying}
-									loaded={balancesLoaded && !loading}
-									onAmountChange={handleRedeemExactAmountChange}
-									onRedeem={handleRedeemExact}
-									onTokenChange={handleRedeemExactTokenChange}
-									outputSymbol={exactTradeSymbol}
-									outputVal={exactTradeVal}
-									redeemAmount={sellAmount}
-									redeemSymbol={symbol}
-								/>
-							)}
+							) : ( */}
+							<RedeemExactForm
+								allowedTokens={allowedTokens}
+								approvals={zeroExApprovals}
+								balances={balances}
+								breakpoint={breakpoint}
+								buttonEnabled={issueButtonEnabled}
+								disabled={buying || !isConnected}
+								isBusy={quoting || buying}
+								loaded={balancesLoaded && !loading}
+								onAmountChange={handleRedeemExactAmountChange}
+								onRedeem={handleRedeemExact}
+								onTokenChange={handleRedeemExactTokenChange}
+								outputSymbol={exactTradeSymbol}
+								outputVal={exactTradeVal}
+								redeemAmount={sellAmount}
+								redeemSymbol={symbol}
+							/>
+							{/* )} */}
 						</Box>
 					</TabPanel>
 				</TabPanels>
