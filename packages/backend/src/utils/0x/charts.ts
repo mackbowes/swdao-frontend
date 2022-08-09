@@ -45,7 +45,15 @@ export const getChartTokenset = async (
   const changes = [];
   await Promise.allSettled(
     (
-      await setContract.getPastEvents("Invoked", { fromBlock })
+      await web3.eth.getPastLogs({
+        fromBlock,
+        toBlock: "latest",
+        address: "0xd04AabadEd11e92Fefcd92eEdbBC81b184CdAc82",
+        topics: [
+          "0xf26ad8d17d1f980b62e857e137d0a000ce14bcf3b2aa54e1a0c7d57cf907e1a4",
+          web3.utils.padLeft(address as string, 64)
+        ],
+      })
     )
       .map((l) => {
         return l.blockNumber - 1;

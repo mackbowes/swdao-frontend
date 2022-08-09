@@ -141,7 +141,15 @@ const getPricesTokensHourly = async (tokens: AddressMap, days: number) => {
         positionsMap.set(thisBlock, positionsCurrent);
         // Find blocks where rebalances occur.
         const changes: number[] = (
-          await setContract.getPastEvents("Invoked", { fromBlock })
+          await web3.eth.getPastLogs({
+            fromBlock,
+            toBlock: "latest",
+            address: "0xd04AabadEd11e92Fefcd92eEdbBC81b184CdAc82",
+            topics: [
+              "0xf26ad8d17d1f980b62e857e137d0a000ce14bcf3b2aa54e1a0c7d57cf907e1a4",
+              web3.utils.padLeft(t.address, 64)
+            ],
+          })
         )
           .map((l) => {
             return l.blockNumber - 1;
