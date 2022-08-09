@@ -14,17 +14,16 @@ import {
 import { isString } from 'lodash';
 import { ReactNode } from 'react';
 import { useRecoilValue } from 'recoil';
-import { JsxElement } from 'typescript';
 import { breakpointState } from '../../state';
 
-import { getTokenUrl, timestampSorter } from '../../utils';
+import { timestampSorter } from '../../utils';
 import { usePagination } from './Pagination/usePagination';
 import WalletButton from './WalletButton';
 
-const formatDate = (timestamp: string): string => {
+export const formatDate = (timestamp: string): string => {
 	const ts = parseInt(timestamp, 10) * 1000;
 	const date = new Date(ts);
-	return date.toLocaleDateString('en', { year: 'numeric', month: '2-digit', day: '2-digit' });
+	return date.toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' });
 };
 
 export const formatNumber = (n: number | string): string => {
@@ -71,7 +70,7 @@ function TableRow({ row, last }: TableRowProps): JSX.Element {
 	if (!last) {
 		props.borderBottom = '2px solid #120046';
 	}
-	const icon = getTokenUrl(row.toSymbol)[0];
+	// const icon = getTokenUrl(row.toSymbol)[0];
 	const url = `https://polygonscan.com/tx/` + row.transactionHash;
 	let t = '';
 	let action: ReactNode[] = [''];

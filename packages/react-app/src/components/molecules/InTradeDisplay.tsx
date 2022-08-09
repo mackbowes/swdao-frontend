@@ -46,7 +46,7 @@ export function InTradeDisplay(props: Props): JSX.Element {
 			);
 		} else {
 			row = (
-				<Box display="flex" alignItems="center" paddingLeft="1rem">
+				<Box display="flex" alignItems="center">
 					<svg height="10" width="10" opacity="0.8">
 						<circle cx="5" cy="5" r="5" fill="yellow" />
 					</svg>
@@ -68,7 +68,7 @@ export function InTradeDisplay(props: Props): JSX.Element {
 			);
 		} else {
 			row = (
-				<Box display="flex" alignItems="center" paddingLeft="1rem">
+				<Box display="flex" alignItems="center">
 					<svg height="10" width="10" className={classNames.blink}>
 						<circle cx="5" cy="5" r="5" fill="green" />
 					</svg>
@@ -90,7 +90,7 @@ export function InTradeDisplay(props: Props): JSX.Element {
 			);
 		} else {
 			row = (
-				<Box display="flex" alignItems="center" paddingLeft="1rem">
+				<Box display="flex" alignItems="center">
 					<svg height="10" width="10" className={classNames.blink}>
 						<circle cx="5" cy="5" r="5" fill="green" />
 					</svg>
@@ -122,7 +122,7 @@ export function InTradeDisplay(props: Props): JSX.Element {
 					);
 				} else {
 					row = (
-						<Box display="flex" alignItems="center" paddingLeft="1rem">
+						<Box display="flex" alignItems="center">
 							<svg height="10" width="10" className={classNames.blink}>
 								<circle cx="5" cy="5" r="5" fill="green" />
 							</svg>

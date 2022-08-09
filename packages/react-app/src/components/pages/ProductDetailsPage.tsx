@@ -178,7 +178,7 @@ export function ProductDetailsPage({ symbol }: { symbol: string }): JSX.Element 
 								<ProductDetailHeader symbol={symbol} icon={icon || ''} name={name || ''} h="5rem" />
 								{breakpoint !== 'sm' && <AddToMetamaskButton />}
 							</Box>
-							<Box display="flex">
+							<Box display="flex" alignItems="center">
 								<PriceAndDateHeader
 									symbol={symbol}
 									address={product?.address}

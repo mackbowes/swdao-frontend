@@ -28,18 +28,24 @@ export default function RiskModal({ symbol }: RiskModal) {
 
 	$(`#${risk}`).css('--color', '#BCE7FE');
 	$(`#lable-${risk}`).css('font-size', 'larger');
-	if (breakpoint === 'sm' || breakpoint === 'md') {
-		return null;
-	}
+	// if (breakpoint === 'sm' || breakpoint === 'md') {
+	// 	return null;
+	// }
+	const h = breakpoint === 'sm' ? '50px' : '100px';
+	const w = breakpoint === 'sm' ? '100px' : '200px';
+	const top = breakpoint === 'sm' ? '-1rem' : undefined;
+	const position = breakpoint === 'sm' ? 'relative' : undefined;
 	return (
 		<Box display="flex" justifyContent="flex-end" marginRight="-0.3rem">
 			<Box
 				display="flex"
 				justifyContent="center"
 				alignItems="right"
-				height="100px"
-				width="200px"
+				height={h}
+				width={w}
 				flexDir="column"
+				top={top}
+				position={position}
 			>
 				<table id="riskModal" className="charts-css column hide-data show-labels data-spacing-5 ">
 					<caption> Risk Ratio 1-5 </caption>

@@ -86,6 +86,17 @@ export default function AddToWalletButton({ symbol, address }: WalletButtonProps
 	if (breakpoint === 'sm') {
 		textByBreakpoint = '+';
 	}
+	if (breakpoint === 'sm') {
+		return (
+			<Image
+				alt="add to Metamask"
+				src="/images/metamask.png"
+				width="24px"
+				height="24px"
+				onClick={handleAdd}
+			/>
+		);
+	}
 
 	return (
 		<Button

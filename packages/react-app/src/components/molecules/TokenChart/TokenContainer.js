@@ -122,6 +122,14 @@ export default function TokenContainer(props) {
 	}, [period, compEth, compBtc, compMATIC]);
 
 	const readChart = async () => {
+		if (
+			!chartData.chartToken[period] ||
+			!chartData.chartMATIC[period] ||
+			!chartData.chartBtc[period] ||
+			!chartData.chartEth[period]
+		) {
+			return;
+		}
 		const scalarToken = chartData.chartToken[period][0][1];
 		const scalarEth = chartData.chartEth[period][0] ? chartData.chartEth[period][0][1] : undefined;
 		const scalarBtc = chartData.chartBtc[period][0] ? chartData.chartBtc[period][0][1] : undefined;

@@ -43,9 +43,9 @@ export function PriceAndDateHeader(props: PriceAndDateHeaderProps): JSX.Element 
 	const formattedDate = new Date(date).toLocaleDateString(undefined, dateFormat);
 	return (
 		<Box textAlign="left" width="100%" className="precise" {...rest}>
-			<Text color="#857AFD" fontSize="0.9rem">
+			{/* <Text color="#857AFD" fontSize="0.9rem">
 				{formattedDate}
-			</Text>
+			</Text> */}
 			<Flex
 				direction="row"
 				spacing="1rem"
@@ -68,7 +68,7 @@ export function PriceAndDateHeader(props: PriceAndDateHeaderProps): JSX.Element 
 						<ChangeDisplay change={change} />
 					</Box>
 				)}
-				{breakpoint === 'sm' && <AddToMetamaskButton />}
+				{/* {breakpoint === 'sm' && <AddToMetamaskButton />} */}
 			</Flex>
 		</Box>
 	);

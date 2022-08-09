@@ -1,12 +1,16 @@
-import { Heading, VStack } from '@chakra-ui/react';
+import { Box, Heading, Tooltip, VStack } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { PRODUCTS_BY_SYMBOL, isTokenset } from '../../../config/products';
 import { breakpointState } from '../../../state';
+import AddToWalletButton from '../../atoms/AddToWalletButton';
+import { LimitedText } from '../../atoms/LimitedText';
 import { AllocationTable } from '../../molecules/AllocationTable';
+// import { TradesTable } from '../../molecules/TradesTable';
 import UnknownToken from './tokens/UnknownToken';
 import { AboutTokenSetProps } from './types';
+// import $ from 'jquery';
 
 /* --- For ratings section ---
 import { ArrowLink } from '../../atoms/ArrowLink';
@@ -30,7 +34,8 @@ export const MARGINS: Record<string, string> = {
 export function AboutTokenSet(props: AboutTokenSetProps): JSX.Element {
 	const { symbol, tokenData, tokenDetails, textAlign = 'left', ...rest } = props;
 	const breakpoint = useRecoilValue(breakpointState);
-
+	const product = PRODUCTS_BY_SYMBOL[symbol];
+	const address = product?.addresses['0x89'];
 	const [width, setWidth] = useState(WIDTHS.lg);
 	const [margin, setMargin] = useState(MARGINS.lg);
 
@@ -64,12 +69,19 @@ export function AboutTokenSet(props: AboutTokenSetProps): JSX.Element {
 	) : null;
 */
 	const TokenPane = useMemo(() => {
-		const product = PRODUCTS_BY_SYMBOL[symbol];
 		return product?.detail_pane || UnknownToken;
 	}, [symbol]);
 
 	const allocations = useMemo(
-		() => (isTokenset(symbol) ? <AllocationTable symbol={symbol} /> : <> </>),
+		() =>
+			isTokenset(symbol) ? (
+				<div>
+					<AllocationTable symbol={symbol} />
+					{/* <TradesTable /> */}
+				</div>
+			) : (
+				<> </>
+			),
 		[symbol],
 	);
 
@@ -105,6 +117,12 @@ export function AboutTokenSet(props: AboutTokenSetProps): JSX.Element {
 							</HStack>
 					</Box>
 	*/
+	function copyAddress() {
+		navigator.clipboard.writeText(address);
+	}
+	// function changeSVG() {
+	// 	$('#copyImg').attr({ src: '/images/icons/checkIcon.svg', color: 'green' });
+	// }
 	return (
 		<VStack
 			className="about-token"
@@ -117,6 +135,33 @@ export function AboutTokenSet(props: AboutTokenSetProps): JSX.Element {
 			<Heading fontSize="1.5rem" textAlign="center">
 				About {symbol}
 			</Heading>
+			{breakpoint === 'sm' && (
+				<Box
+					display="flex"
+					borderRadius=".5rem"
+					bgColor="blue5"
+					padding=".2rem 1rem .2rem 1rem"
+					width="fit-content"
+					alignSelf="center"
+					margin=".2rem"
+				>
+					<LimitedText maxLength={10} fromEnd={5} text={address} />
+					<Box padding="0 .2rem 0 .2rem" onClick={() => copyAddress()}>
+						<Tooltip title="Click to Copy">
+							<img
+								src="/images/icons/copyIcon.svg"
+								alt="copy Icon"
+								id="copyImg"
+								// onClick={() => changeSVG()}
+								height="24px"
+								width="24px"
+							/>
+						</Tooltip>
+					</Box>
+					<AddToWalletButton symbol={symbol} address={address} />
+				</Box>
+			)}
+
 			{allocations}
 			<TokenPane
 				data={tokenData}
