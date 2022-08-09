@@ -65,8 +65,7 @@ export default function RiskModal({ symbol }: RiskModal) {
 						</tr>
 						<tr>
 							<th scope="row" style={{ ...lalbeColor }} id="lable-two">
-								{' '}
-								2{' '}
+								2
 							</th>
 							<td className={classNames.two} id="two">
 								<span className="data"> 2 </span>
@@ -74,8 +73,7 @@ export default function RiskModal({ symbol }: RiskModal) {
 						</tr>
 						<tr>
 							<th scope="row" style={{ ...lalbeColor }} id="lable-three">
-								{' '}
-								3{' '}
+								3
 							</th>
 							<td className={classNames.three} id="three">
 								<span className="data"> 3 </span>
@@ -83,8 +81,7 @@ export default function RiskModal({ symbol }: RiskModal) {
 						</tr>
 						<tr>
 							<th scope="row" style={{ ...lalbeColor }} id="lable-four">
-								{' '}
-								4{' '}
+								4
 							</th>
 							<td className={classNames.four} id="four">
 								<span className="data"> 4 </span>
@@ -92,8 +89,7 @@ export default function RiskModal({ symbol }: RiskModal) {
 						</tr>
 						<tr>
 							<th scope="row" style={{ ...lalbeColor }} id="lable-five">
-								{' '}
-								5{' '}
+								5
 							</th>
 							<td className={classNames.five} id="five">
 								<span className="data"> 5 </span>
@@ -113,7 +109,7 @@ export default function RiskModal({ symbol }: RiskModal) {
 			{modalOpen && (
 				<Box className={classNames.riskBlocker}>
 					<Box onClick={() => setModalOpen(false)} className={classNames.riskBlocker}></Box>
-					<Box className={classNames.riskModalTextBox}>
+					<Box className={classNames.riskModalTextBox} width={breakpoint === 'sm' ? '100%' : '33%'}>
 						<Heading fontSize="xl" lineHeight="1.2" color="black" marginBottom="1rem">
 							{RISK_TEXT[risk].header}
 						</Heading>
