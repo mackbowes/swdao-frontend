@@ -23,8 +23,10 @@ export function ProductDetailHeader({
 	const src = useMemo(() => icon ?? getTokenUrl(symbol)[0], [icon, symbol]);
 	const height = breakpoint !== 'sm' ? h : '3rem';
 	const ml = breakpoint !== 'sm' ? '-.8rem' : '';
-	const fontSize = breakpoint === 'sm' ? '1.2rem' : undefined;
+	const fontSize = breakpoint !== 'sm' ? undefined : '1.2rem';
 	const paddingLeft = breakpoint !== 'sm' ? '1rem' : '20px';
+	const alignItems = breakpoint !== 'sm' ? 'center' : 'flex-start';
+	const flexDir = breakpoint !== 'sm' ? undefined : 'column';
 	return (
 		<Flex
 			margin="0"
@@ -36,7 +38,7 @@ export function ProductDetailHeader({
 			flexWrap="nowrap"
 			lineHeight={h}
 		>
-			<Flex flexWrap="wrap" alignItems="center">
+			<Flex flexWrap="wrap" alignItems={alignItems} flexDir={flexDir}>
 				<Box display="flex" alignItems="center">
 					<Image d="inline-block" src={src} alt={`${symbol} Icon`} h={height} ml={ml} />
 					<Box pr="1rem" color="#fff" fontWeight={500} fontSize={fontSize}>

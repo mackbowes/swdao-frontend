@@ -10,7 +10,7 @@ import { AllocationTable } from '../../molecules/AllocationTable';
 // import { TradesTable } from '../../molecules/TradesTable';
 import UnknownToken from './tokens/UnknownToken';
 import { AboutTokenSetProps } from './types';
-// import $ from 'jquery';
+import $ from 'jquery';
 
 /* --- For ratings section ---
 import { ArrowLink } from '../../atoms/ArrowLink';
@@ -120,9 +120,15 @@ export function AboutTokenSet(props: AboutTokenSetProps): JSX.Element {
 	function copyAddress() {
 		navigator.clipboard.writeText(address);
 	}
-	// function changeSVG() {
-	// 	$('#copyImg').attr({ src: '/images/icons/checkIcon.svg', color: 'green' });
-	// }
+	function changeSVG() {
+		$('#copyImg')
+			.attr({ src: '/images/icons/check.png' })
+			.delay(3000)
+			.queue(function (next) {
+				$(this).attr({ src: '/images/icons/copy.png' });
+				next();
+			});
+	}
 	return (
 		<VStack
 			className="about-token"
@@ -146,13 +152,13 @@ export function AboutTokenSet(props: AboutTokenSetProps): JSX.Element {
 					margin=".2rem"
 				>
 					<LimitedText maxLength={10} fromEnd={5} text={address} />
-					<Box padding="0 .2rem 0 .2rem" onClick={() => copyAddress()}>
+					<Box padding="0 .5rem 0 .5rem" onClick={() => copyAddress()}>
 						<Tooltip title="Click to Copy">
 							<img
-								src="/images/icons/copyIcon.svg"
+								src="/images/icons/copy.png"
 								alt="copy Icon"
 								id="copyImg"
-								// onClick={() => changeSVG()}
+								onClick={() => changeSVG()}
 								height="24px"
 								width="24px"
 							/>
