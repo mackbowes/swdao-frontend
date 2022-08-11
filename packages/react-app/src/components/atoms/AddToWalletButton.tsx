@@ -88,13 +88,23 @@ export default function AddToWalletButton({ symbol, address }: WalletButtonProps
 	}
 	if (breakpoint === 'sm') {
 		return (
-			<Image
-				alt="add to Metamask"
-				src="/images/metamask.png"
-				width="24px"
-				height="24px"
-				onClick={handleAdd}
-			/>
+			<Box display="flex">
+				<Image
+					alt="add to Metamask"
+					src="/images/metamask.png"
+					width="24px"
+					height="24px"
+					onClick={handleAdd}
+				/>
+				<Image
+					marginLeft=".2rem"
+					alt="add to Metamask"
+					src="/images/icons/plus.png"
+					width="24px"
+					height="24px"
+					onClick={handleAdd}
+				/>
+			</Box>
 		);
 	}
 

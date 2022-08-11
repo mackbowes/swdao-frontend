@@ -87,26 +87,26 @@ export function AllocationTable(props: AllocationTableProps): JSX.Element {
 			}
 			return (
 				<Tr key={symbol} color="purple">
-					<Td padding="0 0 0 0.5em" className="nobreak coin">
-						<CoinIcon symbol={symbol} src={getTokenUrl(symbol)[0]} />
-						<Text fontSize="0.7rem" d="inline-block" className="symbol">
+					<Td padding="0 0rem .2rem .4rem" className="nobreak coin">
+						<CoinIcon symbol={symbol} src={getTokenUrl(symbol)[0]} height="1rem" />
+						<Text fontSize="1rem0.9rem" d="inline-block" className="symbol">
 							{symbol}
 						</Text>
 					</Td>
 					{breakpoint !== 'sm' && (
-						<Td textAlign="center" fontSize="0.8rem" padding="0 0.25em">
+						<Td textAlign="center" fontSize="1rem" padding="0 0.25em">
 							<DisplayNumber value={position.quantity} symbol={symbol} hideSymbol />
 						</Td>
 					)}
 					{breakpoint !== 'sm' && (
-						<Td textAlign="center" fontSize="0.8rem" padding="0 0.25em">
+						<Td textAlign="center" fontSize="1rem" padding="0 0.25em">
 							{position.value}
 						</Td>
 					)}
-					<Td textAlign="center" fontSize="0.8rem" padding="0 0.25em">
+					<Td textAlign="center" fontSize="1rem" padding="0 0.25em">
 						{position.allocation}
 					</Td>
-					<Td textAlign="center" fontSize="0.8rem" padding="0 0.25em">
+					<Td textAlign="center" fontSize="1rem" padding="0 0.25em">
 						{position.change}
 					</Td>
 				</Tr>
@@ -120,11 +120,11 @@ export function AllocationTable(props: AllocationTableProps): JSX.Element {
 			bgColor="blue5"
 			className="token"
 			fontSize="0.9rem"
-			borderRadius="2em"
+			borderRadius="1em"
 		>
 			<Thead>
 				<Tr color="alttext" textAlign="center">
-					<Th textAlign="center" bgColor="bodydark" borderRadius="2em 0 0 0">
+					<Th textAlign="center" bgColor="bodydark" borderRadius="1em 0 0 0">
 						Name
 					</Th>
 					{breakpoint !== 'sm' && (
@@ -140,7 +140,7 @@ export function AllocationTable(props: AllocationTableProps): JSX.Element {
 					<Th textAlign="center" bgColor="bodydark">
 						Allocation
 					</Th>
-					<Th textAlign="center" bgColor="bodydark" borderRadius="0 2em 0 0">
+					<Th textAlign="center" bgColor="bodydark" borderRadius="0 1em 0 0">
 						24hr Change
 					</Th>
 				</Tr>

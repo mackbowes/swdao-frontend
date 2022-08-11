@@ -224,7 +224,7 @@ export function SWDTokenPage(): JSX.Element {
 			<Center>
 				<StyledSection id="ProductDetails" section="body" marginBottom="3rem">
 					<Box className="bodycontent">
-						<VStack spacing="1rem" textAlign="left" align="left" margin="0 0 2rem 0.5rem">
+						<VStack spacing="1rem" textAlign="left" align="left">
 							<Box display="flex" alignItems="center">
 								<ProductDetailHeader
 									icon="/images/token-swd.png"

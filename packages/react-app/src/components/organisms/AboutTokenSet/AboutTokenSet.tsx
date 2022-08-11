@@ -142,29 +142,41 @@ export function AboutTokenSet(props: AboutTokenSetProps): JSX.Element {
 				About {symbol}
 			</Heading>
 			{breakpoint === 'sm' && (
-				<Box
-					display="flex"
-					borderRadius=".5rem"
-					bgColor="blue5"
-					padding=".2rem 1rem .2rem 1rem"
-					width="fit-content"
-					alignSelf="center"
-					margin=".2rem"
-				>
-					<LimitedText maxLength={10} fromEnd={5} text={address} />
-					<Box padding="0 .5rem 0 .5rem" onClick={() => copyAddress()}>
-						<Tooltip title="Click to Copy">
-							<img
-								src="/images/icons/copy.png"
-								alt="copy Icon"
-								id="copyImg"
-								onClick={() => changeSVG()}
-								height="24px"
-								width="24px"
-							/>
-						</Tooltip>
+				<Box display="flex" alignSelf="center">
+					<Box
+						display="flex"
+						borderRadius=".5rem"
+						bgColor="blue5"
+						padding=".2rem 1rem .2rem 1rem"
+						width="fit-content"
+						alignSelf="center"
+						margin=".2rem"
+					>
+						<LimitedText maxLength={10} fromEnd={5} text={address} />
+						<Box padding="0 .5rem 0 .5rem" onClick={() => copyAddress()}>
+							<Tooltip title="Click to Copy">
+								<img
+									src="/images/icons/copy.png"
+									alt="copy Icon"
+									id="copyImg"
+									onClick={() => changeSVG()}
+									height="24px"
+									width="24px"
+								/>
+							</Tooltip>
+						</Box>
 					</Box>
-					<AddToWalletButton symbol={symbol} address={address} />
+					<Box
+						display="flex"
+						borderRadius=".5rem"
+						bgColor="blue5"
+						padding=".2rem 1rem .2rem 1rem"
+						width="fit-content"
+						alignSelf="center"
+						margin=".2rem"
+					>
+						<AddToWalletButton symbol={symbol} address={address} />
+					</Box>
 				</Box>
 			)}
 
