@@ -54,7 +54,13 @@ export function CoinLabelCell({
 			<Box display="inline-block" marginRight="1.5rem">
 				<CoinIcon symbol={symbol} src={icon} verticalAlign="middle" height={height || '2.5rem'} />
 				<A href={url}>
-					<Text as="span" fontSize={fontSize} color={hover ? 'white' : color} display="inline-flex">
+					<Text
+						as="span"
+						fontSize={fontSize}
+						color={hover ? 'white' : color}
+						display="inline-flex"
+						alignItems="center"
+					>
 						{name}
 						{breakpoint !== 'sm' && (
 							<Box>

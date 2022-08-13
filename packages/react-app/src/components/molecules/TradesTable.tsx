@@ -172,7 +172,7 @@ function TableRows(props: { unit: Trade }): JSX.Element {
 						<CircularProgressbar
 							value={positionSize}
 							text={`${positionSize}%`}
-							styles={buildStyles({ textSize: '1.5rem' })}
+							styles={buildStyles({ textSize: '1.5rem', strokeLinecap: 'butt' })}
 						/>
 						{/* )}
 						</ProgressProvider> */}
