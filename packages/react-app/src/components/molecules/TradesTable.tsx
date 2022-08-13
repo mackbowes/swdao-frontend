@@ -1,7 +1,22 @@
-import { Box, Center, Spinner, Table, Tbody, Td, Th, Thead, Tr, Text } from '@chakra-ui/react';
+import {
+	Box,
+	Center,
+	Spinner,
+	Table,
+	Tbody,
+	Td,
+	Th,
+	Thead,
+	Tr,
+	Text,
+	Tooltip,
+} from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai';
+import { getSetTradeHistory } from '../../services/backend';
 // import { getSingleTokenPrice } from '../../services/backend';
 import { timestampSorter } from '../../utils';
+import { safeFixed } from '../../utils/contracts';
 import { ChangeDisplay } from '../atoms/ChangeDisplay';
 import { formatDate, formatNumber } from './TransactionsTable';
 
@@ -18,12 +33,20 @@ interface Trade {
 	pnl: number;
 	entry: number;
 	exit: number | undefined;
+	entryHash: string;
+	exitHash: string;
+	allocation: number;
 }
 
 const SYMBOLS: { [key: string]: string } = {
 	'0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619': 'WETH',
 	'0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6': 'WBTC',
 	'0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270': 'WMATIC',
+};
+const SYMBOLSX2: { [key: string]: string } = {
+	'0xf287D97B6345bad3D88856b26Fb7c0ab3F2C7976': 'MATIC2x-FLI-P',
+	'0x3Ad707dA309f3845cd602059901E39C4dcd66473': 'ETH2x-FLI-P',
+	'0xd6cA869a4EC9eD2C7E618062Cdc45306d8dBBc14': 'BTC2x-FLI-P',
 };
 
 function Side(props: { title: 'Short' | 'Long' }): JSX.Element {
@@ -46,14 +69,6 @@ function Side(props: { title: 'Short' | 'Long' }): JSX.Element {
 	);
 }
 
-// const calcChange = async (unit: Trade) => {
-// 	const entryPrice = unit.entryPrice;
-// 	const currentPrice = (await getSingleTokenPrice(unit.component)).currentPrice;
-// 	const cP = entryPrice;
-// 	const p = currentPrice;
-// 	return ((cP - p) / p) * 100;
-// };
-
 function Status(props: { status: 'Open' | 'Closed' }): JSX.Element {
 	const { status } = props;
 	const color = status === 'Open' ? 'blue7' : 'white';
@@ -66,74 +81,115 @@ function Status(props: { status: 'Open' | 'Closed' }): JSX.Element {
 	);
 }
 
+const convertTime = (ms: number) => {
+	const now = Date.now();
+	let s = now / 1000 - ms;
+	// let s = Math.floor(nms / 1000000);
+	let m = Math.floor(s / 60);
+	let h = Math.floor(m / 60);
+	const d = Math.floor(h / 24);
+	s = s % 60;
+	// m = s >= 30 ? m + 1 : m;
+	m = m % 60;
+	h = h % 24;
+	if (d !== 0) {
+		return `${d} days ${h} hrs ago`;
+	}
+	if (h !== 0) {
+		return `${h} hrs ${m} min ago`;
+	}
+	if (m !== 0) {
+		return `${m} min ago`;
+	}
+	return `under 1 min ago`;
+};
+
 function TableRows(props: { unit: Trade }): JSX.Element {
 	const { unit } = props;
-	console.log(unit);
+	if (!unit) return <></>;
+	const exitDate = unit.exit ? `${formatDate(unit.exit.toString())}` : '-----';
+	const entryDate = `${formatDate(unit.entry.toString())}`;
+	const entryPrice = parseFloat(safeFixed(unit.entryPrice)).toLocaleString(undefined, {
+		currency: 'USD',
+		style: 'currency',
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
+	});
 
-	const exitDate = unit.exit ? formatDate(unit.exit.toString()) : '-----';
-	const entryDate = formatDate(unit.entry.toString());
-	const entryPrice = formatNumber(unit.entryPrice);
-	const closePrice = unit.closePrice ? formatNumber(unit.closePrice) : '-----';
+	const closePrice = unit.closePrice
+		? parseFloat(safeFixed(unit.closePrice)).toLocaleString(undefined, {
+				currency: 'USD',
+				style: 'currency',
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2,
+		  })
+		: '-----';
 	// const change = await calcChange(unit);
 	const comp = unit.component;
 	const tradingPair = SYMBOLS[comp] ? `${SYMBOLS[comp]}/USDC` : '';
+	const positionSize = `${safeFixed(unit.allocation)}%`;
+	const leverage = SYMBOLSX2[unit.component] ? 'x2' : 'x1';
 	return (
 		<Tr>
-			<Td textAlign="center">{tradingPair}</Td>
+			<Td textAlign="center">
+				<a href={`https://polygonscan.com/tx/${unit.entryHash}`} target="_blank">
+					<Tooltip label={convertTime(unit.entry)} placement="top" hasArrow>
+						{entryDate}
+					</Tooltip>
+				</a>
+			</Td>
 			<Td textAlign="center">
 				<Status status={unit.status} />
 			</Td>
 			<Td textAlign="center">
 				<Side title={unit.side} />
 			</Td>
+			<Td textAlign="center">{positionSize}</Td>
 			<Td textAlign="center">{entryPrice}</Td>
 			<Td textAlign="center">{closePrice}</Td>
+			<Td textAlign="center">{leverage}</Td>
 			<Td textAlign="center">
-				<ChangeDisplay change={unit.pnl} />
+				<Center>
+					<ChangeDisplay change={unit.pnl} />
+				</Center>
 			</Td>
-			<Td textAlign="center">{entryDate}</Td>
-			<Td textAlign="center">{exitDate}</Td>
+			<Td textAlign="center">
+				<a
+					href={unit.exitHash ? `https://polygonscan.com/tx/${unit.exitHash}` : '#'}
+					target="_blank"
+				>
+					<Tooltip label={unit.exit ? convertTime(unit.exit) : undefined} placement="top" hasArrow>
+						{exitDate}
+					</Tooltip>
+				</a>
+			</Td>
 		</Tr>
 	);
 }
 
-export function TradesTable(): JSX.Element {
-	const tradesMap: TradesMap = {
-		1660000000: {
-			component: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-			status: 'Open',
-			side: 'Long',
-			entryPrice: 1000.11,
-			closePrice: undefined,
-			pnl: 10.1,
-			entry: 1660000000,
-			exit: undefined,
-		},
-		1650000000: {
-			component: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-			status: 'Closed',
-			side: 'Short',
-			entryPrice: 2000.11,
-			closePrice: 1888.88,
-			pnl: -8.12,
-			entry: 1650000000,
-			exit: 1651000000,
-		},
-	};
-	const keys = Object.keys(tradesMap);
+export function TradesTable(props: { symbol: string }): JSX.Element {
+	const { symbol } = props;
+	// let tradesMap: TradesMap = {}
+	const [tradesMap, setTradesMap] = useState<TradesMap>();
+	useEffect(() => {
+		getSetTradeHistory(symbol, 0, 19).then((r) => {
+			console.log(r);
+			setTradesMap(r);
+		});
+	}, []);
 	let rows;
 
 	if (!tradesMap) {
 		rows = (
 			<Tr>
-				<Td colSpan={8}>
+				<Td colSpan={9}>
 					<Center>
 						<Spinner size="lg" />
 					</Center>
 				</Td>
 			</Tr>
 		);
-	} else if (keys.length === 0) {
+	} else if (Object.keys(tradesMap).length === 0) {
 		rows = (
 			<Tr>
 				<Td colSpan={8} textAlign="center" color="bodytext">
@@ -144,8 +200,9 @@ export function TradesTable(): JSX.Element {
 			</Tr>
 		);
 	} else {
-		keys.sort((a, b) => timestampSorter(b, a));
-		rows = keys.map((unit) => <TableRows unit={tradesMap[parseInt(unit)]} />);
+		const key = Object.keys(tradesMap);
+		key.sort((a, b) => timestampSorter(b, a));
+		rows = key.map((unit) => <TableRows unit={tradesMap[parseInt(unit)]} />);
 	}
 
 	return (
@@ -160,7 +217,7 @@ export function TradesTable(): JSX.Element {
 			<Thead>
 				<Tr>
 					<Th textAlign="center" bgColor="bodydark">
-						Pair
+						Entered
 					</Th>
 					<Th textAlign="center" bgColor="bodydark">
 						Status
@@ -169,16 +226,23 @@ export function TradesTable(): JSX.Element {
 						Side
 					</Th>
 					<Th textAlign="center" bgColor="bodydark">
+						<Tooltip label="Time of Entry" placement="top">
+							Position Size
+						</Tooltip>
+					</Th>
+					<Th textAlign="center" bgColor="bodydark">
 						Entry Price
 					</Th>
 					<Th textAlign="center" bgColor="bodydark">
 						Close Price
 					</Th>
 					<Th textAlign="center" bgColor="bodydark">
-						Profit/Loss %
+						Leverage
 					</Th>
 					<Th textAlign="center" bgColor="bodydark">
-						Entered
+						<Tooltip label="Calculated from Entry & Close Price" placement="top">
+							Profit/Loss %
+						</Tooltip>
 					</Th>
 					<Th textAlign="center" bgColor="bodydark">
 						Closed

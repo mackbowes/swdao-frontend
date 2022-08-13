@@ -7,7 +7,7 @@ import { breakpointState } from '../../../state';
 import AddToWalletButton from '../../atoms/AddToWalletButton';
 import { LimitedText } from '../../atoms/LimitedText';
 import { AllocationTable } from '../../molecules/AllocationTable';
-// import { TradesTable } from '../../molecules/TradesTable';
+import { TradesTable } from '../../molecules/TradesTable';
 import UnknownToken from './tokens/UnknownToken';
 import { AboutTokenSetProps } from './types';
 import $ from 'jquery';
@@ -77,7 +77,7 @@ export function AboutTokenSet(props: AboutTokenSetProps): JSX.Element {
 			isTokenset(symbol) ? (
 				<div>
 					<AllocationTable symbol={symbol} />
-					{/* <TradesTable /> */}
+					{symbol !== 'SWAP' && <TradesTable symbol={symbol} />}
 				</div>
 			) : (
 				<> </>

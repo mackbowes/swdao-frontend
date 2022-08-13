@@ -248,3 +248,30 @@ export const getChart = async (
 		})
 		.catch(handleError);
 };
+export const getSetTradeHistory = async (
+	symbol = '',
+	from = 0,
+	to = 0,
+	reqBody = { address: '', days: 0, from: 0, to: 0 },
+) => {
+	if (symbol !== '') {
+		const product = PRODUCTS_BY_SYMBOL[symbol];
+		const epoch = new Date().getTime() / 1000;
+		if (!product) {
+			return [];
+		}
+		reqBody = {
+			address: product.addresses['0x89'],
+			days: Math.round((epoch - product.creationEpoch) / 86400),
+			from,
+			to,
+		};
+	}
+
+	return request
+		.post(`/api/tokens/getSetTradeHistory`, JSON.stringify(reqBody))
+		.then((res) => {
+			return res.data;
+		})
+		.catch(handleError);
+};

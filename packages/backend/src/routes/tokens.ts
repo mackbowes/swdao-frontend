@@ -24,6 +24,7 @@ import {
 } from "../utils/tokenhandler";
 import { web3 } from "../bin/www";
 import { getChart0xToken, getChartTokenset } from "../utils/0x/charts";
+import getSetTradeHistory from "../utils/0x/tradeHistory";
 
 const cache = new NodeCache({ stdTTL: 15 });
 
@@ -280,6 +281,19 @@ router.post("/getChart", async (req: Request, res: Response) => {
     ? await getChartTokenset(address, days)
     : await getChart0xToken(address, days);
   res.status(chart ? 201 : 500).json(chart);
+});
+
+router.post("/getSetTradeHistory", async (req: Request, res: Response) => {
+  const { address, days, from, to } = req.body;
+  const setContract = new web3.eth.Contract(
+    controllerAbi as AbiItem[],
+    "0x75FBBDEAfE23a48c0736B2731b956b7a03aDcfB2"
+  );
+  const tokenset = await setContract.methods.isSet(address).call();
+  const history = tokenset
+    ? await getSetTradeHistory(address, days, from, to)
+    : undefined;
+  res.status(history ? 201 : 500).json(history);
 });
 
 export default router;
