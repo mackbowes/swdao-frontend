@@ -19,6 +19,9 @@ import { timestampSorter } from '../../utils';
 import { safeFixed } from '../../utils/contracts';
 import { ChangeDisplay } from '../atoms/ChangeDisplay';
 import { formatDate, formatNumber } from './TransactionsTable';
+import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import React from 'react';
 
 interface TradesMap {
 	[timeStamp: number]: Trade;
@@ -48,6 +51,23 @@ const SYMBOLSX2: { [key: string]: string } = {
 	'0x3Ad707dA309f3845cd602059901E39C4dcd66473': 'ETH2x-FLI-P',
 	'0xd6cA869a4EC9eD2C7E618062Cdc45306d8dBBc14': 'BTC2x-FLI-P',
 };
+
+// const ProgressProvider = ({
+// 	valueStart,
+// 	valueEnd,
+// 	children,
+// }: {
+// 	valueStart: number;
+// 	valueEnd: number;
+// 	children: any;
+// }) => {
+// 	const [value, setValue] = React.useState(valueStart);
+// 	React.useEffect(() => {
+// 		setValue(valueEnd);
+// 	}, [valueEnd]);
+
+// 	return children(value);
+// };
 
 function Side(props: { title: 'Short' | 'Long' }): JSX.Element {
 	const { title } = props;
@@ -127,7 +147,7 @@ function TableRows(props: { unit: Trade }): JSX.Element {
 	// const change = await calcChange(unit);
 	const comp = unit.component;
 	const tradingPair = SYMBOLS[comp] ? `${SYMBOLS[comp]}/USDC` : '';
-	const positionSize = `${safeFixed(unit.allocation)}%`;
+	const positionSize = parseInt(safeFixed(unit.allocation));
 	const leverage = SYMBOLSX2[unit.component] ? 'x2' : 'x1';
 	return (
 		<Tr>
@@ -144,10 +164,38 @@ function TableRows(props: { unit: Trade }): JSX.Element {
 			<Td textAlign="center">
 				<Side title={unit.side} />
 			</Td>
-			<Td textAlign="center">{positionSize}</Td>
+			<Td textAlign="center">
+				<Center>
+					<Box width="3rem">
+						{/* <ProgressProvider valueStart={0} valueEnd={positionSize}>
+							{(value: number) => ( */}
+						<CircularProgressbar
+							value={positionSize}
+							text={`${positionSize}%`}
+							styles={buildStyles({ textSize: '1.5rem' })}
+						/>
+						{/* )}
+						</ProgressProvider> */}
+					</Box>
+				</Center>
+			</Td>
 			<Td textAlign="center">{entryPrice}</Td>
 			<Td textAlign="center">{closePrice}</Td>
-			<Td textAlign="center">{leverage}</Td>
+			<Td textAlign="center">
+				<Center>
+					<Box width="3rem">
+						<CircularProgressbar
+							value={leverage === 'x1' ? 100 : 200}
+							text={leverage}
+							styles={buildStyles({
+								pathColor: `${leverage === 'x1' ? '#6CB221' : 'rgb(255, 255, 0)'}`,
+								trailColor: '#6CB221',
+								textSize: '2rem',
+							})}
+						/>
+					</Box>
+				</Center>
+			</Td>
 			<Td textAlign="center">
 				<Center>
 					<ChangeDisplay change={unit.pnl} />
