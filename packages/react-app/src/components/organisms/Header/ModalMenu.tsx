@@ -124,7 +124,7 @@ export function ModalMenu({
 							<ListItem>
 								<HeaderLink variant="list" page="Portfolio" isActive={pathKey === 'portfolio'} />
 							</ListItem>
-							<ListItem>
+							{/* <ListItem>
 								<Box {...listItemStyle}>
 									<A href="https://vote.swdao.org">
 										<Text className="link" _hover={{ color: 'white', textDecoration: 'underline' }}>
@@ -141,7 +141,7 @@ export function ModalMenu({
 										</Text>
 									</A>
 								</Box>
-							</ListItem>
+							</ListItem> */}
 							<ListItem>
 								<Box
 									width="15rem"
