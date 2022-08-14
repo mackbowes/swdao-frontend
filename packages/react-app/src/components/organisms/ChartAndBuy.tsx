@@ -1,44 +1,44 @@
 import { Stack } from '@chakra-ui/react';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { isTokenset, PRODUCTS_BY_SYMBOL } from '../../config/products';
-import { allSwappableTokensState, breakpointState } from '../../state';
+import { PRODUCTS_BY_SYMBOL } from '../../config/products';
+import { breakpointState } from '../../state';
 import { ChartDataMap } from '../../types';
-import { BuyTokenForm } from '../molecules/BuyTokenForm';
-import { IssueRedeemForm } from '../molecules/IssueRedeemForm';
-import { TokenChart } from '../molecules/TokenChart';
 import { PERIODS } from '../molecules/TokenChart/TimeFilter';
 import TokenContainer from '../molecules/TokenChart/TokenContainer';
+import ExchangeContainer from '../newExchange/ExchangeContainer';
 
 interface ChartAndBuyProps {
 	symbol: string;
 	handleDateChange: (date: string) => void;
 	setCharts: (newChart: ChartDataMap) => void;
+	price: number;
 }
 
-const WIDTHS: Record<string, [number, number | string, string, boolean]> = {
-	sm: [100, 100, '1rem', false],
-	md: [100, 100, '1rem', false],
-	lg: [100, '30rem', '0', true],
-	xl: [100, '30rem', '0', true],
+const WIDTHS: Record<string, [string, boolean]> = {
+	sm: ['100%', false],
+	md: ['100%', false],
+	lg: ['35rem', true],
+	xl: ['35rem', true],
 };
 
 export function ChartAndBuy(props: ChartAndBuyProps): JSX.Element {
-	const { symbol, handleDateChange, setCharts } = props;
-
-	const swappable = useRecoilValue(allSwappableTokensState);
+	const { symbol, handleDateChange, setCharts, price } = props;
+	const tokenPrice = {
+		currentPrice: price,
+		changePercentDay: undefined,
+	};
 	const breakpoint = useRecoilValue(breakpointState);
 	const [period, setPeriod] = useState('MAX');
 	const [chartLoadingEffect, setChartLoadingEffect] = useState(true);
 	const [chartsAllLoaded, setChartsAllLoaded] = useState(false);
 	const contract = {
 		creationEpoch: PRODUCTS_BY_SYMBOL[symbol].creationEpoch,
-		tokenAddress: PRODUCTS_BY_SYMBOL[symbol].addresses,
+		tokenAddress: PRODUCTS_BY_SYMBOL[symbol].addresses['0x89'],
 		tokenTicker: symbol,
-		tokenset: undefined,
+		tokenset: PRODUCTS_BY_SYMBOL[symbol].is_tokenset,
 	};
-
 	const [chartData, setChartData] = useState({
 		chartToken: {
 			...PERIODS.reduce((a, v) => ({ ...a, [v]: [] }), {}),
@@ -53,21 +53,13 @@ export function ChartAndBuy(props: ChartAndBuyProps): JSX.Element {
 			...PERIODS.reduce((a, v) => ({ ...a, [v]: [] }), {}),
 		},
 	});
+
 	useEffect(() => {
 		handleDateChange(period);
 		setCharts(chartData.chartToken);
 	}, [period, chartData, chartsAllLoaded]);
 
-	const TokenForm = useMemo(() => (isTokenset(symbol) ? IssueRedeemForm : BuyTokenForm), [symbol]);
-	const allowedTokens = useMemo(
-		() => ({ ...swappable.ERC20, ...swappable.TokenProducts }),
-		[swappable],
-	);
-
-	const [width, formWidth, formMargin, singleLine] = useMemo(
-		() => WIDTHS[breakpoint],
-		[breakpoint],
-	);
+	const [formWidth, singleLine] = useMemo(() => WIDTHS[breakpoint], [breakpoint]);
 
 	return (
 		<Stack
@@ -77,6 +69,7 @@ export function ChartAndBuy(props: ChartAndBuyProps): JSX.Element {
 			alignItems="flex-start"
 			justifyContent="space-between"
 			spacing="1rem"
+			style={{ display: `flex`, justifyContent: `center`, alignItems: `stretch` }}
 		>
 			{/* <TokenChart
 				symbol={symbol}
@@ -95,14 +88,15 @@ export function ChartAndBuy(props: ChartAndBuyProps): JSX.Element {
 				chartsAllLoaded={chartsAllLoaded}
 				setChartsAllLoaded={setChartsAllLoaded}
 			/>
-			<TokenForm
+			<ExchangeContainer contract={contract} tokenPrice={tokenPrice} width={formWidth} />
+			{/* <TokenForm
 				breakpoint={breakpoint}
 				width={formWidth}
 				id="TokenForm"
 				symbol={symbol}
 				allowedTokens={allowedTokens}
 				marginTop={formMargin}
-			/>
+			/> */}
 		</Stack>
 	);
 }
