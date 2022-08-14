@@ -250,6 +250,7 @@ export function SWDTokenPage(): JSX.Element {
 								symbol={symbol}
 								handleDateChange={setPeriod}
 								setCharts={handleChartChange}
+								price={currentPrice}
 							/>
 							<StyledGrid
 								cells={swdDetailCells}

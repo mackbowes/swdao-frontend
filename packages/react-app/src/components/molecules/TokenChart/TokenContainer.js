@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Box, Spinner, Text } from '@chakra-ui/react';
+import { Box, Spinner, Text, Checkbox } from '@chakra-ui/react';
 import { DotProps, Line, LineChart, ResponsiveContainer, Tooltip, YAxis, XAxis } from 'recharts';
 // import moment from "moment";
 // import { useResponsive } from "../contexts/ResponsiveContext";
@@ -33,7 +33,7 @@ export default function TokenContainer(props) {
 	const [chartsAllLoading, setChartsAllLoading] = useState(false);
 	const [compEth, setCompEth] = useState(false);
 	const [compBtc, setCompBtc] = useState(false);
-	const [compMATIC, setCompMATIC] = useState(false);
+	const [compMatic, setCompMatic] = useState(false);
 	const [chartDataParsed, setChartDataParsed] = useState([
 		{
 			timestamp: undefined,
@@ -47,7 +47,7 @@ export default function TokenContainer(props) {
 			compBtc,
 			matic: undefined,
 			scaledMATIC: undefined,
-			compMATIC,
+			compMatic,
 			symbol: undefined,
 		},
 	]);
@@ -98,7 +98,7 @@ export default function TokenContainer(props) {
 			setChartInitialLoading(false);
 			setChartLoadingEffect(false);
 		});
-	}, [period, compEth, compBtc, compMATIC, chartsAllLoaded]);
+	}, [period, compEth, compBtc, compMatic, chartsAllLoaded]);
 
 	useEffect(() => {
 		if (chartsAllLoaded) return;
@@ -119,7 +119,7 @@ export default function TokenContainer(props) {
 
 	useEffect(() => {
 		if (chartsAllLoading || chartInitialLoading) setChartLoadingEffect(true);
-	}, [period, compEth, compBtc, compMATIC]);
+	}, [period, compEth, compBtc, compMatic]);
 
 	const readChart = async () => {
 		if (
@@ -150,7 +150,7 @@ export default function TokenContainer(props) {
 					compBtc,
 					matic: scalarMATIC ? chartData.chartMATIC[period][i][1] : undefined,
 					scaledMATIC: scalarMATIC ? chartData.chartMATIC[period][i][1] / scalarMATIC : undefined,
-					compMATIC,
+					compMatic,
 					symbol: contract?.tokenTicker,
 				};
 			}),
@@ -160,7 +160,7 @@ export default function TokenContainer(props) {
 	const setChart = async (periodRequest = period, loadAll = false) => {
 		const epoch = new Date().getTime() / 1000;
 		const reqBody = {
-			address: contract?.tokenAddress['0x89'],
+			address: contract?.tokenAddress,
 			days:
 				periodRequest == 'MAX'
 					? Math.round((epoch - contract.creationEpoch) / 86400)
@@ -187,7 +187,7 @@ export default function TokenContainer(props) {
 			// req.body = JSON.stringify(reqBody);
 			pricePromises[2] = getChart('', '', reqBody);
 		}
-		if ((compMATIC || loadAll) && chartDataTemp.chartMATIC[periodRequest].length == 0) {
+		if ((compMatic || loadAll) && chartDataTemp.chartMATIC[periodRequest].length == 0) {
 			reqBody.address = WMATIC_ADDRESS;
 			// req.body = JSON.stringify(reqBody);
 			pricePromises[3] = getChart('', '', reqBody);
@@ -200,7 +200,7 @@ export default function TokenContainer(props) {
 				chartDataTemp.chartEth[periodRequest] = await pricePromises[1];
 			if ((compBtc || loadAll) && pricePromises[2])
 				chartDataTemp.chartBtc[periodRequest] = await pricePromises[2];
-			if ((compMATIC || loadAll) && pricePromises[3])
+			if ((compMatic || loadAll) && pricePromises[3])
 				chartDataTemp.chartMATIC[periodRequest] = await pricePromises[3];
 			setChartData(chartDataTemp);
 		}
@@ -299,13 +299,11 @@ export default function TokenContainer(props) {
 							name="heading area"
 							style={{
 								width: `100%`,
-								height: `4em`,
-								background: `#1D1055`,
+								height: `64px`,
+								backgroundColor: `var(--chakra-colors-blue5)`,
 								display: `flex`,
-								fontFamily: `'Montserrat', sans-serif`,
-								fontSize: `14px`,
-								fontWeight: `400`,
-								color: `#5F6368`,
+								fontSize: `20px`,
+								fontWeight: `500`,
 								justifyContent: `space-around`,
 								alignItems: `center`,
 								borderRadius: '1.25em 1.25em 0 0',
@@ -341,22 +339,6 @@ export default function TokenContainer(props) {
 										scale="log"
 										hide={true}
 									/>
-									{/* <YAxis
-                    type="number"
-                    tickFormatter={(change) => `${change * 100}%`}
-                  />
-                  {chartDataParsed[0] && chartDataParsed[14] && (
-                    <>
-                      <XAxis
-                        type="number"
-                        dataKey={"timestamp"}
-                        domain={["auto", "auto"]}
-                        tickFormatter={(unixTime) =>
-                          moment(unixTime * 1000).format("DD MM YY")
-                        }
-                      />
-                    </>
-                  )} */}
 									{compBtc && chartDataParsed[0].btc && (
 										<Line
 											dataKey="scaledBtc"
@@ -383,7 +365,7 @@ export default function TokenContainer(props) {
 											animationDuration={500}
 										/>
 									)}
-									{compMATIC && chartDataParsed[0].matic && (
+									{compMatic && chartDataParsed[0].matic && (
 										<Line
 											dataKey="scaledMATIC"
 											type="monotone"
@@ -417,73 +399,47 @@ export default function TokenContainer(props) {
 								</LineChart>
 							</ResponsiveContainer>
 						</div>
-						<div
-							style={{
-								width: `100%`,
-								background: `#1D1055`,
-								// borderTop: `1px solid #F7F7F7`,
-								height: `56px`,
-								fontFamily: `'Montserrat', sans-serif`,
-								fontSize: `14px`,
-								fontWeight: `400`,
-								display: `flex`,
-								alignItems: `center`,
-								justifyContent: `center`,
-								gap: `20px`,
-							}}
+						<Box
+							height="3em"
+							bgColor="blue5"
+							borderRadius="0 0 1.25em 1.25em"
+							padding="0 1rem"
+							textAlign="center"
+							lineHeight="3em"
+							display="flex"
+							justifyContent="center"
 						>
-							<div style={{ color: `#C0C0C0` }}>
-								<p>Compare With:</p>
-							</div>
-							<div
-								style={{
-									display: `flex`,
-									alignItems: `center`,
-									gap: `10px`,
-									color: `#2A9D8F`,
-								}}
+							<Text fontSize="sm" color="purple" d="inline-block">
+								Compare with
+							</Text>
+							<Checkbox
+								m="0 1rem 0 1rem"
+								onChange={(e) => setCompEth(e.target.checked)}
+								checked={compEth}
+								color="ethcolor"
+								borderColor="#AADCFE"
 							>
-								<input
-									type="checkbox"
-									style={{ border: `1px solid #C0C0C0`, opacity: `0.5` }}
-									checked={compEth}
-									onChange={(e) => setCompEth(e.target.checked)}
-								/>
-								<p>ETH</p>
-							</div>
-							<div
-								style={{
-									display: `flex`,
-									alignItems: `center`,
-									gap: `10px`,
-									color: `#E76F51`,
-								}}
+								ETH
+							</Checkbox>
+							<Checkbox
+								m="0 1rem 0 1rem"
+								onChange={(e) => setCompMatic(e.target.checked)}
+								checked={compMatic}
+								color="maticcolor"
+								borderColor="#AADCFE"
 							>
-								<input
-									type="checkbox"
-									style={{ border: `1px solid #C0C0C0`, opacity: `0.5` }}
-									checked={compBtc}
-									onChange={(e) => setCompBtc(e.target.checked)}
-								/>
-								<p>BTC</p>
-							</div>
-							<div
-								style={{
-									display: `flex`,
-									alignItems: `center`,
-									gap: `10px`,
-									color: `#E9C46A`,
-								}}
+								MATIC
+							</Checkbox>
+							<Checkbox
+								m="0 1rem 0 1rem"
+								onChange={(e) => setCompBtc(e.target.checked)}
+								checked={compBtc}
+								color="btcorange"
+								borderColor="#AADCFE"
 							>
-								<input
-									type="checkbox"
-									style={{ border: `1px solid #C0C0C0`, opacity: `0.5` }}
-									checked={compMATIC}
-									onChange={(e) => setCompMATIC(e.target.checked)}
-								/>
-								<p>MATIC</p>
-							</div>
-						</div>
+								BTC
+							</Checkbox>
+						</Box>
 						{chartLoadingEffect && (
 							<div
 								name="loading surface"
@@ -530,13 +486,11 @@ export default function TokenContainer(props) {
 							name="heading area"
 							style={{
 								width: `100%`,
-								height: `58px`,
-								background: `white`,
+								height: `64px`,
+								backgroundColor: `var(--chakra-colors-blue5)`,
 								display: `flex`,
-								fontFamily: `'Montserrat', sans-serif`,
-								fontSize: `14px`,
-								fontWeight: `600`,
-								color: `#5F6368`,
+								fontSize: `20px`,
+								fontWeight: `500`,
 								justifyContent: `space-around`,
 								alignItems: `center`,
 							}}
@@ -597,7 +551,7 @@ export default function TokenContainer(props) {
 											animationDuration={500}
 										/>
 									)}
-									{compMATIC && chartDataParsed[0].matic && (
+									{compMatic && chartDataParsed[0].matic && (
 										<Line
 											dataKey="scaledMATIC"
 											type="monotone"
@@ -631,73 +585,47 @@ export default function TokenContainer(props) {
 								</LineChart>
 							</ResponsiveContainer>
 						</div>
-						<div
-							name="footer area"
-							style={{
-								width: `80vw`,
-								background: `white`,
-								fontFamily: `'Montserrat', sans-serif`,
-								height: `38px`,
-								fontSize: `10px`,
-								fontWeight: `400`,
-								display: `flex`,
-								alignItems: `center`,
-								justifyContent: `center`,
-								gap: `20px`,
-							}}
+						<Box
+							height="3em"
+							bgColor="blue5"
+							borderRadius="0 0 1.25em 1.25em"
+							padding="0 1rem"
+							textAlign="center"
+							lineHeight="3em"
+							display="flex"
+							justifyContent="center"
 						>
-							<div style={{ color: `#C0C0C0` }}>
-								<p>Compare With:</p>
-							</div>
-							<div
-								style={{
-									display: `flex`,
-									alignItems: `center`,
-									gap: `10px`,
-									color: `#2A9D8F`,
-								}}
+							<Text fontSize="sm" color="purple" d="inline-block">
+								Compare with
+							</Text>
+							<Checkbox
+								m="0 1rem 0 1rem"
+								onChange={(e) => setCompEth(e.target.checked)}
+								checked={compEth}
+								color="ethcolor"
+								borderColor="#AADCFE"
 							>
-								<input
-									type="checkbox"
-									style={{ border: `1px solid #C0C0C0`, opacity: `0.5` }}
-									checked={compEth}
-									onChange={(e) => setCompEth(e.target.checked)}
-								/>
-								<p>ETH</p>
-							</div>
-							<div
-								style={{
-									display: `flex`,
-									alignItems: `center`,
-									gap: `10px`,
-									color: `#E76F51`,
-								}}
+								ETH
+							</Checkbox>
+							<Checkbox
+								m="0 1rem 0 1rem"
+								onChange={(e) => setCompMatic(e.target.checked)}
+								checked={compMatic}
+								color="maticcolor"
+								borderColor="#AADCFE"
 							>
-								<input
-									type="checkbox"
-									style={{ border: `1px solid #C0C0C0`, opacity: `0.5` }}
-									checked={compBtc}
-									onChange={(e) => setCompBtc(e.target.checked)}
-								/>
-								<p>BTC</p>
-							</div>
-							<div
-								style={{
-									display: `flex`,
-									alignItems: `center`,
-									gap: `10px`,
-									color: `#E9C46A`,
-								}}
+								MATIC
+							</Checkbox>
+							<Checkbox
+								m="0 1rem 0 1rem"
+								onChange={(e) => setCompBtc(e.target.checked)}
+								checked={compBtc}
+								color="btcorange"
+								borderColor="#AADCFE"
 							>
-								<input
-									type="checkbox"
-									style={{ border: `1px solid #C0C0C0`, opacity: `0.5` }}
-									checked={compMATIC}
-									onChange={(e) => setCompMATIC(e.target.checked)}
-								/>
-								<p>MATIC</p>
-							</div>
-						</div>
+								BTC
+							</Checkbox>
+						</Box>
 						{chartLoadingEffect && (
 							<div
 								name="loading surface"

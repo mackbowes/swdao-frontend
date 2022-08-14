@@ -3,6 +3,8 @@ import axios from "axios";
 import { AbiItem } from "web3-utils";
 import TokenSetABI from "../../abi/TokenSetABI.json";
 import ERC20ABI from "../../abi/ERC20.json";
+import tokenSetStreamingFeeABI from "../../abi/TokenSetStreamingFeeModule.json";
+import tokenSetIssueFeeABI from "../../abi/TokenSetIssueFeeModule.json";
 import { baseUrl0x } from "../../settings";
 import { web3 } from "../../bin/www";
 import {
@@ -13,6 +15,7 @@ import {
   PositionMap,
 } from "./exports";
 import { isUndefined } from "lodash";
+import { AssetTransfersCategory } from "@alch/alchemy-web3";
 
 export const getDecimals = async (address: string) => {
   return (
@@ -59,7 +62,10 @@ export const getTokenSetAllocation = async (address: string) => {
 };
 
 export const getSingleTokenPrice = async (address: string) => {
-  if (ADDRESSES.includes(address.toLowerCase())) {
+  address = address.toLowerCase();
+  if (address === "0x0000000000000000000000000000000000001010")
+    address = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270";
+  if (ADDRESSES.includes(address)) {
     const allocToday = await allocationAtBlock(address, undefined);
     const allocYesterday = await allocationAtBlock(
       address,
@@ -171,7 +177,7 @@ export const getSingleTokenPrice = async (address: string) => {
       allocationTable,
     };
   } else {
-    const precision = PRECISION_REQUIRED.includes(address.toLowerCase());
+    const precision = PRECISION_REQUIRED.includes(address);
     const prices: { symbol: string; prices: number[] }[] = (
       await axios.post(baseUrl0x + `/history`, {
         buyTokens: [
@@ -204,6 +210,86 @@ export const getPrices = async (address: string) => {
     totalSupply,
     marketCap: totalSupply * prices.currentPrice,
   };
+};
+
+const getCreationTokenset = async (address: string) => {
+  const block = (await web3.eth.getPastLogs({
+    fromBlock: "0x0",
+    toBlock: "latest",
+    address: "0x14f0321be5e581abf9d5bc76260bf015dc04c53d",
+    topics: [
+      "0xb7b1e89d4bb640b93b0cb96b27077ceb558d073e00531c0a712a4afc9ccf06fe",
+      web3.utils.padLeft(address, 64)
+    ],
+  }))[0].blockNumber;
+  return block ?
+    (await web3.eth.getBlock(block)).timestamp :
+    Math.round((new Date()).getTime() / 1000) - 31536000; // One year
+};
+
+export const getCreation0xToken = async (address: string) => {
+  const block = (await web3.alchemy.getAssetTransfers({
+    fromBlock: "0x0",
+    toBlock: "latest",
+    fromAddress: "0x0000000000000000000000000000000000000000",
+    contractAddresses: [address],
+    category: [AssetTransfersCategory.ERC20],
+    maxCount: 1,
+  }))?.transfers[0]?.blockNum;
+  return block ?
+    (await web3.eth.getBlock(web3.utils.hexToNumber(block))).timestamp :
+    Math.round((new Date()).getTime() / 1000) - 31536000; // One year
+};
+
+const getStreamingFeeTokenset = async (address: string) => {
+  const feeStreaming =
+    (await new web3.eth.Contract(
+      tokenSetStreamingFeeABI as AbiItem[],
+      "0x8440f6a2c42118bed0D6E6A89Bf170ffd13e21c0"
+    ).methods
+      .feeStates(address)
+      .call((err: any, res: any) => {
+        if (err) {
+          console.log("An error occurred", err);
+        }
+        return res;
+      })).streamingFeePercentage / 1e16;
+  const issue =
+    await new web3.eth.Contract(
+      tokenSetIssueFeeABI as AbiItem[],
+      "0x3E7f7F520e4e52a0c139d77a5487586012C90F07"
+    ).methods
+      .issuanceSettings(address)
+      .call((err: any, res: any) => {
+        if (err) {
+          console.log("An error occurred", err);
+        }
+        return res;
+      });
+  return { feeStreaming, feeIssue: [issue.managerIssueFee / 1e16, issue.managerRedeemFee / 1e16] };
+};
+
+export const getInfo = async (address: string, tokenset: boolean) => {
+  const totalSupply = await getTotalSupply(address);
+  if (tokenset) {
+    const creationEpoch = await getCreationTokenset(address);
+    const allocation = await getTokenSetAllocation(address);
+    const { feeStreaming, feeIssue } = await getStreamingFeeTokenset(address);
+    return {
+      totalSupply,
+      creationEpoch,
+      allocation,
+      feeStreaming,
+      feeIssue,
+    };
+  } else {
+    const creationEpoch = await getCreation0xToken(address);
+    return {
+      totalSupply,
+      creationEpoch,
+      allocation: false,
+    };
+  }
 };
 
 export default getPrices;

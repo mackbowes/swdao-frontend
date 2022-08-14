@@ -8,7 +8,7 @@ import {
 } from "express-validator";
 import NodeCache from "node-cache";
 import { ExtendedTokenDetailResponse, TokenDetailsResponse } from "src/types";
-import { getSingleTokenPrice, getTokenSetAllocation } from "../utils/0x/main";
+import { getSingleTokenPrice, getTokenSetAllocation, getInfo } from "../utils/0x/main";
 import controllerAbi from "../abi/TokenSetController.json";
 import { AbiItem } from "web3-utils";
 import {
@@ -294,6 +294,35 @@ router.post("/getSetTradeHistory", async (req: Request, res: Response) => {
     ? await getSetTradeHistory(address, days, from, to)
     : undefined;
   res.status(history ? 201 : 500).json(history);
+});
+
+router.post("/getBalance", async (req: Request, res: Response) => {
+  const { addressTokens, addressUser } = req.body;
+  const data = await web3.alchemy.getTokenBalances(addressUser, addressTokens);
+  res.status(data ? 201 : 500).json(data);
+});
+
+router.post("/getPrices", async (req: Request, res: Response) => {
+  const { address } = req.body;
+  const price = await getSingleTokenPrice(address);
+  res.status(price ? 201 : 500).json(price);
+});
+
+router.post("/getInfo", async (req: Request, res: Response) => {
+  const { address } = req.body;
+  const setContract = new web3.eth.Contract(
+    controllerAbi as AbiItem[],
+    "0x75FBBDEAfE23a48c0736B2731b956b7a03aDcfB2"
+  );
+  const tokenset = await setContract.methods.isSet(address).call();
+  const info = await getInfo(address, tokenset);
+  res.status(info ? 201 : 500).json(info);
+});
+
+router.post("/getMetadata", async (req: Request, res: Response) => {
+  const { address } = req.body;
+  const data = await web3.alchemy.getTokenMetadata(address);
+  res.status(data ? 201 : 500).json(data);
 });
 
 export default router;

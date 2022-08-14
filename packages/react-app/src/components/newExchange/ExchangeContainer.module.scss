@@ -1,0 +1,83 @@
+.exchangeContainer {
+	background: var(--chakra-colors-blue7);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-family: inherit;
+	border: 1px solid var(--chakra-colors-blue5);
+	border-radius: 1.3rem;
+	overflow: hidden;
+	position: relative;
+	padding-bottom: 10px;
+	h1 {
+		font-size: var(--chakra-fontSizes-2xl);
+		font-weight: var(--chakra-fontWeights-semibold);
+		color: var(--chakra-colors-bodytext);
+		padding-top: 20px;
+	}
+	h2 {
+		font-size: var(--chakra-fontSizes-sm);
+		color: var(--chakra-colors-bodytext);
+		text-align: center;
+		padding: 10px 5px;
+	}
+}
+
+input {
+	background: var(--chakra-colors-blue5);
+	font-size: var(--chakra-fontSizes-md);
+	color: var(--chakra-colors-bodytext);
+}
+
+.input {
+	position: relative;
+	display: flex;
+	width: 227px;
+	background: var(--chakra-colors-blue5);
+	align-items: center;
+	height: 37px;
+	margin: 15px;
+	font-size: var(--chakra-fontSizes-md);
+	color: var(--chakra-colors-bodytext);
+	border-radius: var(--chakra-radii-lg);
+	padding: 5px;
+}
+
+.input p {
+	padding: 10px;
+}
+
+button[role="tab"] {
+	font-size: 20px;
+	font-weight: 500;
+	color: var(--chakra-colors-purple);
+	background-color: var(--chakra-colors-blue5);
+	border-radius: var(--chakra-radii-full);
+}
+
+button[role="tab"]:hover {
+	color: var(--chakra-colors-black);
+	background-color: rgb(188, 231, 254);
+}
+
+button[role="tab"][active="true"] {
+	color: var(--chakra-colors-black);
+	background-color: rgb(188, 231, 254);
+}
+
+.maxButton {
+	color: var(--chakra-colors-bodytext);
+	background-color: transparent;
+	font-size: var(--chakra-fontSizes-sm);
+	font-weight: 700;
+	padding: auto;
+	border-radius: var(--chakra-radii-lg);
+	margin-left: 5px;
+}
+
+.balance {
+	font-size: var(--chakra-fontSizes-md);
+	font-weight: var(--chakra-fontWeights-semibold);
+	color: var(--chakra-colors-purple);
+	margin: 0;
+}

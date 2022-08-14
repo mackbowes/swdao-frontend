@@ -1,0 +1,74 @@
+.buttonBuy {
+	font-family: "Montserrat", sans-serif;
+	font-size: 12px;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	width: 100px;
+	height: 28px;
+	border-radius: 3px;
+	padding-left: 25px;
+	gap: 12px;
+	background-color: white;
+	color: #5f6368;
+	border: 1px solid #5f6368;
+}
+
+.buttonBuyGreen {
+	font-family: "Montserrat", sans-serif;
+	font-size: 12px;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	width: 100px;
+	height: 28px;
+	border-radius: 3px;
+	padding-left: 25px;
+	gap: 12px;
+	background-color: white;
+	color: #aad470;
+	border: 1px solid #aad470;
+}
+
+.buttonSell {
+	font-family: "Montserrat", sans-serif;
+	font-size: 12px;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	width: 100px;
+	height: 28px;
+	border-radius: 3px;
+	padding-left: 25px;
+	gap: 12px;
+	background-color: white;
+	color: #5f6368;
+	border: 1px solid #5f6368;
+}
+
+.buttonSellGreen {
+	font-family: "Montserrat", sans-serif;
+	font-size: 12px;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	width: 100px;
+	height: 28px;
+	border-radius: 3px;
+	padding-left: 25px;
+	gap: 12px;
+	background-color: white;
+	color: #0686ce;
+	border: 1px solid #0686ce;
+}
+
+.container {
+	display: flex;
+	width: 266px;
+	height: 58px;
+	background-color: white;
+	justify-content: space-around;
+	align-items: center;
+	border: 1px solid #c0c0c0;
+	border-radius: 3px;
+}

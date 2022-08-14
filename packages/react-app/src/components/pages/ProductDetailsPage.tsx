@@ -195,6 +195,7 @@ export function ProductDetailsPage({ symbol }: { symbol: string }): JSX.Element 
 								symbol={symbol}
 								handleDateChange={setPeriod}
 								setCharts={handleChartChange}
+								price={currentPrice}
 							/>
 							<StyledGrid
 								cells={swdDetailCells}
