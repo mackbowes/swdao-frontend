@@ -131,7 +131,6 @@ export default function Suggested(props: SuggestedProps): JSX.Element {
 								icon={`/images/token-${bgm.toLowerCase()}.png`}
 								symbol={bgm}
 								name={PRODUCTS_BY_SYMBOL[bgm].name}
-								url={`/product/${bgm}`}
 								{...clc}
 							/>
 						</Box>
@@ -163,7 +162,6 @@ export default function Suggested(props: SuggestedProps): JSX.Element {
 								icon={'/images/token-swyf.png'}
 								symbol={'SWYF'}
 								name={'USDC Yield Fund'}
-								url={'/product/SWYF'}
 								{...clc}
 							/>
 						</Box>
@@ -195,7 +193,6 @@ export default function Suggested(props: SuggestedProps): JSX.Element {
 								icon={'/images/token-qmm.png'}
 								symbol={'QMM'}
 								name={'Quantum Momentum MATIC'}
-								url={'/product/QMM'}
 								{...clc}
 							/>
 						</Box>
