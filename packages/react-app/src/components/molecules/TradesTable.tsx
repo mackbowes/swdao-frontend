@@ -69,6 +69,28 @@ const SYMBOLSX2: { [key: string]: string } = {
 // 	return children(value);
 // };
 
+function Leverage(props: { title: 'x1' | 'x2' }): JSX.Element {
+	const { title } = props;
+	// const Icon = title === 'Long' ? AiFillCaretUp : AiFillCaretDown;
+	const color = title === 'x1' ? '#6CB221' : 'rgb(255, 255, 0)';
+	const textColor = title === 'x1' ? 'white' : '#060119';
+
+	return (
+		<Box
+			width="50px"
+			display="flex"
+			bgColor={color}
+			color={textColor}
+			padding=" .2rem .5rem  .2rem .5rem"
+			borderRadius="1rem"
+			justifyContent="space-evenly"
+		>
+			{/* <Box as={Icon} alignSelf="center" /> */}
+			<Text>{title}</Text>
+		</Box>
+	);
+}
+
 function Side(props: { title: 'Short' | 'Long' }): JSX.Element {
 	const { title } = props;
 	const Icon = title === 'Long' ? AiFillCaretUp : AiFillCaretDown;
@@ -154,7 +176,7 @@ function TableRows(props: { unit: Trade }): JSX.Element {
 			<Td textAlign="center">
 				<a href={`https://polygonscan.com/tx/${unit.entryHash}`} target="_blank">
 					<Tooltip label={convertTime(unit.entry)} placement="top" hasArrow>
-						{entryDate}
+						<Text textColor="#5252ff">{entryDate}</Text>
 					</Tooltip>
 				</a>
 			</Td>
@@ -172,7 +194,13 @@ function TableRows(props: { unit: Trade }): JSX.Element {
 						<CircularProgressbar
 							value={positionSize}
 							text={`${positionSize}%`}
-							styles={buildStyles({ textSize: '1.5rem', strokeLinecap: 'butt' })}
+							styles={buildStyles({
+								textSize: '1.5rem',
+								strokeLinecap: 'round',
+								textColor: '#AADCFE',
+								pathColor: '#AADCFE',
+								trailColor: '#1D1055',
+							})}
 						/>
 						{/* )}
 						</ProgressProvider> */}
@@ -183,17 +211,7 @@ function TableRows(props: { unit: Trade }): JSX.Element {
 			<Td textAlign="center">{closePrice}</Td>
 			<Td textAlign="center">
 				<Center>
-					<Box width="3rem">
-						<CircularProgressbar
-							value={leverage === 'x1' ? 100 : 200}
-							text={leverage}
-							styles={buildStyles({
-								pathColor: `${leverage === 'x1' ? '#6CB221' : 'rgb(255, 255, 0)'}`,
-								trailColor: '#6CB221',
-								textSize: '2rem',
-							})}
-						/>
-					</Box>
+					<Leverage title={leverage} />
 				</Center>
 			</Td>
 			<Td textAlign="center">
@@ -207,7 +225,7 @@ function TableRows(props: { unit: Trade }): JSX.Element {
 					target="_blank"
 				>
 					<Tooltip label={unit.exit ? convertTime(unit.exit) : undefined} placement="top" hasArrow>
-						{exitDate}
+						<Text textColor="#5252ff">{exitDate}</Text>
 					</Tooltip>
 				</a>
 			</Td>
