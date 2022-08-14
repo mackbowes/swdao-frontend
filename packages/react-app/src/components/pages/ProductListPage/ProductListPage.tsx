@@ -83,7 +83,7 @@ export function ProductListPage(): JSX.Element {
 		const rv = allProducts.map(
 			(product) => tokenPriceDetail[product.symbol] ?? fakeTokenDetails(product, cId),
 		);
-		console.log(`filteredTokens: ${rv.length}`, rv);
+		// console.log(`filteredTokens: ${rv.length}`, rv);
 		return rv;
 	}, [chainId, filter, tokenPriceDetail]);
 
