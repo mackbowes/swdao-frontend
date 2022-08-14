@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { BigNumber } from 'ethers';
 
 import { BACKEND_SERVER_URL, TIMEOUT, TIME_PERIODS } from '../config';
-import { PRODUCTS_BY_SYMBOL } from '../config/products';
+import { PRODUCTS, PRODUCTS_BY_SYMBOL } from '../config/products';
 import {
 	BuySellMap,
 	ExtendedTokenDetails,
@@ -95,8 +95,22 @@ export const getTokenProductData = async (chainId: string, token: string, period
 		.catch(handleError);
 };
 
-export const getFullTokenProductData = async (chainId: string, period = '1D') =>
-	getTokenProductData(chainId, 'full', period);
+export const getFullTokenProductData = async (chainId: string, period = '1D') => {
+	const r: any[] = [];
+	const promises: any[] = [];
+	PRODUCTS.forEach((product) => {
+		promises.push(
+			getChart(product.symbol, period).then((d) => {
+				r.push({ address: product.addresses, prices: d, symbol: product.symbol });
+			}),
+		);
+	});
+	return await Promise.allSettled(promises)
+		.then(() => {
+			return r;
+		})
+		.catch(handleError);
+};
 
 export const getPrice = async (
 	chainId: string,
