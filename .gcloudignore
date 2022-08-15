@@ -28,3 +28,10 @@ packages/react-app/public
 
 packages/mock-server/
 packages/dev-proxy/
+
+packages/swdao-bonding-subdomain/node_modules
+packages/swdao-bonding-subdomain/components
+packages/swdao-bonding-subdomain/contexts
+packages/swdao-bonding-subdomain/styles
+packages/swdao-bonding-subdomain/pages
+packages/swdao-bonding-subdomain/utils
