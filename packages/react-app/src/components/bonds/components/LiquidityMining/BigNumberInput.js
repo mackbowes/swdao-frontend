@@ -14,7 +14,7 @@ export default function BigNumberInput(props) {
 
 	const handleChange = useMemo(
 		() => (e) => {
-			const { value: tgtValue } = e.target;
+			let { value: tgtValue } = e.target;
 			if (tgtValue === '') {
 				onValueChange('');
 				return;

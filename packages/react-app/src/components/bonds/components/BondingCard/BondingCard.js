@@ -1,11 +1,11 @@
 import { useWallet } from '@raidguild/quiver';
 import { useState, useEffect } from 'react';
-import { Box, Heading, Text, Spinner } from '@chakra-ui/react';
+import { Box, Heading, Text, Spinner, useToast } from '@chakra-ui/react';
 import ConnectionIndicator from '../ConnectionIndicator/ConnectionIndicator';
 import DepositButton from '../LiquidityMining/DepositButton';
 import WithdrawButton from '../LiquidityMining/WithdrawButton';
 import styles from './BondingCard.module.scss';
-import toast from 'react-hot-toast';
+import { showErrorToast, showToast } from '../../../../utils/toasts';
 import ReactPaginate from 'react-paginate';
 import { utils } from 'ethers';
 import {
@@ -56,6 +56,7 @@ const BondingCard = () => {
 	const [bondsLoading, setBondsLoading] = useState(false);
 	const [txInProgress, setTxInProgress] = useState(false);
 	const [rateGetterRunning, setRateGetterRunning] = useState(false);
+	const toast = useToast();
 
 	const updateRates = async () => {
 		const { swdRemaining, reward, apy, mpy, wpy } = await getContractInfo();
@@ -138,7 +139,11 @@ const BondingCard = () => {
 	};
 
 	const withdrawAsync = async () => {
-		toast('Bond withdrawal initiated');
+		showToast(
+			'Bond withdrawal initiated',
+			{ title: 'Bond withdrawal initiated', description: '' },
+			toast,
+		);
 		const oldBalance = await getSwdBalance(address);
 		const result = await withdraw(ethersPack);
 		if (result.code == 1) {
@@ -151,15 +156,23 @@ const BondingCard = () => {
 			if (success) {
 				await updateRates();
 				await updateAmountWithdraw();
-				toast('Withdrawal successful');
+				showToast(
+					'Withdrawal successful',
+					{ title: 'Withdrawal successful', description: '' },
+					toast,
+				);
 			} else {
-				toast('Withdrawal failed, or took too long');
+				showErrorToast(
+					'Withdrawal failed, or took too long',
+					{ title: 'Withdrawal failed, or took too long', description: '' },
+					toast,
+				);
 				console.error('(withdrawAsync): Balance check failed.', success);
 			}
 		} else {
 			if (result.code != 4001) {
 				console.error('(withdrawAsync) Metamask Error:', result);
-				toast('Withdrawal failed');
+				showErrorToast('Withdrawal failed', { title: 'Withdrawal failed', description: '' }, toast);
 			}
 		}
 		setTxInProgress(false);
@@ -174,7 +187,7 @@ const BondingCard = () => {
 		const amountDepositNum = BigNumber.from(utils.parseUnits(amountDeposit, 18));
 		// APPROVAL
 		if ((await approveCheck(ethersPack)).lt(amountDepositNum)) {
-			toast('Token approval initiated');
+			showToast('Token approval initiated', { title: 'Token approval initiated' }, toast);
 			const result = await approve(ethersPack, amountDepositNum);
 			if (result.code == 1) {
 				let approved = false;
@@ -183,24 +196,28 @@ const BondingCard = () => {
 					approved = (await approveCheck(ethersPack)).gte(amountDepositNum);
 				}
 				if (approved) {
-					toast('Approval successful');
+					showToast('Approval successful', { title: 'Approval successful' }, toast);
 				} else {
 					console.error('(depositAsync): approveCheck failed.', approved);
-					toast('Approval failed, or took too long');
+					showErrorToast(
+						'Approval failed, or took too long',
+						{ title: 'Approval failed, or took too long' },
+						toast,
+					);
 					setTxInProgress(false);
 					return;
 				}
 			} else {
 				if (result.code != 4001) {
 					console.error('(depositAsync) Metamask Error:', result);
-					toast('Approval failed');
+					showErrorToast('Approval failed', { title: 'Approval failed', description: '' }, toast);
 				}
 				setTxInProgress(false);
 				return;
 			}
 		}
 		// DEPOSIT
-		toast('Token deposit initiated');
+		showToast('Token deposit initiated', { title: 'Token deposit initiated' }, toast);
 		const result = await deposit(ethersPack, amountDepositNum);
 		if (result.code == 1) {
 			let success = false;
@@ -215,15 +232,19 @@ const BondingCard = () => {
 				setBalanceUserSwx(newBalance);
 				setAmountDeposit('');
 				setIsDepositModalOpen(false);
-				toast('Deposit successful');
+				showToast('Deposit successful', { title: 'Deposit successful', description: '' }, toast);
 			} else {
-				toast('Deposit failed, or took too long');
+				showErrorToast(
+					'Deposit failed, or took too long',
+					{ title: 'Deposit failed, or took too long' },
+					toast,
+				);
 				console.error('(depositAsync): Balance check failed.', success);
 			}
 		} else {
 			if (result.code != 4001) {
 				console.error('(depositAsync) Metamask Error:', result);
-				toast('Deposit failed');
+				showErrorToast('Deposit failed', { title: 'Deposit failed', description: '' }, toast);
 			}
 		}
 		setTxInProgress(false);

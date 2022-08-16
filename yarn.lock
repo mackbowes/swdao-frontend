@@ -14047,11 +14047,6 @@ gluegun@^4.3.1:
     which "^2.0.0"
     yargs-parser "^16.1.0"
 
-goober@^2.1.10:
-  version "2.1.10"
-  resolved "https://registry.yarnpkg.com/goober/-/goober-2.1.10.tgz#058def43ba1e3b06f973dbb372a4978aa42f1049"
-  integrity sha512-7PpuQMH10jaTWm33sQgBQvz45pHR8N4l3Cu3WMGEWmHShAcTuuP7I+5/DwKo39fwti5A80WAjvqgz6SSlgWmGA==
-
 got@9.6.0, got@^9.6.0:
   version "9.6.0"
   resolved "https://registry.yarnpkg.com/got/-/got-9.6.0.tgz#edf45e7d67f99545705de1f7bbeeeb121765ed85"
@@ -21330,13 +21325,6 @@ react-hooks-use-drawing-canvas@^0.3.0:
   integrity sha512-R2HerDEE5KutFJ5bNxA7SsNcpYP6Jp+WH+eIODB5hHYc71w2qBUWMih0S/piFw4fbSvRWTOxvRSXtWJKAh8ObQ==
   dependencies:
     react-hooks-use-canvas-size "^0.3.0"
-
-react-hot-toast@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/react-hot-toast/-/react-hot-toast-2.3.0.tgz#70b3d183ac2a4afb6b17cda4a7f4cfe02e730415"
-  integrity sha512-/RxV+bfjld7tSJR1SCLzMAXgFuNW7fCpK6+vbYqfmbGSWcqTMz2rizrvfWKvtcPH5HK0NqxmBaC5SrAy1F42zA==
-  dependencies:
-    goober "^2.1.10"
 
 react-icons@^4.2.0:
   version "4.3.1"
