@@ -69,6 +69,12 @@ app.use(cookieParser());
 //   swaggerUi.setup(swaggerSpec, { explorer: true })
 // );
 
+app.use((req, res, next) => {
+  // Express Static just loves to cache, but this stops it.
+  res.set("Cache-Control", "no-store");
+  next();
+});
+
 app.use(cors());
 
 // These are the routers that will receive the call from the FE component

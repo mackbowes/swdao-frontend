@@ -18,16 +18,6 @@ module.exports = {
     },
     {
       ...defaultConfig,
-      name: "Bonds Frontend",
-      cwd: "packages/swdao-bonding-subdomain/",
-      script: "npm",
-      args: "run start",
-      env: {
-      	NODE_ENV: "production",
-      },
-    },
-    {
-      ...defaultConfig,
       name: "Nginx Proxy",
       cwd: "packages/prod-proxy/",
       script: "bin/use_tmp.sh",
