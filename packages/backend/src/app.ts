@@ -18,6 +18,7 @@ import quotesRouter from "./routes/quotes";
 import signupRouter from "./routes/signup";
 import tokensRouter from "./routes/tokens";
 import portfolioRouter from "./routes/portfolio";
+import bondsRouter from "./routes/bonds";
 import {
   subscribeToPricesTokensDailyUpdates,
   subscribeToPricesTokensHourlyUpdates,
@@ -84,6 +85,7 @@ app.use("/api/prices", pricesRouter);
 app.use("/api/tokens", tokensRouter);
 app.use("/api/signup", signupRouter);
 app.use("/api/portfolio", portfolioRouter);
+app.use("/api/bonds", bondsRouter);
 
 // catch all and send to React app
 app.use((req: Request, res: Response, next: NextFunction) => {

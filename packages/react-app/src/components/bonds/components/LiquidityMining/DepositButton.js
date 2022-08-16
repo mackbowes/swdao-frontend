@@ -6,12 +6,11 @@ import { Image } from '@chakra-ui/react';
 
 export default function DepositButton(props) {
 	const [buttonState, setButtonState] = useState('disabled');
-	const contract = props?.contract;
+	const { address, verified = true } = props;
+
 	useEffect(() => {
-		if (typeof contract !== 'undefined') {
-			setButtonState('connected');
-		}
-	}, [contract]);
+		setButtonState(address && verified ? 'connected' : 'disabled');
+	}, [address, verified]);
 
 	return (
 		<>

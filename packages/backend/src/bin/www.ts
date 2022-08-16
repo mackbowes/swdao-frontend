@@ -7,7 +7,8 @@ import app from "../app";
 import Debug from "debug";
 import { createServer, Server } from "http";
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
-import { alchemyApiKey } from "../settings";
+import { Alchemy, Network } from "alchemy-sdk";
+import { alchemyApiKey, alchemyKey } from "../settings";
 const debugModule = Debug("backend:server");
 
 const onError = (error: any) => {
@@ -72,3 +73,8 @@ const server: Server = createServer(app);
 server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
+
+export const alchemyProvider = new Alchemy({
+  apiKey: alchemyKey,
+  network: Network.MATIC_MAINNET,
+});

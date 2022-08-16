@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Image } from '@chakra-ui/react';
 import icon from './claim-icon.png';
 import disabledicon from './disabled-claim-icon.png';
 import styles from './DepositButton.module.scss';
+import { Image } from '@chakra-ui/react';
 
 export default function DepositButton(props) {
 	const [buttonState, setButtonState] = useState('disabled');
-	const contract = props?.contract;
+	const { address, verified = true } = props;
+
 	useEffect(() => {
-		if (typeof contract !== 'undefined') {
-			setButtonState('connected');
-		}
-	}, [contract]);
+		setButtonState(address && verified ? 'connected' : 'disabled');
+	}, [address, verified]);
 
 	return (
 		<>

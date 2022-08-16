@@ -8,7 +8,11 @@ import {
 } from "express-validator";
 import NodeCache from "node-cache";
 import { ExtendedTokenDetailResponse, TokenDetailsResponse } from "src/types";
-import { getSingleTokenPrice, getTokenSetAllocation, getInfo } from "../utils/0x/main";
+import {
+  getSingleTokenPrice,
+  getTokenSetAllocation,
+  getInfo,
+} from "../utils/0x/main";
 import controllerAbi from "../abi/TokenSetController.json";
 import { AbiItem } from "web3-utils";
 import {

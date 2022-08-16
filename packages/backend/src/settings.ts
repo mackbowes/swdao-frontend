@@ -44,6 +44,7 @@ export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const infuraApiKey = process.env.INFURA_API_KEY;
 export const ankrApiKey = process.env.ANKR_API_SECRET;
 export const alchemyApiKey = process.env.ALCHEMY_API_KEY || "";
+export const alchemyKey = process.env.ALCHEMY_KEY || process.exit(1);
 export const coingeckoApiKey = process.env.COINGECKO_API_KEY;
 export const mailChimpUrl: string =
   process.env.MAILCHIMP_URL || "https://capital.us5.list-manage.com";
@@ -55,6 +56,7 @@ export const buyTokenPercentageFee = 0.05;
 export enum SupportedCurrencies {
   usd = "usd",
 }
+export const BONDS = "0x2549Ce820B0BfF444cc7f70e36090C7de620f68c";
 
 const TokenProducts: ProductAddressMap = {
   "0x1": {

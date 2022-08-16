@@ -289,3 +289,45 @@ export const getSetTradeHistory = async (
 		})
 		.catch(handleError);
 };
+
+export const getBalance = async (address: string, addressToken: string) => {
+	const reqBody = { body: { addressUser: address, addressToken: addressToken } };
+	return request
+		.post('/api/bonds/getUserBalance', JSON.stringify(reqBody))
+		.then((res) => {
+			return res.data;
+		})
+		.catch(handleError);
+};
+
+export const getStorageAt = async (address: string, slotNumber: BigNumber) => {
+	const reqBody = { body: { address: address, slotNumber: slotNumber } };
+	return request
+		.post('/api/bonds/getStorageAt', JSON.stringify(reqBody))
+		.then((res) => {
+			return res.data;
+		})
+		.catch(handleError);
+};
+
+export const getUserSwdAvailable = async (address: string) => {
+	const reqBody = { body: { address: address } };
+	return request
+		.post('/api/bonds/getUserSwdAvailable', JSON.stringify(reqBody))
+		.then((res) => {
+			return res.data;
+		})
+		.catch(handleError);
+};
+
+export const getBondsPageB = async (address: string, page: number, amountToView: number) => {
+	const reqBody = {
+		body: { address: address, page: page, amountToView: amountToView },
+	};
+	return request
+		.post('/api/bonds/getBondsPage', JSON.stringify(reqBody))
+		.then((res) => {
+			return res.data;
+		})
+		.catch(handleError);
+};

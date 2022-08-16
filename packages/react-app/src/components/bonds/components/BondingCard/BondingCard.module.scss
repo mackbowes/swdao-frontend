@@ -184,28 +184,28 @@
 }
 
 .bondTableRow {
-    font-size: 8px;
+    font-size: 11px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    &:hover {
-        cursor: default;
-    }
 }
 
 .bondTablePages {
-    font-size: 8px;
+    font-size: 12px;
 
     width: 80%;
     margin: 1em auto;
-    &:hover {
-        cursor: pointer;
-    }
     ul {
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 1rem;
+    }
+    li::marker {
+        content: '';
+    }
+    a[role="button"][aria-disabled="true"] {
+        opacity: 0.25;
     }
 }
