@@ -10,6 +10,7 @@ import {
 	Tr,
 	Text,
 	Tooltip,
+	Heading,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai';
@@ -22,6 +23,9 @@ import { formatDate, formatNumber } from './TransactionsTable';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import React from 'react';
+import { useRecoilValue } from 'recoil';
+import { breakpointState } from '../../state';
+import classNames from './tradesTable.module.css';
 
 interface TradesMap {
 	[timeStamp: number]: Trade;
@@ -31,8 +35,8 @@ interface Trade {
 	component: string;
 	status: 'Open' | 'Closed';
 	side: 'Short' | 'Long';
-	entryPrice: number;
-	closePrice: number | undefined;
+	entryPrice: string;
+	closePrice: string | undefined;
 	pnl: number;
 	entry: number;
 	exit: number | undefined;
@@ -235,14 +239,81 @@ function TableRows(props: { unit: Trade }): JSX.Element {
 
 export function TradesTable(props: { symbol: string }): JSX.Element {
 	const { symbol } = props;
-	// let tradesMap: TradesMap = {}
-	const [tradesMap, setTradesMap] = useState<TradesMap>();
-	useEffect(() => {
-		getSetTradeHistory(symbol, 0, 19).then((r) => {
-			console.log(r);
-			setTradesMap(r);
-		});
-	}, []);
+	const breakpoint = useRecoilValue(breakpointState);
+	const tradesMap: TradesMap = {
+		'1654534989': {
+			component: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+			status: 'Closed',
+			side: 'Long',
+			entryPrice: '1856.64957',
+			closePrice: '1831.221181',
+			pnl: -1.3695847299821986,
+			entry: 1654534989,
+			entryHash: '0x909d763edbce2469b94a39fee96c081ecfe33bd0cb1d77b7802319a62b040f93',
+			exit: 1654637528,
+			exitHash: '0x11fcb99fecbd6c12fd7ec3485fdeadaf2fe52f013100e467a9f0f589aa718d26',
+			allocation: 100,
+		},
+		'1654674995': {
+			component: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+			status: 'Closed',
+			side: 'Long',
+			entryPrice: '1806.289377',
+			closePrice: '1341.911032',
+			pnl: -25.70896728470324,
+			entry: 1654674995,
+			entryHash: '0x65c312eef75c3a741de11d8d31cfbce824a2e75da690e6e9b6aa5630bb65e6e5',
+			exit: 1657988173,
+			exitHash: '0x049a35a1f159016f0bc390343f93730df1e0e59ee4df2b4a318330ab3376274b',
+			allocation: 100,
+		},
+		'1658001766': {
+			component: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+			status: 'Closed',
+			side: 'Long',
+			entryPrice: '1343.748929',
+			closePrice: '1353.59385',
+			pnl: 0.7326458676567165,
+			entry: 1658001766,
+			entryHash: '0xd183e49625f2e9e81f26f14260c3cf841b355b6a23369796bb067ece36784a97',
+			exit: 1658020429,
+			exitHash: '0x4ad4278122afa364f08ec35a186338a62bc3327409f4fc91e149783a9e90e192',
+			allocation: 100,
+		},
+		'1658103200': {
+			component: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+			status: 'Closed',
+			side: 'Long',
+			entryPrice: '1352.952393',
+			closePrice: '1476.225569',
+			pnl: 9.111420079361205,
+			entry: 1658103200,
+			entryHash: '0xf94042fe13acbe920c2cabf861e4a0c4fbd7488cb705d0a80c37e41bded3ea87',
+			exit: 1658136167,
+			exitHash: '0xcb087b4d20b8bd43906b5a5756f3f6bb49ead7da811d66e8f66dfae3d803ec7f',
+			allocation: 100,
+		},
+		'1658827835': {
+			component: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+			status: 'Closed',
+			side: 'Long',
+			entryPrice: '1420.496843',
+			closePrice: '1456.675513',
+			pnl: 2.546902527681296,
+			entry: 1658827835,
+			entryHash: '0x8ecb351bd3337c53fe097e3c55c2867bf3b338c84cd19929d4923887cd23d4e7',
+			exit: 1658915679,
+			exitHash: '0x533562f82c4e0c5f5d405cf6322f031fa2e5d22df457705db84d9b6fef13e18a',
+			allocation: 100,
+		},
+	};
+
+	// const [tradesMap, setTradesMap] = useState<TradesMap>();
+	// useEffect(() => {
+	// 	getSetTradeHistory(symbol, 0, 9).then((r) => {
+	// 		setTradesMap(r);
+	// 	});
+	// }, []);
 	let rows;
 
 	if (!tradesMap) {
@@ -269,6 +340,63 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 		const key = Object.keys(tradesMap);
 		key.sort((a, b) => timestampSorter(b, a));
 		rows = key.map((unit) => <TableRows unit={tradesMap[parseInt(unit)]} />);
+	}
+	if (breakpoint === 'sm') {
+		return (
+			<Box className={classNames.ttmb}>
+				<Text className={classNames.ttmh}>Recent Trades</Text>
+				<Box className={classNames.ttmt}>
+					<Box className={classNames.ttmg}>
+						<div>
+							<Text className={classNames.ttmtitle}>Entry</Text>
+							<Text className={classNames.ttmd}>
+								<a href="#">17 d 24 h ago</a>
+							</Text>
+						</div>
+						<div>
+							<Text className={classNames.ttmtitle}>Price</Text>
+							<Text>US$12,999.99</Text>
+						</div>
+						<div>
+							<Box className={classNames.ttmpnl}>
+								<Text className={classNames.ttmtitle}>Profit/Loss</Text>
+								<Text fontSize={'18px'} fontWeight="700">
+									53.99%
+								</Text>
+							</Box>
+						</div>
+						<div>
+							<Text className={classNames.ttmtitle}>Exit</Text>
+							<Text className={classNames.ttmd}>
+								<a href="#">18 d 24 h ago</a>
+							</Text>
+						</div>
+						<div>
+							<Text className={classNames.ttmtitle}>Price</Text>
+							<Text>US$12,999.99</Text>
+						</div>
+						<div>
+							<Text className={classNames.ttmtitle}>Side</Text>
+							<Side title="Short" />
+						</div>
+						<div>
+							<Text className={classNames.ttmtitle}>Position Size</Text>
+							<Text>100%</Text>
+						</div>
+						<div>
+							<Text className={classNames.ttmtitle}>Leverage</Text>
+							<Box height="17.45px">
+								<Leverage title="x1" />
+							</Box>
+						</div>
+						<div>
+							<Text className={classNames.ttmtitle}>Status</Text>
+							<Status status="Closed" />
+						</div>
+					</Box>
+				</Box>
+			</Box>
+		);
 	}
 
 	return (

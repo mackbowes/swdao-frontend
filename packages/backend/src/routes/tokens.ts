@@ -8,7 +8,11 @@ import {
 } from "express-validator";
 import NodeCache from "node-cache";
 import { ExtendedTokenDetailResponse, TokenDetailsResponse } from "src/types";
-import { getSingleTokenPrice, getTokenSetAllocation, getInfo } from "../utils/0x/main";
+import {
+  getSingleTokenPrice,
+  getTokenSetAllocation,
+  getInfo,
+} from "../utils/0x/main";
 import controllerAbi from "../abi/TokenSetController.json";
 import { AbiItem } from "web3-utils";
 import {
@@ -280,6 +284,14 @@ router.post("/getChart", async (req: Request, res: Response) => {
   const chart = tokenset
     ? await getChartTokenset(address, days)
     : await getChart0xToken(address, days);
+  let plusHours = 0;
+  if (days === 1) {
+    plusHours = 1
+  } else {
+    const jitter = Math.round((Math.random() - 0.5) * 5);
+    plusHours = 24 + jitter;
+  }
+  res.setHeader("X-Accel-Expires", (plusHours * 60 * 60).toString());
   res.status(chart ? 201 : 500).json(chart);
 });
 
@@ -293,18 +305,21 @@ router.post("/getSetTradeHistory", async (req: Request, res: Response) => {
   const history = tokenset
     ? await getSetTradeHistory(address, days, from, to)
     : undefined;
+  res.setHeader("X-Accel-Expires", (60 * 60).toString());
   res.status(history ? 201 : 500).json(history);
 });
 
 router.post("/getBalance", async (req: Request, res: Response) => {
   const { addressTokens, addressUser } = req.body;
   const data = await web3.alchemy.getTokenBalances(addressUser, addressTokens);
+  res.setHeader("X-Accel-Expires", "5");
   res.status(data ? 201 : 500).json(data);
 });
 
 router.post("/getPrices", async (req: Request, res: Response) => {
   const { address } = req.body;
   const price = await getSingleTokenPrice(address);
+  res.setHeader("X-Accel-Expires", (5 * 60).toString());
   res.status(price ? 201 : 500).json(price);
 });
 
@@ -316,12 +331,14 @@ router.post("/getInfo", async (req: Request, res: Response) => {
   );
   const tokenset = await setContract.methods.isSet(address).call();
   const info = await getInfo(address, tokenset);
+  res.setHeader("X-Accel-Expires", "5");
   res.status(info ? 201 : 500).json(info);
 });
 
 router.post("/getMetadata", async (req: Request, res: Response) => {
   const { address } = req.body;
   const data = await web3.alchemy.getTokenMetadata(address);
+  res.setHeader("X-Accel-Expires", "31536000");
   res.status(data ? 201 : 500).json(data);
 });
 

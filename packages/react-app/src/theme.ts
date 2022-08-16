@@ -167,7 +167,7 @@ const config = {
 			},
 			'.chakra-text a': {
 				color: '#fff',
-				textDecoration: 'underline',
+				// textDecoration: 'underline',
 			},
 			'.contentwrapper': {
 				width: '100%',
@@ -276,7 +276,7 @@ const config = {
 					ml: '1rem',
 					a: {
 						color: '#fff',
-						textDecoration: 'underline',
+						// textDecoration: 'underline',
 					},
 				},
 				strong: {
@@ -457,7 +457,7 @@ const config = {
 			ul: {
 				a: {
 					color: 'white',
-					textDecoration: 'underline',
+					// textDecoration: 'underline',
 				},
 			},
 			'.suggested-box': {
