@@ -193,6 +193,15 @@ const BondingCard = () => {
 				let approved = false;
 				for (let i = 0; i < 12 && !approved; i++) {
 					await new Promise((r) => setTimeout(r, 5000));
+					showToast(
+						'Checking Apprival',
+						{
+							title: 'Checking Apprival',
+							description: 'This may take up to 1 minute',
+							duration: 5000,
+						},
+						toast,
+					);
 					approved = (await approveCheck(ethersPack)).gte(amountDepositNum);
 				}
 				if (approved) {
@@ -217,7 +226,11 @@ const BondingCard = () => {
 			}
 		}
 		// DEPOSIT
-		showToast('Token deposit initiated', { title: 'Token deposit initiated' }, toast);
+		showToast(
+			'Token deposit initiated',
+			{ title: 'Token deposit initiated', duration: 5000 },
+			toast,
+		);
 		const result = await deposit(ethersPack, amountDepositNum);
 		if (result.code == 1) {
 			let success = false;
