@@ -6,7 +6,7 @@ import DepositButton from '../LiquidityMining/DepositButton';
 import WithdrawButton from '../LiquidityMining/WithdrawButton';
 import styles from './BondingCard.module.scss';
 import toast from 'react-hot-toast';
-// import ReactPaginate from 'react-paginate';
+import ReactPaginate from 'react-paginate';
 import { utils } from 'ethers';
 import {
 	getSwxBalance,
@@ -448,7 +448,7 @@ const BondingCard = () => {
 											color: `#AADCFE`,
 										}}
 									>
-										{/* <ReactPaginate
+										<ReactPaginate
 											previousLabel={'←'}
 											nextLabel={'→'}
 											onPageChange={handlePageClick}
@@ -456,7 +456,7 @@ const BondingCard = () => {
 											forcePage={bondsPage}
 											pageCount={Math.ceil(bondsTotal / amountToView)}
 											renderOnZeroPageCount={null}
-										/> */}
+										/>
 									</Box>
 								)}
 							</Box>

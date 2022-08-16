@@ -8,6 +8,7 @@ import Debug from "debug";
 import { createServer, Server } from "http";
 import { createAlchemyWeb3 } from "@alch/alchemy-web3";
 import { Alchemy, Network } from "alchemy-sdk";
+import { ethers } from "ethers";
 import { alchemyApiKey, alchemyKey } from "../settings";
 const debugModule = Debug("backend:server");
 
@@ -64,6 +65,12 @@ export const web3 = createAlchemyWeb3(
   "https://polygon-mainnet.g.alchemy.com/v2/" + alchemyApiKey
 );
 
+export const alchemyProvider = new Alchemy({
+  apiKey: alchemyKey,
+  network: Network.MATIC_MAINNET,
+});
+export const ethersProvider = new ethers.providers.AlchemyProvider("matic", alchemyKey);
+
 /**
  * Create HTTP server.
  */
@@ -73,8 +80,3 @@ const server: Server = createServer(app);
 server.listen(port);
 server.on("error", onError);
 server.on("listening", onListening);
-
-export const alchemyProvider = new Alchemy({
-  apiKey: alchemyKey,
-  network: Network.MATIC_MAINNET,
-});

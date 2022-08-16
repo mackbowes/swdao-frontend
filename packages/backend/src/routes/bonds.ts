@@ -1,12 +1,13 @@
-import { BigNumber, utils } from "ethers";
+import { BigNumber, ethers, utils } from "ethers";
 import express, { Request, Response, Router } from "express";
-import { alchemyProvider } from "../bin/www";
+import { alchemyProvider, ethersProvider } from "../bin/www";
 import { BONDS } from "../settings";
+import abiBonds from "../abi/AbiBonds.json";
 
 const router: Router = express.Router();
 
 router.post("/getUserBalance", async (req: Request, res: Response) => {
-  const { addressUser, addressToken } = JSON.parse(req.body);
+  const { addressUser, addressToken } = req.body;
   const balance = BigNumber.from(
     (await alchemyProvider.core.getTokenBalances(addressUser, [addressToken]))
       .tokenBalances[0].tokenBalance
@@ -15,7 +16,7 @@ router.post("/getUserBalance", async (req: Request, res: Response) => {
 });
 
 router.post("/getStorageAt", async (req: Request, res: Response) => {
-  const { address, slotNumber } = JSON.parse(req.body);
+  const { address, slotNumber } = req.body;
   const slot = await alchemyProvider.core.getStorageAt(
     address,
     BigNumber.from(slotNumber)
@@ -24,16 +25,15 @@ router.post("/getStorageAt", async (req: Request, res: Response) => {
 });
 
 router.post("/getUserSwdAvailable", async (req: Request, res: Response) => {
-  const { address, slotNumber } = JSON.parse(req.body);
-  const slot = await alchemyProvider.core.getStorageAt(
-    address,
-    BigNumber.from(slotNumber)
+  const { address } = req.body;
+  const available = BigNumber.from(
+    await (new ethers.Contract(BONDS, abiBonds, ethersProvider)).balanceAvailable(address)
   );
-  res.status(slot ? 201 : 500).json(slot);
+	res.status(available ? 201 : 500).json(available);
 });
 
 router.post("/getBondsPage", async (req: Request, res: Response) => {
-  const { address, page, amountToView: aTV } = JSON.parse(req.body);
+  const { address, page, amountToView: aTV } = req.body;
   let amountToView = aTV;
   const bondsArrayHashData = utils.concat([
     utils.zeroPad(address, 32),

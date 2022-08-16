@@ -1,22 +1,34 @@
 import { BigNumber, utils } from 'ethers';
-import {
-	getBalance,
-	getBondsPageB,
-	getStorageAt,
-	getUserSwdAvailable,
-} from '../../../../services/backend';
 import { SWX, SWD, BONDS } from '../../utils/const';
 
 export const getSwxBalance = async (address) => {
-	return await await getBalance(address, SWX);
+	const req = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ addressUser: address, addressToken: SWX }),
+	};
+	return await (await fetch('/api/bonds/getUserBalance', req)).json();
 };
 
 export const getSwdBalance = async (address) => {
-	return await await getBalance(address, SWD);
+	const req = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ addressUser: address, addressToken: SWD }),
+	};
+	return await (await fetch('/api/bonds/getUserBalance', req)).json();
 };
 
 export const getContractInfo = async () => {
-	const slot0 = await await getStorageAt(BONDS, BigNumber.from(0));
+	const req = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({
+			address: BONDS,
+			slotNumber: BigNumber.from(0),
+		}),
+	};
+	const slot0 = await (await fetch('/api/bonds/getStorageAt', req)).json();
 	const swdRemaining = BigNumber.from(utils.hexDataSlice(slot0, 22, 32));
 	const bonusMin = BigNumber.from(utils.hexDataSlice(slot0, 21, 22));
 	const bonusMax = BigNumber.from(utils.hexDataSlice(slot0, 20, 21));
@@ -33,9 +45,19 @@ export const getContractInfo = async () => {
 };
 
 export const getSwdAvailable = async (address) => {
-	return await await getUserSwdAvailable(address);
+	const req = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ address }),
+	};
+	return await (await fetch('/api/bonds/getUserSwdAvailable', req)).json();
 };
 
 export const getBondsPage = async (address, page, amountToView) => {
-	return await await getBondsPageB(address, page, amountToView);
+	const req = {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ address, page, amountToView }),
+	};
+	return await (await fetch('/api/bonds/getBondsPage', req)).json();
 };
