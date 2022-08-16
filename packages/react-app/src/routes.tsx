@@ -1,4 +1,5 @@
 import React from 'react';
+import { BondsPage } from './components/pages/BondsPage';
 import { NotFoundPage } from './components/pages/NotFoundPage';
 
 import { PortfolioPage } from './components/pages/PortfolioPage';
@@ -51,6 +52,10 @@ export const routeDetails: RouteDetails = {
 	'/portfolio': {
 		component: () => <PortfolioPage />,
 		title: () => 'SW DAO | Portfolio Balance',
+	},
+	'/bonds': {
+		component: () => <BondsPage />,
+		title: () => 'SW DAO | Bonds',
 	},
 };
 

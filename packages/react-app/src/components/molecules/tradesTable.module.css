@@ -1,0 +1,49 @@
+.ttmb {
+    display:flex;justify-content:center;padding-top:2.5rem;flex-direction:column;
+}
+
+.ttmh {
+    font-size:24px;align-self:center;
+}
+
+.ttmt {
+    width:100%;
+    height:156px;
+    background-color:#1D1055;
+    border-radius:1.25rem;
+    margin-top:2.5rem;
+}
+.ttmg {
+    display:grid ;
+    gap:1px ;
+    grid-template-columns:repeat(3,1fr) ;
+    justify-items:end;
+
+}
+
+.ttmpnl {
+    border:1px solid #1d1055;
+    border-radius:0 1.25rem 0 1.25rem;
+    width:94px;
+    height:57px;
+    background:#E53E3E;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.ttmd {
+    color: #5252ff;
+}
+
+.ttmtitle {font-size: 12px;}
+
+.ttmleverageBox {
+    width:50px;
+    display:flex;
+    background-color:#6CB221;
+    color:white;
+    padding: .2rem .5rem  .2rem .5rem;
+    border-radius:1rem;
+    justify-content:space-evenly;
+}

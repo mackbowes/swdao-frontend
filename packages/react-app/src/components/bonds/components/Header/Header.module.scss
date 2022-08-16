@@ -1,0 +1,26 @@
+.header {
+    max-width: '1440px';
+    margin: '0 auto';
+    font-weight: '400';
+    a {
+        font-size: 'sm';
+    }
+    button {
+        font-size: 'sm';
+    }
+    
+}
+.link {
+    color: 'bodytext';
+    .active {
+        color: 'white';
+    }
+    
+}
+.link:hover {
+    color: 'white',
+}
+.activelink {
+    color: 'white';
+    text-shadow: '.5px 0 .5px white';
+}
