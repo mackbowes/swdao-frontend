@@ -122,10 +122,10 @@ export function ModalMenu({
 								/>
 							</ListItem>
 							<ListItem>
-								<HeaderLink variant="list" page="Portfolio" isActive={pathKey === 'portfolio'} />
+								<HeaderLink variant="list" page="Bonds" isActive={pathKey === 'bonds'} />
 							</ListItem>
 							<ListItem>
-								<HeaderLink variant="list" page="Bonds" isActive={pathKey === 'bonds'} />
+								<HeaderLink variant="list" page="Portfolio" isActive={pathKey === 'portfolio'} />
 							</ListItem>
 							{/* <ListItem>
 								<Box {...listItemStyle}>

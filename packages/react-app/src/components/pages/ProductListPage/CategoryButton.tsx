@@ -18,6 +18,7 @@ const SLOGANS: Record<string, string> = {
 	ALL: 'Every product',
 	STRATEGIES: 'Outperform spot',
 	YIELD: 'Earn interest',
+	INDICES: 'Broad exposure',
 };
 
 export default function CategoryButton({

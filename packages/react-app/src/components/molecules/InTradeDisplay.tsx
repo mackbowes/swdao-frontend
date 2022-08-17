@@ -108,7 +108,10 @@ export function InTradeDisplay(props: Props): JSX.Element {
 		if (symbol === 'SWD') {
 			row = <div></div>;
 		}
-		if (PRODUCTS_BY_SYMBOL[symbol].category === 'YIELD') {
+		if (
+			PRODUCTS_BY_SYMBOL[symbol].category === 'YIELD' ||
+			PRODUCTS_BY_SYMBOL[symbol].category === 'INDICES'
+		) {
 			if (tokenDetails && tokenDetails[symbol]) {
 				if (dotOnly) {
 					row = (
