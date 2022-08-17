@@ -1,9 +1,17 @@
+.ttmmain {
+    display: flex;
+    flex-direction: column;
+    padding-top: 1rem;
+}
+
 .ttmb {
-    display:flex;justify-content:center;padding-top:2.5rem;flex-direction:column;
+    display:flex;
+    justify-content:center;flex-direction:column;
 }
 
 .ttmh {
-    font-size:24px;align-self:center;
+    font-size:24px;
+    align-self:center;
 }
 
 .ttmt {
@@ -15,21 +23,31 @@
 }
 .ttmg {
     display:grid ;
-    gap:1px ;
+    gap:5px ;
     grid-template-columns:repeat(3,1fr) ;
-    justify-items:end;
+    justify-items:start;
+    align-items: center;
+}
+.ttmg  > div {
+    padding-left: 1rem;
+}
+.ttmpnldiv {
+    justify-self: flex-end;
+    padding-left: 0 !important;
+
 
 }
-
 .ttmpnl {
     border:1px solid #1d1055;
     border-radius:0 1.25rem 0 1.25rem;
     width:94px;
     height:57px;
-    background:#E53E3E;
+    /* background:#E53E3E; */
     display:flex;
     flex-direction:column;
-    align-items:center;
+    align-items:flex-start;
+    justify-content: center;
+    padding-left: .5rem;
 }
 
 .ttmd {
@@ -47,3 +65,13 @@
     border-radius:1rem;
     justify-content:space-evenly;
 }
+
+.ttmjsc {
+    justify-self: center;
+}
+
+.ttmpdl {
+    padding-left: 1.5rem !important;
+}
+
+
