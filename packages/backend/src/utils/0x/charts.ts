@@ -5,6 +5,10 @@ import { getDecimals } from "./main";
 import { web3 } from "../../bin/www";
 import { PRECISION_REQUIRED } from "./exports";
 import { AbiItem } from "web3-utils";
+import SWXAbi from "../../abi/AbiSwx.json";
+import TPCAbi from "../../abi/TokenPriceController.json";
+import TPMAbi from "../../abi/TokenPriceManager.json";
+import { utils } from "ethers";
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -20,10 +24,12 @@ const getStepInfo = async (days: number) => {
   const stepSize = Math.round(stepTime / 2);
   stepTime = Math.round(stepTime);
   const timestamps = new Map();
+  const blocks = [];
   for (let i = 0; i <= stepCount; i++) {
     timestamps.set(thisBlock - stepSize * i, epochLastHour - stepTime * i);
+    blocks.push(thisBlock - stepSize * i);
   }
-  return { thisBlock, stepCount, stepSize, timestamps };
+  return { thisBlock, stepCount, stepSize, timestamps, blocks };
 };
 
 export const getChartTokenset = async (
@@ -225,3 +231,50 @@ export const getChart0xToken = async (address: string, days: any) => {
     .filter((p: number[]) => p[1] && p[1] !== 0 && p[0] !== 0)
     .reverse();
 };
+
+const SWX = "0x24Ec3C300Ff53b96937c39b686844dB9E471421e";
+
+export const getChartBalancer = async (days: any, index = 0) => {
+  const { timestamps, blocks } = await getStepInfo(
+    days
+  );
+  const swxContract = new web3.eth.Contract(SWXAbi as AbiItem[], SWX);
+  const prices = await Promise.all(blocks.reverse().map(async (b: number) => {
+    let price;
+    try {
+      price = +utils.formatUnits(
+        (await swxContract.methods.getValue().call(undefined, b))[index],
+        18
+      );
+    } catch (error) {
+      price = 0;
+    }
+    return [timestamps.get(b), price]
+  }));
+  return prices
+    .filter((p: number[]) => p[1] && p[1] !== 0 && p[0] !== 0);
+};
+
+/*
+const TPC = "0x8A46Eb6d66100138A5111b803189B770F5E5dF9a";
+
+export const getChartTpc = async (address: string, days: any) => {
+  const { timestamps, blocks } = await getStepInfo(
+    days
+  );
+  const tpcContract = new web3.eth.Contract(TPCAbi as AbiItem[], TPC);
+  const { symbol, decimals } =
+    await web3.alchemy.getTokenMetadata(address) as { symbol: string, decimals: number };
+  const tpmAddress = await tpcContract.methods.getManager(symbol.toUpperCase()).call();
+  const tpmContract = new web3.eth.Contract(TPMAbi as AbiItem[], tpmAddress);
+  const prices = await Promise.all(blocks.reverse().map(async (b: number) => {
+    const price = utils.formatUnits(
+      (await tpmContract.methods.getPrice(2).call(undefined, b))[0],
+      decimals
+    );
+    return [timestamps.get(b), price]
+  }));
+  return prices
+    .filter((p: number[]) => p[1] && p[1] !== 0 && p[0] !== 0);
+};
+*/

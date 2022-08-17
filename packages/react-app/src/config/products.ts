@@ -9,7 +9,7 @@ import { NftCollections } from '../components/organisms/AboutTokenSet/tokens/Nft
 import { PeiToken } from '../components/organisms/AboutTokenSet/tokens/PeiToken';
 import { QmTokens } from '../components/organisms/AboutTokenSet/tokens/QmTokens';
 import { SwapToken } from '../components/organisms/AboutTokenSet/tokens/SwapToken';
-//import { SwxToken } from '../components/organisms/AboutTokenSet/tokens/SwxToken';
+import { SwxToken } from '../components/organisms/AboutTokenSet/tokens/SwxToken';
 import { SwyfToken } from '../components/organisms/AboutTokenSet/tokens/SwyfToken';
 import { ProductSetupDescription } from '../types';
 
@@ -242,7 +242,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	// 	yearly_fee: '3',
 	// 	detail_pane: MiTokens,
 	// },
-	/* {
+	{
 		name: 'SW Index',
 		creationEpoch: 1656016132,
 		risk: 'three',
@@ -252,7 +252,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 		category: 'INDICES',
 		yearly_fee: '0',
 		detail_pane: SwxToken,
-	}, */
+	},
 	// {
 	// 	name: 'Polygon Ecosystem Index',
 	//  creationEpoch: 1650109806,

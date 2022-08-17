@@ -124,6 +124,9 @@ export function ModalMenu({
 							<ListItem>
 								<HeaderLink variant="list" page="Portfolio" isActive={pathKey === 'portfolio'} />
 							</ListItem>
+							<ListItem>
+								<HeaderLink variant="list" page="Bonds" isActive={pathKey === 'bonds'} />
+							</ListItem>
 							{/* <ListItem>
 								<Box {...listItemStyle}>
 									<A href="https://vote.swdao.org">

@@ -45,9 +45,32 @@ export const BUY_TOKENS = {
 	],
 };
 
-export const BUY_TOKENS_BY_SYMBOL = (chainId) => {
+export const BUY_TOKENS_BALANCER = {
+	'0x89': [
+		{
+			name: 'USDC',
+			ticker: 'USDC',
+			address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+			decimals: '6',
+		},
+		{
+			name: 'QME',
+			ticker: 'QME',
+			address: '0x9984D846a3Dc77aA0488F3758976b149E8475995',
+			decimals: '18',
+		},
+		{
+			name: 'SWYF',
+			ticker: 'SWYF',
+			address: '0xDC8d88d9E57CC7bE548F76E5e413C4838F953018',
+			decimals: '18',
+		},
+	],
+};
+
+export const BUY_TOKENS_BY_SYMBOL = (chainId, array = BUY_TOKENS) => {
 	const tokens = {};
-	BUY_TOKENS[chainId].map((t) => {
+	array[chainId].map((t) => {
 		tokens[t.ticker] = {
 			name: t.name,
 			address: t.address,

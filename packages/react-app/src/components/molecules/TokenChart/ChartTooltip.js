@@ -5,7 +5,7 @@ export default function ChartToolTip(props) {
 	if (!active || !payload || !payload[0]) {
 		return <></>;
 	}
-	const { timestamp, token, eth, compEth, btc, compBtc, compMATIC, matic, symbol } =
+	const { timestamp, token, eth, compEth, btc, compBtc, compMatic, matic, symbol } =
 		payload[0].payload;
 
 	const formatCurrency = (num) => {
@@ -72,7 +72,7 @@ export default function ChartToolTip(props) {
 					</Text>
 				</Box>
 			)}
-			{compMATIC && (
+			{compMatic && (
 				<Box>
 					<Text fontSize="md" color="maticcolor" d="inline-block" pr="0.5rem">
 						MATIC

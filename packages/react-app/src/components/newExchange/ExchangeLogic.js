@@ -1,24 +1,27 @@
-import { ethers, BigNumber } from 'ethers';
+import { ethers, BigNumber, constants } from 'ethers';
 import {
 	ZERO_EX_ISSUANCE,
 	ZERO_EX_PROXY,
+	BALANCER_VAULT,
 	SWD_TREASURY,
 	MATIC_ADDRESS,
 	WMATIC_ADDRESS,
+	BALANCER_POOL_IDS,
 } from './settings';
 import tokenABI from './abi/ERC20.json';
 import tokensetABI from './abi/TokenSet.json';
 import tokensetZeroExABI from './abi/ExchangeIssuanceZeroEx.json';
+import vaultABI from './abi/VaultAbi.json';
 
 const BASIC = '0x38E5462BBE6A72F79606c1A0007468aA4334A92b';
 const STANDARD = '0x3E7f7F520e4e52a0c139d77a5487586012C90F07';
 const DEBT = '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9';
 
-export const approve = async (tokenset, opts) => {
+export const approve = async (tokenset, useBalancerPool, opts) => {
 	let approval;
 	try {
 		approval = await new ethers.Contract(opts.tokenSend, tokenABI, opts.ethers.signer).approve(
-			tokenset ? ZERO_EX_ISSUANCE : ZERO_EX_PROXY,
+			useBalancerPool ? BALANCER_VAULT : tokenset ? ZERO_EX_ISSUANCE : ZERO_EX_PROXY,
 			opts.amountSend,
 		);
 	} catch (error) {
@@ -27,18 +30,24 @@ export const approve = async (tokenset, opts) => {
 	return { code: (await approval.wait()).status };
 };
 
-export const approveCheck = async (tokenset, opts) => {
+export const approveCheck = async (tokenset, useBalancerPool, opts) => {
 	if (opts.tokenSend == MATIC_ADDRESS) return opts.amountSend;
 	return await new ethers.Contract(opts.tokenSend, tokenABI, opts.ethers.provider).allowance(
 		opts.ethers.address,
-		tokenset ? ZERO_EX_ISSUANCE : ZERO_EX_PROXY,
+		useBalancerPool ? BALANCER_VAULT : tokenset ? ZERO_EX_ISSUANCE : ZERO_EX_PROXY,
 	);
 };
 
-export const trade = async (buySell, tokenset, opts) => {
-	if ((await approveCheck(tokenset, opts)).lt(opts.amountSend))
+export const trade = async (buySell, tokenset, useBalancerPool, opts) => {
+	if ((await approveCheck(tokenset, useBalancerPool, opts)).lt(opts.amountSend))
 		return { code: 4001, message: 'Not approved' };
-	return tokenset ? (buySell ? sellTokenset(opts) : buyTokenset(opts)) : buy0xToken(opts);
+	return useBalancerPool
+		? buyBalancerToken(opts)
+		: tokenset
+		? buySell
+			? sellTokenset(opts)
+			: buyTokenset(opts)
+		: buy0xToken(opts);
 };
 
 const buyTokenset = async (opts) => {
@@ -280,4 +289,31 @@ const buy0xToken = async (opts) => {
 		return error;
 	}
 	return { code: (await tradeTx.wait()).status };
+};
+
+const buyBalancerToken = async (opts) => {
+	const sellToken = opts.tokenSend == MATIC_ADDRESS ? constants.AddressZero : opts.tokenSend;
+	const buyToken = opts.tokenReceive == MATIC_ADDRESS ? constants.AddressZero : opts.tokenReceive;
+	const value = sellToken === constants.AddressZero ? BigNumber.from(opts.amountSend) : 0;
+	const vaultContract = new ethers.Contract(BALANCER_VAULT, vaultABI, opts.ethers.signer);
+	let swapTx;
+	try {
+		swapTx = await vaultContract.swap(
+			[
+				BALANCER_POOL_IDS[0],
+				opts.sendReceiveLastChanged ? '0' : '1',
+				sellToken,
+				buyToken,
+				opts.sendReceiveLastChanged ? opts.amountSend : opts.amountReceive,
+				'0x',
+			],
+			[opts.ethers.address, false, opts.ethers.address, false],
+			opts.sendReceiveLastChanged ? opts.amountReceive : opts.amountSend,
+			Math.round(new Date().getTime() / 1000) + 300,
+			{ value },
+		);
+	} catch (error) {
+		return error;
+	}
+	return { code: (await swapTx.wait()).status };
 };

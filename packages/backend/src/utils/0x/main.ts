@@ -5,6 +5,7 @@ import TokenSetABI from "../../abi/TokenSetABI.json";
 import ERC20ABI from "../../abi/ERC20.json";
 import tokenSetStreamingFeeABI from "../../abi/TokenSetStreamingFeeModule.json";
 import tokenSetIssueFeeABI from "../../abi/TokenSetIssueFeeModule.json";
+import swxAbi from "../../abi/AbiSwx.json";
 import { baseUrl0x } from "../../settings";
 import { web3 } from "../../bin/www";
 import {
@@ -16,6 +17,7 @@ import {
 } from "./exports";
 import { isUndefined } from "lodash";
 import { AssetTransfersCategory } from "@alch/alchemy-web3";
+import { BigNumber, utils } from "ethers";
 
 export const getDecimals = async (address: string) => {
   return (
@@ -63,6 +65,19 @@ export const getTokenSetAllocation = async (address: string) => {
 
 export const getSingleTokenPrice = async (address: string) => {
   address = address.toLowerCase();
+  if (address === '0x24ec3c300ff53b96937c39b686844db9e471421e') {
+    const swxContract = new web3.eth.Contract(
+      swxAbi as AbiItem[],
+      '0x24ec3c300ff53b96937c39b686844db9e471421e'
+    );
+    const price = +utils.formatUnits(BigNumber.from((await swxContract.methods.getValue().call())[0]), 18);
+    console.log(price);
+    return {
+      currentPrice: price,
+      changePercentDay: undefined,
+      allocationTable: {},
+    };
+  }
   if (address === "0x0000000000000000000000000000000000001010")
     address = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270";
   if (ADDRESSES.includes(address)) {

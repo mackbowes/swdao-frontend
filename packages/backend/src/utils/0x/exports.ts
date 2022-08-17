@@ -197,7 +197,7 @@ export const ALL_ADDRESSES: { [key: string]: string } = {
   SWEYF: "0x8fcdd8372b5bcd27524546ad02b198c899d8ab2a",
   SWMYF: "0x2c9227bf5fc806f94601ecaf5bc027cad801b3b6",
   SWYF: "0xdc8d88d9e57cc7be548f76e5e413c4838f953018",
-  // SWX: "0x24ec3c300ff53b96937c39b686844db9e471421e",
+  SWX: "0x24ec3c300ff53b96937c39b686844db9e471421e",
 };
 
 export const SYMBOLS = [
@@ -231,5 +231,5 @@ export const SYMBOLS = [
   "SWEYF",
   "SWMYF",
   "SWYF",
-  //   "SWX"
+  "SWX"
 ];

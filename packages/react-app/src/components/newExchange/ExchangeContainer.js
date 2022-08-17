@@ -1,15 +1,20 @@
 import { useWallet } from '@raidguild/quiver';
 import { BsInfoCircle } from 'react-icons/bs';
 import styles from './ExchangeContainer.module.scss';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { RiArrowDropDownLine } from 'react-icons/ri';
 import { useEffectOnce } from 'react-use';
 import { Box, Button, Spinner, Image } from '@chakra-ui/react';
 import BigNumberInput from './BigNumberInput';
-import { BigNumber, utils } from 'ethers';
+import { ethers, BigNumber, utils, constants } from 'ethers';
 import { trade, approve, approveCheck } from './ExchangeLogic';
-import { MATIC_ADDRESS, COMMON_DECIMALS } from './settings';
-import { BUY_TOKENS, BUY_TOKENS_BY_SYMBOL } from './buyTokens';
+import { BALANCER_VAULT, MATIC_ADDRESS, SWD_TREASURY } from './settings';
+import {
+	BUY_TOKENS as buyTokensTemp,
+	BUY_TOKENS_BY_SYMBOL as buyTokensBySymbolTemp,
+	BUY_TOKENS_BALANCER,
+} from './buyTokens';
+import vaultAbi from './abi/VaultAbi.json';
 
 const limitDecimals = (num) => {
 	const parts = num.split('.');
@@ -20,6 +25,11 @@ const limitDecimals = (num) => {
 export default function ExchangeContainer(props) {
 	const { tokenPrice, contract, height, width } = props;
 	const { tokenAddress, tokenTicker, tokenChainId = '0x89', tokenset } = contract;
+	const BUY_TOKENS =
+		tokenAddress.toLowerCase() === '0x24ec3c300ff53b96937c39b686844db9e471421e'
+			? BUY_TOKENS_BALANCER
+			: buyTokensTemp;
+	const BUY_TOKENS_BY_SYMBOL = (chainIdTemp) => buyTokensBySymbolTemp(chainIdTemp, BUY_TOKENS);
 	const [tokenDecimals, setTokenDecimals] = useState(tokenset ? 18 : undefined);
 	const { provider, connectWallet: connectProvider, address } = useWallet();
 	const signer = !provider ? undefined : provider.getSigner();
@@ -48,8 +58,12 @@ export default function ExchangeContainer(props) {
 	const [tradeCompleting, setTradeCompleting] = useState(false);
 	const [tradeCompleted, setTradeCompleted] = useState(false);
 	const [priceGetterRunning, setPriceGetterRunning] = useState(false);
+	const [inBalancerPool, setInBalancerPool] = useState();
+	const [useBalancerPool, setUseBalancerPool] = useState(false);
+	const [triggerUpdate, setTriggerUpdate] = useState(false);
+	const inputTimeout = useRef(0);
 
-	// Find decimals for 0x token products
+	// Find decimals for 0x token products, and detect if the token is in the Balancer pool
 	useEffectOnce(() => {
 		if (!tokenDecimals) {
 			const req = {
@@ -60,6 +74,18 @@ export default function ExchangeContainer(props) {
 			fetch('/api/tokens/getMetadata', req).then((resultMetadata) => {
 				resultMetadata.json().then((resultJson) => {
 					setTokenDecimals(resultJson.decimals);
+				});
+			});
+		}
+		if (typeof inBalancerPool === 'undefined') {
+			const req = {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({}),
+			};
+			fetch('/api/tokens/getBalancerPoolTokens', req).then((resultTokens) => {
+				resultTokens.json().then((resultJson) => {
+					setInBalancerPool(tokenAddress.toLowerCase() in resultJson);
 				});
 			});
 		}
@@ -85,6 +111,124 @@ export default function ExchangeContainer(props) {
 		}
 	};
 
+	const calculateTransaction = async (sendReceive, slippagePercent = 2) => {
+		const selectedTokenInfo = BUY_TOKENS_BY_SYMBOL(tokenChainId)[selectedToken];
+		const sendDecimals = buySell ? tokenDecimals : selectedTokenInfo.decimals;
+		const receiveDecimals = buySell ? selectedTokenInfo.decimals : tokenDecimals;
+		const tokenSend = buySell ? tokenAddress : selectedTokenInfo.address;
+		const amountSend =
+			inputSend.length > 0 ? utils.parseUnits(inputSend, sendDecimals) : BigNumber.from(0);
+		const tokenReceive = buySell ? selectedTokenInfo.address : tokenAddress;
+		const amountReceive =
+			inputReceive.length > 0 ? utils.parseUnits(inputReceive, receiveDecimals) : BigNumber.from(0);
+		const sellToken = tokenSend == MATIC_ADDRESS ? 'MATIC' : tokenSend;
+		const buyToken = tokenReceive == MATIC_ADDRESS ? 'MATIC' : tokenReceive;
+		let amountOther = 0;
+		const vaultContract = new ethers.Contract(BALANCER_VAULT, vaultAbi, provider);
+		if (tokenset) {
+			if (sendReceive) {
+				// Receive
+				const s = (100 - slippagePercent) / 100;
+				amountOther = buySell
+					? (((+inputSend * tokenPrice.currentPrice) / tokenPrices[selectedToken]) * s)
+							.toFixed(BUY_TOKENS_BY_SYMBOL(tokenChainId)[selectedToken].decimals)
+							.toString()
+					: (((+inputSend * tokenPrices[selectedToken]) / tokenPrice.currentPrice) * s)
+							.toFixed(tokenDecimals)
+							.toString();
+				setInputReceive(amountOther);
+				amountOther = utils.parseUnits(
+					amountOther,
+					buySell ? BUY_TOKENS_BY_SYMBOL(tokenChainId)[selectedToken].decimals : tokenDecimals,
+				);
+			} else {
+				// Send
+				const s = (100 + slippagePercent) / 100;
+				amountOther = buySell
+					? (((+inputReceive * tokenPrices[selectedToken]) / tokenPrice.currentPrice) * s)
+							.toFixed(tokenDecimals)
+							.toString()
+					: (((+inputReceive * tokenPrice.currentPrice) / tokenPrices[selectedToken]) * s)
+							.toFixed(BUY_TOKENS_BY_SYMBOL(tokenChainId)[selectedToken].decimals)
+							.toString();
+				setInputSend(amountOther);
+				amountOther = utils.parseUnits(
+					amountOther,
+					buySell ? tokenDecimals : BUY_TOKENS_BY_SYMBOL(tokenChainId)[selectedToken].decimals,
+				);
+			}
+		} else {
+			const buyTokenPercentageFee = tokenReceive == MATIC_ADDRESS ? '0' : '0.001';
+			const zeroExURL =
+				'https://polygon.api.0x.org/swap/v1/quote?intentOnFilling=true&enableSlippageProtection=true&sellToken=' +
+				sellToken +
+				'&buyToken=' +
+				buyToken +
+				'&buyTokenPercentageFee=' +
+				buyTokenPercentageFee +
+				'&feeRecipient=' +
+				SWD_TREASURY +
+				(sendReceive ? '&sellAmount=' + amountSend : '&buyAmount=' + amountReceive);
+			const {
+				buyAmount: zeroExBuyAmount = 0,
+				sellAmount: zeroExSellAmount = constants.MaxUint256,
+			} = await (await fetch(zeroExURL)).json();
+			const zeroExAmount = BigNumber.from(sendReceive ? zeroExBuyAmount : zeroExSellAmount);
+			if (inBalancerPool) {
+				const req = {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ sendReceive, sellToken, buyToken, amountSend, amountReceive }),
+				};
+				const { 0: sellAmountRaw, 1: buyAmountRaw } = await (
+					await fetch('/api/tokens/getBalancerPoolTradeAmounts', req)
+				).json();
+				const s = sendReceive ? 100 - slippagePercent : 100 + slippagePercent;
+				if (sendReceive) {
+					const buyAmount = BigNumber.from(buyAmountRaw);
+					if (zeroExAmount.gt(buyAmount)) {
+						setInputReceive(utils.formatUnits(zeroExAmount.mul(s).div(100), receiveDecimals));
+						setUseBalancerPool(false);
+					} else {
+						setInputReceive(utils.formatUnits(buyAmount.mul(s).div(100), receiveDecimals));
+						setUseBalancerPool(true);
+					}
+				} else {
+					const sellAmount = BigNumber.from(sellAmountRaw);
+					if (zeroExAmount.lt(sellAmount)) {
+						setInputSend(utils.formatUnits(zeroExAmount.mul(s).div(100), sendDecimals));
+						setUseBalancerPool(false);
+					} else {
+						setInputSend(utils.formatUnits(sellAmount.mul(s).div(100), sendDecimals));
+						setUseBalancerPool(true);
+					}
+				}
+			} else {
+				sendReceive
+					? setInputReceive(utils.formatUnits(zeroExAmount, receiveDecimals))
+					: setInputSend(utils.formatUnits(zeroExAmount, sendDecimals));
+				setUseBalancerPool(false);
+			}
+			return;
+		}
+		if (!inBalancerPool) return;
+		const req = {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ sendReceive, sellToken, buyToken, amountSend, amountReceive }),
+		};
+		const { 0: sellAmountRaw, 1: buyAmountRaw } = await (
+			await fetch('/api/tokens/getBalancerPoolTradeAmounts', req)
+		).json();
+		setUseBalancerPool(
+			sendReceive ? amountOther.lte(buyAmountRaw) : amountOther.gte(sellAmountRaw),
+		);
+	};
+
+	useEffect(() => {
+		console.log(useBalancerPool);
+	}, [useBalancerPool]);
+
 	// Continually update prices
 	useEffectOnce(() => {
 		if (!priceGetterRunning) {
@@ -106,16 +250,18 @@ export default function ExchangeContainer(props) {
 			)
 		)
 			return;
-		setInputReceive(
-			buySell
-				? (((+inputSend * tokenPrice.currentPrice) / tokenPrices[selectedToken]) * 0.98)
-						.toFixed(BUY_TOKENS_BY_SYMBOL(tokenChainId)[selectedToken].decimals)
-						.toString()
-				: (((+inputSend * tokenPrices[selectedToken]) / tokenPrice.currentPrice) * 0.98)
-						.toFixed(tokenDecimals)
-						.toString(),
-		);
-	}, [inputSend, tokenPrices[selectedToken], tokenBalances[selectedToken], tokenDecimals]);
+		if (inputTimeout.current !== 0) {
+			setInputReceive('');
+			return;
+		}
+		calculateTransaction(true);
+	}, [
+		inputSend,
+		tokenPrices[selectedToken],
+		tokenBalances[selectedToken],
+		tokenDecimals,
+		triggerUpdate,
+	]);
 
 	useEffect(() => {
 		if (
@@ -129,16 +275,18 @@ export default function ExchangeContainer(props) {
 			)
 		)
 			return;
-		setInputSend(
-			buySell
-				? (((+inputReceive * tokenPrices[selectedToken]) / tokenPrice.currentPrice) * 1.02)
-						.toFixed(tokenDecimals)
-						.toString()
-				: (((+inputReceive * tokenPrice.currentPrice) / tokenPrices[selectedToken]) * 1.02)
-						.toFixed(BUY_TOKENS_BY_SYMBOL(tokenChainId)[selectedToken].decimals)
-						.toString(),
-		);
-	}, [inputReceive, tokenPrices[selectedToken], tokenBalances[selectedToken], tokenDecimals]);
+		if (inputTimeout.current !== 0) {
+			setInputSend('');
+			return;
+		}
+		calculateTransaction(false);
+	}, [
+		inputReceive,
+		tokenPrices[selectedToken],
+		tokenBalances[selectedToken],
+		tokenDecimals,
+		triggerUpdate,
+	]);
 
 	// Construct trade options
 	useEffect(() => {
@@ -230,7 +378,7 @@ export default function ExchangeContainer(props) {
 
 	useEffect(() => {
 		if (initiateTrade) {
-			approveCheck(tokenset, tradeOpts).then((approved) =>
+			approveCheck(tokenset, useBalancerPool, tradeOpts).then((approved) =>
 				setTradeApproved(approved.gte(tradeOpts.amountSend)),
 			);
 		} else {
@@ -238,9 +386,13 @@ export default function ExchangeContainer(props) {
 		}
 	}, [initiateTrade]);
 
-	const handleInput = (value, sendReceive) => {
+	const handleInput = async (value, sendReceive) => {
+		inputTimeout.current++;
 		setSendReceiveLastChanged(sendReceive);
 		sendReceive ? setInputReceive(value) : setInputSend(value);
+		await new Promise((r) => setTimeout(r, 1000));
+		inputTimeout.current--;
+		if (inputTimeout.current === 0) setTriggerUpdate(!triggerUpdate);
 	};
 
 	const handleCurrencySelect = (token) => {
@@ -265,12 +417,14 @@ export default function ExchangeContainer(props) {
 
 	const handleApproval = () => {
 		setTradeApproving(true);
-		approve(tokenset, tradeOpts).then(async (result) => {
+		approve(tokenset, useBalancerPool, tradeOpts).then(async (result) => {
 			if (result.code == 1) {
 				let approved;
 				for (let i = 0; i < 12 && !approved; i++) {
 					await new Promise((r) => setTimeout(r, 5000));
-					approved = (await approveCheck(tokenset, tradeOpts)).gte(tradeOpts.amountSend);
+					approved = (await approveCheck(tokenset, useBalancerPool, tradeOpts)).gte(
+						tradeOpts.amountSend,
+					);
 				}
 				if (approved) {
 					setTradeApproved(true);
@@ -291,7 +445,7 @@ export default function ExchangeContainer(props) {
 	const handleTrade = () => {
 		setTradeCompleting(true);
 		const tradeOptsCached = tradeOpts;
-		trade(buySell, tokenset, tradeOptsCached).then(async (result) => {
+		trade(buySell, tokenset, useBalancerPool, tradeOptsCached).then(async (result) => {
 			if (result.code == 1) {
 				let success;
 				let newBalances;
