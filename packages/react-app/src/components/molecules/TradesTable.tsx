@@ -237,7 +237,7 @@ function TableRows(props: { unit: Trade; breakpoint: string; index: number }): J
 						<div className={classNames.ttmpdl}>
 							<Text className={classNames.ttmtitle}>Side</Text>
 
-							<Side title={unit.side} h="17.45" />
+							<Side title={unit.side} h="20px" />
 						</div>
 						<div>
 							<Text className={classNames.ttmtitle}>Position Size</Text>
@@ -333,77 +333,16 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 	const { symbol } = props;
 	const breakpoint = useRecoilValue(breakpointState);
 	const [isLoading, setIsLoading] = useState(false);
-	// const tradesMap: TradesMap = {
-	// 	'1654534989': {
-	// 		component: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-	// 		status: 'Closed',
-	// 		side: 'Long',
-	// 		entryPrice: '1856.64957',
-	// 		closePrice: '1831.221181',
-	// 		pnl: -1.3695847299821986,
-	// 		entry: 1654534989,
-	// 		entryHash: '0x909d763edbce2469b94a39fee96c081ecfe33bd0cb1d77b7802319a62b040f93',
-	// 		exit: 1654637528,
-	// 		exitHash: '0x11fcb99fecbd6c12fd7ec3485fdeadaf2fe52f013100e467a9f0f589aa718d26',
-	// 		allocation: 100,
-	// 	},
-	// 	'1654674995': {
-	// 		component: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-	// 		status: 'Closed',
-	// 		side: 'Long',
-	// 		entryPrice: '1806.289377',
-	// 		closePrice: '1341.911032',
-	// 		pnl: -25.70896728470324,
-	// 		entry: 1654674995,
-	// 		entryHash: '0x65c312eef75c3a741de11d8d31cfbce824a2e75da690e6e9b6aa5630bb65e6e5',
-	// 		exit: 1657988173,
-	// 		exitHash: '0x049a35a1f159016f0bc390343f93730df1e0e59ee4df2b4a318330ab3376274b',
-	// 		allocation: 100,
-	// 	},
-	// 	'1658001766': {
-	// 		component: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-	// 		status: 'Closed',
-	// 		side: 'Long',
-	// 		entryPrice: '1343.748929',
-	// 		closePrice: '1353.59385',
-	// 		pnl: 0.7326458676567165,
-	// 		entry: 1658001766,
-	// 		entryHash: '0xd183e49625f2e9e81f26f14260c3cf841b355b6a23369796bb067ece36784a97',
-	// 		exit: 1658020429,
-	// 		exitHash: '0x4ad4278122afa364f08ec35a186338a62bc3327409f4fc91e149783a9e90e192',
-	// 		allocation: 100,
-	// 	},
-	// 	'1658103200': {
-	// 		component: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-	// 		status: 'Closed',
-	// 		side: 'Long',
-	// 		entryPrice: '1352.952393',
-	// 		closePrice: '1476.225569',
-	// 		pnl: 9.111420079361205,
-	// 		entry: 1658103200,
-	// 		entryHash: '0xf94042fe13acbe920c2cabf861e4a0c4fbd7488cb705d0a80c37e41bded3ea87',
-	// 		exit: 1658136167,
-	// 		exitHash: '0xcb087b4d20b8bd43906b5a5756f3f6bb49ead7da811d66e8f66dfae3d803ec7f',
-	// 		allocation: 100,
-	// 	},
-	// 	'1658827835': {
-	// 		component: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-	// 		status: 'Closed',
-	// 		side: 'Long',
-	// 		entryPrice: '1420.496843',
-	// 		closePrice: '1456.675513',
-	// 		pnl: 2.546902527681296,
-	// 		entry: 1658827835,
-	// 		entryHash: '0x8ecb351bd3337c53fe097e3c55c2867bf3b338c84cd19929d4923887cd23d4e7',
-	// 		exit: 1658915679,
-	// 		exitHash: '0x533562f82c4e0c5f5d405cf6322f031fa2e5d22df457705db84d9b6fef13e18a',
-	// 		allocation: 100,
-	// 	},
-	// };
 
 	const [tradesMap, setTradesMap] = useState<TradesMap>();
+	let amountToFetch = 11;
+	let amountPerPage = 3;
+	if (breakpoint === 'sm') {
+		amountToFetch = 9;
+		amountPerPage = 3;
+	}
 	useEffect(() => {
-		getSetTradeHistory(symbol, 0, breakpoint === 'sm' ? 5 : 9).then((r) => {
+		getSetTradeHistory(symbol, 0, amountToFetch).then((r) => {
 			setTradesMap(r);
 		});
 	}, []);
@@ -421,9 +360,8 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 		endIndex,
 	} = usePagination({
 		totalItems: key?.length,
-		initialPageSize: breakpoint === 'sm' ? 3 : 5,
+		initialPageSize: amountPerPage,
 	});
-
 	const loadMore = () => {
 		setIsLoading(true);
 		if (!key) return;
@@ -484,6 +422,69 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 			<Box className={classNames.ttmmain}>
 				<Text className={classNames.ttmh}>Recent Trades</Text>
 				<Box>{rows}</Box>
+				<Box
+					display="inline-grid"
+					alignItems="center"
+					justifyContent="center"
+					gridTemplateRows="auto"
+					// gridTemplateColumns="1fr 2fr 1fr .5fr 1fr 1.5fr"
+					gridAutoFlow="column"
+					width="100%"
+				>
+					<Button
+						onClick={setPreviousPage}
+						disabled={!previousEnabled}
+						padding="0.75rem"
+						fontSize="0.8rem"
+						height="0.85rem"
+						gridColumn="2"
+						minWidth=""
+						maxWidth="6rem"
+						width="100%"
+						justifySelf="right"
+					>
+						← Previous
+					</Button>
+					<Text
+						padding=".5rem"
+						textColor="white"
+						gridColumn="3"
+						minWidth=""
+						maxWidth="7.5rem"
+						justifySelf="center"
+					>
+						Page {currentPage + 1}&nbsp;of&nbsp;{totalPages}
+						{/* {tradesMap && key ? lastPage(tradesMap[parseInt(key[0])].len, breakpoint) : 0} */}
+					</Text>
+					<Button
+						onClick={setNextPage}
+						disabled={!nextEnabled}
+						padding="0.75rem"
+						fontSize="0.8rem"
+						height="0.85rem"
+						gridColumn="4"
+						minWidth=""
+						maxWidth="6rem"
+						width="100%"
+						justifySelf="left"
+					>
+						Next →
+					</Button>
+					{/* <Button
+						onClick={() => loadMore()}
+						disabled={false}
+						padding="0.75rem"
+						fontSize="0.8rem"
+						height="0.85rem"
+						gridColumn="5"
+						minWidth=""
+						maxWidth="6rem"
+						width="100%"
+						justifySelf="left"
+					>
+						Load More {isLoading ? <Spinner /> : null}
+					</Button> */}
+				</Box>
 			</Box>
 		);
 	}
@@ -568,8 +569,8 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 						maxWidth="7.5rem"
 						justifySelf="center"
 					>
-						Page {currentPage + 1}&nbsp;of&nbsp;
-						{tradesMap && key ? lastPage(tradesMap[parseInt(key[0])].len, breakpoint) : 0}
+						Page {currentPage + 1}&nbsp;of&nbsp;{totalPages}
+						{/* {tradesMap && key ? lastPage(tradesMap[parseInt(key[0])].len, breakpoint) : 0} */}
 					</Text>
 					<Button
 						onClick={setNextPage}
@@ -585,7 +586,7 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 					>
 						Next →
 					</Button>
-					<Button
+					{/* <Button
 						onClick={() => loadMore()}
 						disabled={false}
 						padding="0.75rem"
@@ -598,7 +599,7 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 						justifySelf="left"
 					>
 						Load More {isLoading ? <Spinner /> : null}
-					</Button>
+					</Button> */}
 				</Box>
 			</Box>
 		</Box>
