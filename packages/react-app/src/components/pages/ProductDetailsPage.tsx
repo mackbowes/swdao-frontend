@@ -160,7 +160,7 @@ export function ProductDetailsPage({ symbol }: { symbol: string }): JSX.Element 
 
 	function AddToMetamaskButton() {
 		if (product?.address) {
-			return <AddToWalletButton address={product?.address} symbol={symbol} />;
+			return <AddToWalletButton address={product?.address[0]} symbol={symbol} />;
 		}
 		return null;
 	}
