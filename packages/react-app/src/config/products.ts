@@ -244,7 +244,7 @@ export const PRODUCTS: ProductSetupDescription[] = [
 	// },
 	{
 		name: 'SW Index',
-		creationEpoch: 1656016132,
+		creationEpoch: 1659229261,
 		risk: 'three',
 		symbol: 'SWX',
 		addresses: { '0x89': '0x24ec3c300ff53b96937c39b686844db9e471421e' },
