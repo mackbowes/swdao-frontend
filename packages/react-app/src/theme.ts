@@ -165,10 +165,10 @@ const config = {
 				maxWidth: '1440px',
 				margin: '0 auto',
 			},
-			'.chakra-text a': {
-				color: '#fff',
-				// textDecoration: 'underline',
-			},
+			// '.chakra-text a': {
+			// 	color: '#fff',
+			// textDecoration: 'underline',
+			// },
 			'.contentwrapper': {
 				width: '100%',
 				height: '100%',

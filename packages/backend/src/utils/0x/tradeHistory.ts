@@ -12,6 +12,7 @@ interface TradesMap {
 }
 
 interface Trade {
+  len: number;
   component: string;
   status: "Open" | "Closed";
   side: "Short" | "Long";
@@ -127,6 +128,7 @@ const processTrade = (trade: any) => {
   let index = 0;
   const tradesMap: TradesMap = {};
   let temp: Trade = {
+    len: 0,
     component: "",
     status: "Open",
     side: "Long",
@@ -167,6 +169,7 @@ const processTrade = (trade: any) => {
     if (temp.exit && temp.component !== "") {
       tradesMap[temp.entry] = temp;
       temp = {
+        len: 0,
         component: "",
         status: "Open",
         side: "Long",
@@ -216,11 +219,12 @@ const getPrice = async (
   return r; // returns [price, decimals] returned from const price = axios
 };
 
-const addPnL = async (tradesMap: TradesMap) => {
+const addPnL = async (tradesMap: TradesMap, len: number) => {
   const blockNow = await web3.eth.getBlockNumber();
   let previous: number = 0;
   for (const ts of Object.keys(tradesMap)) {
     const trade = tradesMap[ts];
+    trade.len = len;
     if (!trade.closePrice) {
       await getPrice(trade.component, trade.entryBlock, blockNow).then(
         async (d) => {
@@ -292,6 +296,6 @@ export const getSetTradeHistory = async (
   const logs = await getLogs(address, days);
   const trade = await SetTradeHistory(logs, from, to, address);
   const tradesMap = processTrade(trade);
-  return await addPnL(tradesMap);
+  return await addPnL(tradesMap, logs.size);
 };
 export default getSetTradeHistory;
