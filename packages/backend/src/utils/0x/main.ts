@@ -41,6 +41,23 @@ const getTotalSupply = async (address: string) => {
       10 ** 18
     );
   } else {
+    if (address.toLowerCase() === "0x24Ec3C300Ff53b96937c39b686844dB9E471421e") {
+      return (
+        (
+          await new web3.eth.Contract(
+            swxAbi as AbiItem[],
+            '0x24ec3c300ff53b96937c39b686844db9e471421e'
+          ).methods
+          .getCirculatingSupply()
+          .call((err: any, res: any) => {
+            if (err) {
+              console.log("An error occurred", err);
+            }
+            return res;
+          })
+        ) / 10 ** 18
+      );
+    }
     return HARDCODED_SUPPLY[address.toLowerCase()] || 0;
   }
 };
