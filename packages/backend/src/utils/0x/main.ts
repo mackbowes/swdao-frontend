@@ -41,7 +41,7 @@ const getTotalSupply = async (address: string) => {
       10 ** 18
     );
   } else {
-    if (address.toLowerCase() === "0x24Ec3C300Ff53b96937c39b686844dB9E471421e") {
+    if (address.toLowerCase() === "0x24ec3c300ff53b96937c39b686844db9e471421e") {
       return (
         (
           await new web3.eth.Contract(
