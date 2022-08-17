@@ -542,7 +542,7 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 					alignItems="center"
 					justifyContent="center"
 					gridTemplateRows="auto"
-					gridTemplateColumns="1fr 2fr 1fr 2fr 1fr"
+					gridTemplateColumns="1fr 2fr 1fr .5fr 1fr 1.5fr"
 					gridAutoFlow="column"
 					width="100%"
 				>
@@ -572,20 +572,6 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 						{tradesMap && key ? lastPage(tradesMap[parseInt(key[0])].len, breakpoint) : 0}
 					</Text>
 					<Button
-						onClick={() => loadMore()}
-						disabled={false}
-						padding="0.75rem"
-						fontSize="0.8rem"
-						height="0.85rem"
-						gridColumn="4"
-						minWidth=""
-						maxWidth="6rem"
-						width="100%"
-						justifySelf="left"
-					>
-						Load More {isLoading ? <Spinner /> : null}
-					</Button>
-					<Button
 						onClick={setNextPage}
 						disabled={!nextEnabled}
 						padding="0.75rem"
@@ -598,6 +584,20 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 						justifySelf="left"
 					>
 						Next →
+					</Button>
+					<Button
+						onClick={() => loadMore()}
+						disabled={false}
+						padding="0.75rem"
+						fontSize="0.8rem"
+						height="0.85rem"
+						gridColumn="5"
+						minWidth=""
+						maxWidth="6rem"
+						width="100%"
+						justifySelf="left"
+					>
+						Load More {isLoading ? <Spinner /> : null}
 					</Button>
 				</Box>
 			</Box>
