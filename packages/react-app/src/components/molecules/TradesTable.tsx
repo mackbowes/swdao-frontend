@@ -335,7 +335,7 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [tradesMap, setTradesMap] = useState<TradesMap>();
-	let amountToFetch = 11;
+	let amountToFetch = 19;
 	let amountPerPage = 3;
 	if (breakpoint === 'sm') {
 		amountToFetch = 9;
