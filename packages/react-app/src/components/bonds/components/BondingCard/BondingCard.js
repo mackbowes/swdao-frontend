@@ -194,9 +194,9 @@ const BondingCard = () => {
 				for (let i = 0; i < 12 && !approved; i++) {
 					await new Promise((r) => setTimeout(r, 5000));
 					showToast(
-						'Checking Apprival',
+						'Checking Approval',
 						{
-							title: 'Checking Apprival',
+							title: 'Checking Approval',
 							description: 'This may take up to 1 minute',
 							duration: 5000,
 						},
