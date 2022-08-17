@@ -41,6 +41,7 @@ export const PERIODS = Object.keys(TIME_PERIODS);
 interface TimeFilterProps {
 	period: string;
 	onClick: React.Dispatch<React.SetStateAction<string>>;
+	disabled: boolean;
 	active: boolean;
 }
 
@@ -49,7 +50,12 @@ interface TimeFilterProps {
 // 	onClick: (period: string) => void;
 // }
 
-export default function TimeFilter({ period, onClick, active }: TimeFilterProps): JSX.Element {
+export default function TimeFilter({
+	period,
+	onClick,
+	disabled,
+	active,
+}: TimeFilterProps): JSX.Element {
 	// get next index, wrapping around
 	const key = period.toUpperCase();
 	const { icon, label } = TIME_PERIODS[key];
@@ -75,6 +81,7 @@ export default function TimeFilter({ period, onClick, active }: TimeFilterProps)
 			display="flex"
 			onClick={() => onClick(period)}
 			backgroundColor="transparent"
+			disabled={disabled}
 		>
 			{icon}&nbsp;{label}
 		</Button>

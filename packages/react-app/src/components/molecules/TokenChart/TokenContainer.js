@@ -222,7 +222,7 @@ export default function TokenContainer(props) {
 					<TimeFilter
 						period={current}
 						active={current === period}
-						onClick={setPeriod}
+						onClick={disabled ? () => void 0 : setPeriod}
 						key={current}
 						disabled={disabled}
 						label={label}
