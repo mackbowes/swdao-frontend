@@ -25,7 +25,6 @@ import {
 import { approve, approveCheck, deposit, withdraw } from './LogicTx';
 import BigNumberInput from '../LiquidityMining/BigNumberInput';
 import { BigNumber } from 'ethers';
-import { camelCase } from 'lodash';
 
 const formatNumber = (n, length = 7) => {
 	if (typeof n === 'string') n = parseFloat(n, 10);
@@ -183,7 +182,7 @@ const BondingCard = () => {
 				console.error('(withdrawAsync) Metamask Error:', result);
 				showErrorToast('Withdrawal failed', {}, result.message, toast);
 			}
-			showErrorToast('tx_rejected', {}, result.message, toast);
+			// showErrorToast('tx_rejected', {}, result.message, toast);
 		}
 		setTxInProgress(false);
 	};
