@@ -5,7 +5,14 @@ import ConnectionIndicator from '../ConnectionIndicator/ConnectionIndicator';
 import DepositButton from '../LiquidityMining/DepositButton';
 import WithdrawButton from '../LiquidityMining/WithdrawButton';
 import styles from './BondingCard.module.scss';
-import { showErrorToast, showToast } from '../../../../utils/toasts';
+import {
+	showErrorToast,
+	showSuccessToast,
+	showToast,
+	showTransactionApprovalToast,
+	showTransactionSendingToast,
+	showTransactionSentToast,
+} from '../../../../utils/toasts';
 import ReactPaginate from 'react-paginate';
 import { utils } from 'ethers';
 import {
@@ -18,6 +25,7 @@ import {
 import { approve, approveCheck, deposit, withdraw } from './LogicTx';
 import BigNumberInput from '../LiquidityMining/BigNumberInput';
 import { BigNumber } from 'ethers';
+import { camelCase } from 'lodash';
 
 const formatNumber = (n, length = 9) => {
 	if (typeof n === 'string') n = parseFloat(n, 10);
@@ -164,7 +172,8 @@ const BondingCard = () => {
 			} else {
 				showErrorToast(
 					'Withdrawal failed, or took too long',
-					{ title: 'Withdrawal failed, or took too long', description: '' },
+					{ title: 'Withdrawal failed, or took too long' },
+					result.message,
 					toast,
 				);
 				console.error('(withdrawAsync): Balance check failed.', success);
@@ -172,8 +181,9 @@ const BondingCard = () => {
 		} else {
 			if (result.code != 4001) {
 				console.error('(withdrawAsync) Metamask Error:', result);
-				showErrorToast('Withdrawal failed', { title: 'Withdrawal failed', description: '' }, toast);
+				showErrorToast('Withdrawal failed', {}, result.message, toast);
 			}
+			showErrorToast('tx_rejected', {}, result.message, toast);
 		}
 		setTxInProgress(false);
 	};
@@ -187,30 +197,34 @@ const BondingCard = () => {
 		const amountDepositNum = BigNumber.from(utils.parseUnits(amountDeposit, 18));
 		// APPROVAL
 		if ((await approveCheck(ethersPack)).lt(amountDepositNum)) {
-			showToast('Token approval initiated', { title: 'Token approval initiated' }, toast);
-			const result = await approve(ethersPack, amountDepositNum);
+			showTransactionApprovalToast(1, toast);
+			const result = await approve(ethersPack, amountDepositNum, toast);
 			if (result.code == 1) {
 				let approved = false;
+				toast.close('approving');
+				showToast(
+					'checking_approval',
+					{
+						title: 'Checking Approval',
+						description: 'This may take up to 1 minute',
+						duration: 60000,
+					},
+					toast,
+				);
 				for (let i = 0; i < 12 && !approved; i++) {
 					await new Promise((r) => setTimeout(r, 5000));
-					showToast(
-						'Checking Approval',
-						{
-							title: 'Checking Approval',
-							description: 'This may take up to 1 minute',
-							duration: 5000,
-						},
-						toast,
-					);
+
 					approved = (await approveCheck(ethersPack)).gte(amountDepositNum);
 				}
 				if (approved) {
+					toast.close('checking_approval');
 					showToast('Approval successful', { title: 'Approval successful' }, toast);
 				} else {
 					console.error('(depositAsync): approveCheck failed.', approved);
 					showErrorToast(
 						'Approval failed, or took too long',
 						{ title: 'Approval failed, or took too long' },
+						result.message,
 						toast,
 					);
 					setTxInProgress(false);
@@ -219,19 +233,16 @@ const BondingCard = () => {
 			} else {
 				if (result.code != 4001) {
 					console.error('(depositAsync) Metamask Error:', result);
-					showErrorToast('Approval failed', { title: 'Approval failed', description: '' }, toast);
+					showErrorToast('Approval failed', { title: 'Approval failed' }, result.message, toast);
 				}
+				showErrorToast('tx_rejected', {}, result.message, toast);
 				setTxInProgress(false);
 				return;
 			}
 		}
 		// DEPOSIT
-		showToast(
-			'Token deposit initiated',
-			{ title: 'Token deposit initiated', duration: 5000 },
-			toast,
-		);
-		const result = await deposit(ethersPack, amountDepositNum);
+		showTransactionSendingToast('sending_trade', toast);
+		const result = await deposit(ethersPack, amountDepositNum, toast);
 		if (result.code == 1) {
 			let success = false;
 			let newBalance;
@@ -245,11 +256,17 @@ const BondingCard = () => {
 				setBalanceUserSwx(newBalance);
 				setAmountDeposit('');
 				setIsDepositModalOpen(false);
-				showToast('Deposit successful', { title: 'Deposit successful', description: '' }, toast);
+				toast.close('tx_sent');
+				showSuccessToast(
+					'Deposit successful',
+					{ title: 'Deposit successful', description: '' },
+					toast,
+				);
 			} else {
 				showErrorToast(
 					'Deposit failed, or took too long',
 					{ title: 'Deposit failed, or took too long' },
+					undefined,
 					toast,
 				);
 				console.error('(depositAsync): Balance check failed.', success);
@@ -257,8 +274,9 @@ const BondingCard = () => {
 		} else {
 			if (result.code != 4001) {
 				console.error('(depositAsync) Metamask Error:', result);
-				showErrorToast('Deposit failed', { title: 'Deposit failed', description: '' }, toast);
+				showErrorToast('Deposit failed', { title: 'Deposit failed' }, result.message, toast);
 			}
+			showErrorToast('tx_rejected', {}, result.message, toast);
 		}
 		setTxInProgress(false);
 	};

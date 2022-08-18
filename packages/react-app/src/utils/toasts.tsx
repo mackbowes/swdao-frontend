@@ -163,7 +163,7 @@ export function showTransactionSentToast(
 ): Toaster | null {
 	const description = (
 		<TransactionDescription
-			message="Trade sent to be executed."
+			message="Transaction sent to be executed."
 			tx={txHash}
 			chainId={chainId || DEFAULT_CHAIN_ID}
 		/>

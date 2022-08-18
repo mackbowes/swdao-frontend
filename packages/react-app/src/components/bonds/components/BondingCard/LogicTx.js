@@ -2,6 +2,11 @@ import { ethers } from 'ethers';
 import { SWX, BONDS } from '../../utils/const';
 import abiSwx from '../../utils/abi/AbiSwx.json';
 import abiBonds from '../../utils/abi/AbiBonds.json';
+import {
+	showTransactionApprovalToast,
+	showTransactionSendingToast,
+	showTransactionSentToast,
+} from '../../../../utils/toasts';
 
 const swxContract = new ethers.Contract(SWX, abiSwx, undefined);
 const bondsContract = new ethers.Contract(BONDS, abiBonds, undefined);
@@ -12,24 +17,27 @@ export const approveCheck = async (ethersPack) => {
 	return await swxContractRead.allowance(address, BONDS);
 };
 
-export const approve = async (ethersPack, amountDeposit) => {
+export const approve = async (ethersPack, amountDeposit, toast) => {
 	const { signer } = ethersPack;
 	const swxContractWrite = swxContract.connect(signer);
 	let approval;
 	try {
 		approval = await swxContractWrite.approve(BONDS, amountDeposit);
+		showTransactionSentToast('approving', approval.hash, approval.chainId, toast);
 	} catch (error) {
 		return error;
 	}
 	return { code: (await approval.wait()).status };
 };
 
-export const deposit = async (ethersPack, amountDeposit) => {
+export const deposit = async (ethersPack, amountDeposit, toast) => {
 	const { signer } = ethersPack;
 	const bondsContractWrite = bondsContract.connect(signer);
 	let depositTx;
 	try {
 		depositTx = await bondsContractWrite.stake(amountDeposit);
+		toast.close('sending_trade');
+		showTransactionSentToast('tx_sent', depositTx.hash, depositTx.chainId, toast);
 	} catch (error) {
 		return error;
 	}
