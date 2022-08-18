@@ -118,7 +118,11 @@
     justify-content: space-between;
     input {
         background-color: transparent;
-        outline: none;}
+        outline: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+    }
     button {
         height: 28px;
         background-color: rgba(21, 61, 111, 0.44);
@@ -138,8 +142,7 @@
 }
 
 .modalDataContainer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     align-items: center;
     justify-items: start;
     border-radius: 15px;

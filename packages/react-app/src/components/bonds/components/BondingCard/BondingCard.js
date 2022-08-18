@@ -27,13 +27,13 @@ import BigNumberInput from '../LiquidityMining/BigNumberInput';
 import { BigNumber } from 'ethers';
 import { camelCase } from 'lodash';
 
-const formatNumber = (n, length = 9) => {
+const formatNumber = (n, length = 7) => {
 	if (typeof n === 'string') n = parseFloat(n, 10);
 	const num = n.toLocaleString(undefined, {
 		minimumSignificantDigits: 2,
 		maximumSignificantDigits: length,
 	});
-	return num.length > length + 2 ? n.toExponential(length - 4) : num;
+	return num.length > length + 4 ? n.toExponential(length - 4) : num;
 };
 
 const BondingCard = () => {
