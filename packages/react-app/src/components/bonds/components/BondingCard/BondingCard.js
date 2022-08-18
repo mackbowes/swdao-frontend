@@ -235,7 +235,7 @@ const BondingCard = () => {
 					console.error('(depositAsync) Metamask Error:', result);
 					showErrorToast('Approval failed', { title: 'Approval failed' }, result.message, toast);
 				}
-				showErrorToast('tx_rejected', {}, result.message, toast);
+				// showErrorToast('tx_rejected', {}, result.message, toast);
 				setTxInProgress(false);
 				return;
 			}
@@ -276,7 +276,7 @@ const BondingCard = () => {
 				console.error('(depositAsync) Metamask Error:', result);
 				showErrorToast('Deposit failed', { title: 'Deposit failed' }, result.message, toast);
 			}
-			showErrorToast('tx_rejected', {}, result.message, toast);
+			// showErrorToast('tx_rejected', {}, result.message, toast);
 		}
 		setTxInProgress(false);
 	};
