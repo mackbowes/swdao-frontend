@@ -72,6 +72,12 @@ app.use(cookieParser());
 
 app.use(cors());
 
+app.use((req, res, next) => {
+  // Express Static just loves to cache, but this stops it.
+  res.set("Cache-Control", "no-store");
+  next();
+});
+
 // These are the routers that will receive the call from the FE component
 // First field is the path, second is the 'requestHandler'
 app.use("/api/quotes", quotesRouter);

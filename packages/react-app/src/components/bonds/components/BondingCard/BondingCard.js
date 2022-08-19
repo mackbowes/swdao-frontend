@@ -83,11 +83,12 @@ const BondingCard = () => {
 
 	const updateAmountWithdraw = async () => {
 		const amount = await getSwdAvailable(address);
-		setAmountWithdraw(BigNumber.from(amount));
 		const parsed = utils.formatUnits(amount, 18);
 		const formatted = formatNumber(parsed);
-		setTextAmountWithdraw(formatted);
-		setAmountWithdrawTooLong(parsed !== formatted ? true : false);
+		const tooSmall = formatted.includes('e');
+		setAmountWithdraw(tooSmall ? BigNumber.from(0) : BigNumber.from(amount));
+		setTextAmountWithdraw(tooSmall ? '0' : formatted);
+		setAmountWithdrawTooLong(!tooSmall && parsed !== formatted ? true : false);
 	};
 
 	useEffect(() => {
