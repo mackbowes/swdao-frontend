@@ -202,8 +202,8 @@ function TableRows(props: { unit: Trade; breakpoint: string; index: number }): J
 					<Box className={classNames.ttmg}>
 						<div>
 							<Text className={classNames.ttmtitle}>Entry</Text>
-							<Text>
-								<a href="#" className={classNames.ttmd}>
+							<Text className={classNames.ttmd}>
+								<a href={`https://polygonscan.com/tx/${unit.entryHash}`} target="_blank">
 									{entryDayDate}
 								</a>
 							</Text>
@@ -225,7 +225,11 @@ function TableRows(props: { unit: Trade; breakpoint: string; index: number }): J
 						<div>
 							<Text className={classNames.ttmtitle}>Exit</Text>
 							<Text className={classNames.ttmd}>
-								<a href="#" className={classNames.ttmd}>
+								<a
+									href={`https://polygonscan.com/tx/${unit.exitHash}`}
+									target="_blank"
+									className={classNames.ttmd}
+								>
 									{exitDayDate}
 								</a>
 							</Text>
@@ -335,14 +339,15 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const [tradesMap, setTradesMap] = useState<TradesMap>();
-	let amountToFetch = 19;
+	console.log(breakpoint);
+	let amountToFetch = 190;
 	let amountPerPage = 3;
 	if (breakpoint === 'sm') {
 		amountToFetch = 9;
 		amountPerPage = 3;
 	}
 	useEffect(() => {
-		getSetTradeHistory(symbol, 0, amountToFetch).then((r) => {
+		getSetTradeHistory(symbol, 0, 999).then((r) => {
 			setTradesMap(r);
 		});
 	}, []);

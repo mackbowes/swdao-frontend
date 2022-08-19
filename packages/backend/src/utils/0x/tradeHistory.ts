@@ -44,6 +44,40 @@ const getStepInfo = async (days: number) => {
   return { thisBlock, stepCount, stepSize, timestamps };
 };
 
+const filter = async (t: any[], i: number) => {
+  for (const c in t[i]) {
+    if (!t[i][c]) continue;
+    const ob = t[i][c];
+    const d = ob.component && (await getDecimals(ob.component));
+
+    if (
+      ob.unit &&
+      parseInt(ob.unit, 10) / 10 ** d <
+        (ob.component === "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270" || d < 8
+          ? 0.1
+          : 0.00001)
+    ) {
+      t[i].splice(c, 1);
+      await filter(t, i);
+    }
+  }
+};
+
+const filterTrades = async (trade: any) => {
+  const t = [];
+  for (const i in trade) {
+    if (!trade[i]) continue;
+    t.push(trade[i]);
+  }
+  const promises = [];
+  for (const i in t) {
+    if (!t[i]) continue;
+    promises.push(await filter(t, parseInt(i, 10)));
+  }
+  await Promise.allSettled(promises);
+  return t;
+};
+
 const SetTradeHistory = async (
   positionsMap: Map<any, any>,
   f: number,
@@ -71,20 +105,15 @@ const SetTradeHistory = async (
             if (!trade[key]) {
               trade[key] = [{ transactionHash: value, blocknumber: key }];
             }
-            trade[key].push({
-              component: e.component,
-              unit: e.unit,
-            });
-            // await web3.eth
-            //   .getBlock(key)
-            //   .then((d) => (trade[key].timestamp = d.timestamp));
+            if (parseInt(e.unit, 10) > 9999) {
+              trade[key].push({
+                component: e.component,
+                unit: e.unit,
+              });
+            }
           }
         })
     );
-
-    // await web3.eth.getBlock(key).then((d) => {
-    //   trade[d.timestamp] = temp
-    // });
   }
   await Promise.allSettled(promises);
   promises = [];
@@ -276,7 +305,8 @@ const addPnL = async (tradesMap: TradesMap, len: number) => {
     trade.entryPrice = previous.toString();
     previous = parseFloat(tmp);
     if (trade.USDC) {
-      trade.allocation = (parseInt(trade.entryPrice, 10) / trade.USDC) * 100;
+      trade.allocation =
+        (parseFloat(trade.entryPrice) / (trade.USDC / 10 ** 6)) * 100;
     }
 
     const p = parseFloat(trade.entryPrice);
@@ -295,7 +325,8 @@ export const getSetTradeHistory = async (
 ) => {
   const logs = await getLogs(address, days);
   const trade = await SetTradeHistory(logs, from, to, address);
-  const tradesMap = processTrade(trade);
+  const filtered = await filterTrades(trade);
+  const tradesMap = processTrade(filtered);
   return await addPnL(tradesMap, logs.size);
 };
 export default getSetTradeHistory;

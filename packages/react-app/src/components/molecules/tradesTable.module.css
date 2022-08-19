@@ -51,6 +51,7 @@
 }
 
 .ttmd {
+    white-space: nowrap;
     color: #5252ff;
 }
 
