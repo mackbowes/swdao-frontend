@@ -340,10 +340,10 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 
 	const [tradesMap, setTradesMap] = useState<TradesMap>();
 	console.log(breakpoint);
-	let amountToFetch = 190;
-	let amountPerPage = 3;
+	// let amountToFetch = 190;
+	let amountPerPage = 5;
 	if (breakpoint === 'sm') {
-		amountToFetch = 9;
+		// amountToFetch = 9;
 		amountPerPage = 3;
 	}
 	useEffect(() => {
