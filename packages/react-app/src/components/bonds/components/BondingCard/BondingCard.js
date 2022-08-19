@@ -153,9 +153,19 @@ const BondingCard = () => {
 			toast,
 		);
 		const oldBalance = await getSwdBalance(address);
-		const result = await withdraw(ethersPack);
+		const result = await withdraw(ethersPack, toast);
 		if (result.code == 1) {
 			let success = false;
+			toast.close('tx_sent');
+			showToast(
+				'checking_balance',
+				{
+					title: 'Checking Balance',
+					description: 'This may take up to 1 minute',
+					duration: 60000,
+				},
+				toast,
+			);
 			for (let i = 0; i < 12 && !success; i++) {
 				await new Promise((r) => setTimeout(r, 5000));
 				const newBalance = await getSwdBalance(address);
@@ -164,6 +174,7 @@ const BondingCard = () => {
 			if (success) {
 				await updateRates();
 				await updateAmountWithdraw();
+				toast.close('checking_balance');
 				showToast(
 					'Withdrawal successful',
 					{ title: 'Withdrawal successful', description: '' },

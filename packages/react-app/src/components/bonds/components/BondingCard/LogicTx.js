@@ -44,12 +44,13 @@ export const deposit = async (ethersPack, amountDeposit, toast) => {
 	return { code: (await depositTx.wait()).status };
 };
 
-export const withdraw = async (ethersPack) => {
+export const withdraw = async (ethersPack, toast) => {
 	const { signer } = ethersPack;
 	const bondsContractWrite = bondsContract.connect(signer);
 	let withdrawTx;
 	try {
 		withdrawTx = await bondsContractWrite.withdraw();
+		showTransactionSentToast('tx_sent', withdrawTx.hash, withdrawTx.chainId, toast);
 	} catch (error) {
 		return error;
 	}
