@@ -116,7 +116,9 @@ const BondingCard = () => {
 
 	useEffect(() => {
 		if (!balanceUserSwx) return;
-		setTextBalanceUserSwx(formatNumber(utils.formatUnits(balanceUserSwx)));
+		setTextBalanceUserSwx(
+			BigNumber.from(balanceUserSwx).eq(0) ? '0' : formatNumber(utils.formatUnits(balanceUserSwx)),
+		);
 	}, [balanceUserSwx]);
 
 	useEffect(() => {
@@ -143,7 +145,8 @@ const BondingCard = () => {
 
 	const handleMaxButton = () => {
 		if (!balanceUserSwx) return;
-		setAmountDeposit(utils.formatUnits(balanceUserSwx, 18));
+		const amount = utils.formatUnits(balanceUserSwx, 18);
+		setAmountDeposit(amount === '0.0' ? '0' : amount);
 	};
 
 	const withdrawAsync = async () => {
@@ -346,7 +349,11 @@ const BondingCard = () => {
 							)}
 						</div>
 						<div>
-							<DepositButton address={address} onClick={() => setIsDepositModalOpen(true)} />
+							<DepositButton
+								address={address}
+								onClick={() => setIsDepositModalOpen(true)}
+								menu={true}
+							/>
 						</div>
 					</Box>
 					{/* Claim */}
@@ -440,8 +447,8 @@ const BondingCard = () => {
 							<Box>
 								<Box className={styles.bondTableHeader} sx={{ color: `#AADCFE` }}>
 									<p>Deposit</p>
-									<p style={{ textAlign: `center` }}>Amount</p>
-									<p style={{ textAlign: `right` }}>Available</p>
+									<p style={{ textAlign: `center` }}>SWD Purchased</p>
+									<p style={{ textAlign: `right` }}>Maturity</p>
 								</Box>
 								<div
 									style={{
