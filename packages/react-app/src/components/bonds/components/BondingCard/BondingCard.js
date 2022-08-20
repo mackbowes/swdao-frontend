@@ -1,6 +1,6 @@
 import { useWallet } from '@raidguild/quiver';
 import { useState, useEffect } from 'react';
-import { Box, Heading, Text, Spinner, useToast } from '@chakra-ui/react';
+import { Box, Heading, Text, Spinner, useToast, Tooltip, Stack } from '@chakra-ui/react';
 import ConnectionIndicator from '../ConnectionIndicator/ConnectionIndicator';
 import DepositButton from '../LiquidityMining/DepositButton';
 import WithdrawButton from '../LiquidityMining/WithdrawButton';
@@ -25,6 +25,9 @@ import {
 import { approve, approveCheck, deposit, withdraw } from './LogicTx';
 import BigNumberInput from '../LiquidityMining/BigNumberInput';
 import { BigNumber } from 'ethers';
+import { PRODUCTS_BY_SYMBOL } from '../../../../config/products';
+import { swxContract } from '../../utils/provider';
+import { safeFixed } from '../../../../utils/contracts';
 
 const formatNumber = (n, length = 7) => {
 	if (typeof n === 'string') n = parseFloat(n, 10);
@@ -63,15 +66,24 @@ const BondingCard = () => {
 	const [bondsLoading, setBondsLoading] = useState(false);
 	const [txInProgress, setTxInProgress] = useState(false);
 	const [rateGetterRunning, setRateGetterRunning] = useState(false);
+	const [calcValue, setCalcValue] = useState(0);
+	const [priceSWX, setPriceSWX] = useState(0);
+	const [priceSWD, setPriceSWD] = useState(0);
+	const [r, setR] = useState(0);
 	const toast = useToast();
 
 	const updateRates = async () => {
 		const { swdRemaining, reward, apy, mpy, wpy } = await getContractInfo();
 		setTextSwdRemaining(formatNumber(utils.formatUnits(swdRemaining, 18)) + ' SWD');
 		setTextRewardRate(reward + '%');
+		setR(reward);
 		setTextApy(apy + '%');
 		setTextMpy(mpy + '%');
 		setTextWpy(wpy + '%');
+		const prices = await swxContract.getValue();
+		setPriceSWX(parseFloat(prices[0].toString()) / 10 ** 18);
+		setPriceSWD(parseFloat(prices[1].toString()) / 10 ** 18);
+		console.log(priceSWD, priceSWX);
 	};
 
 	const updateRatesEveryFiveMinutes = async () => {
@@ -329,14 +341,78 @@ const BondingCard = () => {
 						<div>
 							<Box sx={{ color: `#857AFD` }}>
 								{/* indicator modal thing */}
-								<p>2 Yr. Reward</p>
+								<Tooltip label={'Yield and capital paid linearly'} hasArrow placement="top">
+									<p>2 Yr. Reward ⓘ </p>
+								</Tooltip>
 							</Box>
-							<h4>{textRewardRate}</h4>
+							<Box display="flex">
+								<h4>{textRewardRate}</h4>{' '}
+								<Tooltip
+									label={
+										<Stack>
+											<Text>1 Week - {textWpy} </Text>
+											<Text>1 Month - {textMpy} </Text>
+										</Stack>
+									}
+								>
+									<Text color="white" paddingLeft=".5rem" alignSelf="center">
+										ⓘ
+									</Text>
+								</Tooltip>
+							</Box>
 						</div>
 						<div>
 							<Text sx={{ color: `#857AFD` }}>Vault Holdings</Text>
 							<h4>{textSwdRemaining}</h4>
 						</div>
+					</Box>
+					{/* Calculator */}
+					<Box className={styles.calculator} sx={{ backgroundColor: `#150637` }}>
+						<Box className={styles.calculatorInput}>
+							<Box>
+								<BigNumberInput
+									id="calculator-input"
+									value={calcValue}
+									onValueChange={setCalcValue}
+									name="calculato-input"
+									placeholder="0.00"
+									decimals={18}
+									style={{
+										backgroundColor: '#150637',
+									}}
+								/>
+								<Text
+									fontSize="small"
+									whiteSpace={'nowrap'}
+									alignSelf="flex-end"
+									paddingLeft={'1rem'}
+									color="gray"
+								>
+									≈ US$ {safeFixed(calcValue * priceSWX, 2, false)}
+								</Text>
+							</Box>
+
+							<Box display="flex">
+								<Text sx={{ color: `#857AFD` }}>
+									{safeFixed(((calcValue * priceSWX) / priceSWD) * (1 + r / 100), 2, false) || 0}{' '}
+									SWD
+								</Text>
+								<Text
+									fontSize="small"
+									whiteSpace={'nowrap'}
+									alignSelf="flex-end"
+									paddingLeft={'1rem'}
+									color="gray"
+								>
+									≈ US$
+									{safeFixed(
+										((calcValue * priceSWX) / priceSWD) * (1 + r / 100) * priceSWD,
+										2,
+										false,
+									) || 0}
+								</Text>
+							</Box>
+						</Box>
 					</Box>
 					{/* Deposit */}
 					<Box className={styles.dataContainer} sx={{ backgroundColor: `#150637` }}>
