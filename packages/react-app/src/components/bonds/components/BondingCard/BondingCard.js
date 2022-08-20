@@ -366,54 +366,6 @@ const BondingCard = () => {
 							<h4>{textSwdRemaining}</h4>
 						</div>
 					</Box>
-					{/* Calculator */}
-					<Box className={styles.calculator} sx={{ backgroundColor: `#150637` }}>
-						<Box className={styles.calculatorInput}>
-							<Box>
-								<BigNumberInput
-									id="calculator-input"
-									value={calcValue}
-									onValueChange={setCalcValue}
-									name="calculato-input"
-									placeholder="0.00"
-									decimals={18}
-									style={{
-										backgroundColor: '#150637',
-									}}
-								/>
-								<Text
-									fontSize="small"
-									whiteSpace={'nowrap'}
-									alignSelf="flex-end"
-									paddingLeft={'1rem'}
-									color="gray"
-								>
-									≈ US$ {safeFixed(calcValue * priceSWX, 2, false)}
-								</Text>
-							</Box>
-
-							<Box display="flex">
-								<Text sx={{ color: `#857AFD` }}>
-									{safeFixed(((calcValue * priceSWX) / priceSWD) * (1 + r / 100), 2, false) || 0}{' '}
-									SWD
-								</Text>
-								<Text
-									fontSize="small"
-									whiteSpace={'nowrap'}
-									alignSelf="flex-end"
-									paddingLeft={'1rem'}
-									color="gray"
-								>
-									≈ US$
-									{safeFixed(
-										((calcValue * priceSWX) / priceSWD) * (1 + r / 100) * priceSWD,
-										2,
-										false,
-									) || 0}
-								</Text>
-							</Box>
-						</Box>
-					</Box>
 					{/* Deposit */}
 					<Box className={styles.dataContainer} sx={{ backgroundColor: `#150637` }}>
 						<div>
@@ -510,8 +462,48 @@ const BondingCard = () => {
 								<button onClick={handleMaxButton} cursor="pointer">
 									MAX
 								</button>
+								<Text
+									position="absolute"
+									top="8.3rem"
+									left="2rem"
+									fontSize="small"
+									whiteSpace={'nowrap'}
+									alignSelf="flex-end"
+									paddingLeft={'1rem'}
+									color="gray"
+								>
+									≈ US$ {safeFixed(amountDeposit * priceSWX, 2, false) || 0}
+								</Text>
 							</Box>
 							<Box className={styles.modalCurrencyIndicator}>SWX</Box>
+						</Box>
+						<Box
+							display="flex"
+							color="white"
+							position="absolute"
+							top="10rem"
+							scale=".9"
+							left="3rem"
+							fontSize={'14px'}
+						>
+							<Text>
+								Total Payout in SWD:{' '}
+								{safeFixed(((amountDeposit * priceSWX) / priceSWD) * (1 + r / 100) || 0, 2, false)}
+							</Text>
+							<Text
+								fontSize="small"
+								whiteSpace={'nowrap'}
+								alignSelf="flex-end"
+								paddingLeft={'1rem'}
+								color="gray"
+							>
+								≈ US$
+								{safeFixed(
+									((amountDeposit * priceSWX) / priceSWD) * (1 + r / 100) * priceSWD || 0,
+									2,
+									false,
+								)}
+							</Text>
 						</Box>
 						<DepositButton
 							address={address}
@@ -615,3 +607,53 @@ const BondingCard = () => {
 };
 
 export default BondingCard;
+
+{
+	/* <Box className={styles.calculator} sx={{ backgroundColor: `#150637` }}>
+						<Box className={styles.calculatorInput}>
+							<Box>
+								<BigNumberInput
+									id="calculator-input"
+									value={calcValue}
+									onValueChange={setCalcValue}
+									name="calculato-input"
+									placeholder="0.00"
+									decimals={18}
+									style={{
+										backgroundColor: '#150637',
+									}}
+								/>
+								<Text
+									fontSize="small"
+									whiteSpace={'nowrap'}
+									alignSelf="flex-end"
+									paddingLeft={'1rem'}
+									color="gray"
+								>
+									≈ US$ {safeFixed(calcValue * priceSWX, 2, false)}
+								</Text>
+							</Box>
+
+							<Box display="flex">
+								<Text sx={{ color: `#857AFD` }}>
+									{safeFixed(((calcValue * priceSWX) / priceSWD) * (1 + r / 100), 2, false) || 0}{' '}
+									SWD
+								</Text>
+								<Text
+									fontSize="small"
+									whiteSpace={'nowrap'}
+									alignSelf="flex-end"
+									paddingLeft={'1rem'}
+									color="gray"
+								>
+									≈ US$
+									{safeFixed(
+										((calcValue * priceSWX) / priceSWD) * (1 + r / 100) * priceSWD,
+										2,
+										false,
+									) || 0}
+								</Text>
+							</Box>
+						</Box>
+					</Box> */
+}
