@@ -44,6 +44,10 @@ export const getContractInfo = async () => {
 	return { swdRemaining, reward: rate.toString(), apy, mpy, wpy };
 };
 
+export const getValues = async () => {
+	return await (await fetch('/api/bonds/getValues')).json();
+};
+
 export const getSwdAvailable = async (address) => {
 	const req = {
 		method: 'POST',

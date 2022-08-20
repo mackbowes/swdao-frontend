@@ -1,10 +1,21 @@
-import { BigNumber, ethers, utils } from "ethers";
+import { BigNumber, Contract, ethers, utils } from "ethers";
 import express, { Request, Response, Router } from "express";
 import { alchemyProvider, ethersProvider } from "../bin/www";
-import { BONDS } from "../settings";
+import { BONDS, TokenProducts } from "../settings";
 import abiBonds from "../abi/AbiBonds.json";
+import abiSwx from "../abi/AbiSwx.json";
 
 const router: Router = express.Router();
+
+router.get("/getValues", async (req: Request, res: Response) => {
+  const contract = new Contract(
+    TokenProducts["0x89"].SWX,
+    abiSwx,
+    ethersProvider
+  );
+  const values = await contract.getValue();
+  res.status(values ? 201 : 500).json(values);
+});
 
 router.post("/getUserBalance", async (req: Request, res: Response) => {
   const { addressUser, addressToken } = req.body;
@@ -27,9 +38,11 @@ router.post("/getStorageAt", async (req: Request, res: Response) => {
 router.post("/getUserSwdAvailable", async (req: Request, res: Response) => {
   const { address } = req.body;
   const available = BigNumber.from(
-    await (new ethers.Contract(BONDS, abiBonds, ethersProvider)).balanceAvailable(address)
+    await new ethers.Contract(BONDS, abiBonds, ethersProvider).balanceAvailable(
+      address
+    )
   );
-	res.status(available ? 201 : 500).json(available);
+  res.status(available ? 201 : 500).json(available);
 });
 
 router.post("/getBondsPage", async (req: Request, res: Response) => {

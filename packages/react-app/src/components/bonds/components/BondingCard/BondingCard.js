@@ -21,11 +21,11 @@ import {
 	getContractInfo,
 	getSwdAvailable,
 	getBondsPage,
+	getValues,
 } from './LogicData';
 import { approve, approveCheck, deposit, withdraw } from './LogicTx';
 import BigNumberInput from '../LiquidityMining/BigNumberInput';
 import { BigNumber } from 'ethers';
-import { PRODUCTS_BY_SYMBOL } from '../../../../config/products';
 import { swxContract } from '../../utils/provider';
 import { safeFixed } from '../../../../utils/contracts';
 
@@ -74,16 +74,16 @@ const BondingCard = () => {
 
 	const updateRates = async () => {
 		const { swdRemaining, reward, apy, mpy, wpy } = await getContractInfo();
+		getValues().then((prices) => {
+			setPriceSWX(parseInt(prices[0].hex, 16) / 10 ** 18);
+			setPriceSWD(parseInt(prices[1].hex, 16) / 10 ** 18);
+		});
 		setTextSwdRemaining(formatNumber(utils.formatUnits(swdRemaining, 18)) + ' SWD');
 		setTextRewardRate(reward + '%');
 		setR(reward);
 		setTextApy(apy + '%');
 		setTextMpy(mpy + '%');
 		setTextWpy(wpy + '%');
-		const prices = await swxContract.getValue();
-		setPriceSWX(parseFloat(prices[0].toString()) / 10 ** 18);
-		setPriceSWD(parseFloat(prices[1].toString()) / 10 ** 18);
-		console.log(priceSWD, priceSWX);
 	};
 
 	const updateRatesEveryFiveMinutes = async () => {
