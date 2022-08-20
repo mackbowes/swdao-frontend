@@ -26,7 +26,6 @@ import {
 import { approve, approveCheck, deposit, withdraw } from './LogicTx';
 import BigNumberInput from '../LiquidityMining/BigNumberInput';
 import { BigNumber } from 'ethers';
-import { swxContract } from '../../utils/provider';
 import { safeFixed } from '../../../../utils/contracts';
 
 const formatNumber = (n, length = 7) => {
