@@ -1,6 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Box, Spinner, Text, Checkbox } from '@chakra-ui/react';
-import { DotProps, Line, LineChart, ResponsiveContainer, Tooltip, YAxis, XAxis } from 'recharts';
+import {
+	DotProps,
+	Line,
+	LineChart,
+	ResponsiveContainer,
+	Tooltip,
+	YAxis,
+	XAxis,
+	CartesianGrid,
+} from 'recharts';
 // import moment from "moment";
 // import { useResponsive } from "../contexts/ResponsiveContext";
 import TimeFilter, { TIME_PERIODS, PERIODS } from './TimeFilter';
@@ -8,6 +17,7 @@ import TimeFilter, { TIME_PERIODS, PERIODS } from './TimeFilter';
 // import { useSiteContext } from "../contexts/SiteContext";
 import ChartTooltip from './ChartTooltip';
 import { getChart } from '../../../services/backend';
+import { getDomain, getHorizontalPoints, getTickCount, tickFormatter } from './chartMath';
 
 const WETH_ADDRESS = '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619';
 const WBTC_ADDRESS = '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6';
@@ -28,12 +38,14 @@ export default function TokenContainer(props) {
 
 	const [thisWidth, setThisWidth] = useState('100%');
 	const [xRange, setXRange] = useState({ min: 0, max: 100 });
-	const [yRange, setYRange] = useState({ min: 0, max: 100 });
+	const [yRange, setYRange] = useState({ min: -1, max: 1 });
 	const [chartInitialLoading, setChartInitialLoading] = useState(true);
 	const [chartsAllLoading, setChartsAllLoading] = useState(false);
 	const [compEth, setCompEth] = useState(false);
 	const [compBtc, setCompBtc] = useState(false);
 	const [compMatic, setCompMatic] = useState(false);
+	const [tickCount, setTickCount] = useState(0);
+
 	const [chartDataParsed, setChartDataParsed] = useState([
 		{
 			timestamp: undefined,
@@ -207,6 +219,10 @@ export default function TokenContainer(props) {
 		if (!loadAll) await readChart();
 	};
 
+	useEffect(() => {
+		setTickCount(getTickCount(yRange.min, yRange.max));
+	}, [yRange.min, yRange.max]);
+
 	const timeButtons = useMemo(
 		// maps time period buttons
 		() =>
@@ -330,14 +346,33 @@ export default function TokenContainer(props) {
 											<stop offset="95%" stopColor="#7200e6" stopOpacity={1} />
 										</linearGradient>
 									</defs>
+									<CartesianGrid
+										stroke="rgb(66, 153, 225, 0.1)"
+										verticalCoordinatesGenerator={(props) => getHorizontalPoints(props, tickCount)}
+									/>
 									<YAxis
-										domain={['dataMin - dataMin * 1.2', 'dataMax * 1.2']}
+										domain={[
+											(dataMin) => {
+												if (yRange.min !== dataMin) setYRange({ max: yRange.max, min: dataMin });
+												return getDomain(dataMin, yRange.max, false);
+											},
+											(dataMax) => {
+												if (yRange.max !== dataMax) setYRange({ min: yRange.min, max: dataMax });
+												return getDomain(yRange.min, dataMax, true);
+											},
+										]}
 										type="number"
-										axisLine={false}
-										tick={false}
+										axisLine={true}
+										tick={true}
 										tickLine={false}
-										scale="log"
-										hide={true}
+										tickCount={tickCount}
+										interval={0}
+										scale="linear"
+										hide={false}
+										width={60}
+										tickFormatter={tickFormatter}
+										style={{ fontFamily: `Montserrat, sans-serif` }}
+										animationDuration={500}
 									/>
 									{compBtc && chartDataParsed[0].btc && (
 										<Line
@@ -516,14 +551,33 @@ export default function TokenContainer(props) {
 											<stop offset="95%" stopColor="#7200e6" stopOpacity={1} />
 										</linearGradient>
 									</defs>
+									<CartesianGrid
+										stroke="rgb(66 153 225 / 0.1)"
+										verticalCoordinatesGenerator={(props) => getHorizontalPoints(props, tickCount)}
+									/>
 									<YAxis
-										domain={['dataMin - dataMin * 1.2', 'dataMax * 1.2']}
+										domain={[
+											(dataMin) => {
+												if (yRange.min !== dataMin) setYRange({ max: yRange.max, min: dataMin });
+												return getDomain(dataMin, yRange.max, false);
+											},
+											(dataMax) => {
+												if (yRange.max !== dataMax) setYRange({ min: yRange.min, max: dataMax });
+												return getDomain(yRange.min, dataMax, true);
+											},
+										]}
 										type="number"
-										axisLine={false}
-										tick={false}
+										axisLine={true}
+										tick={true}
 										tickLine={false}
-										scale="log"
-										hide={true}
+										tickCount={tickCount}
+										interval={0}
+										scale="linear"
+										hide={false}
+										width={60}
+										tickFormatter={tickFormatter}
+										style={{ fontFamily: `Montserrat, sans-serif` }}
+										animationDuration={500}
 									/>
 									{compBtc && chartDataParsed[0].btc && (
 										<Line
