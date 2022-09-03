@@ -245,7 +245,7 @@ function TableRows(props: { unit: Trade; breakpoint: string; index: number }): J
 						</div>
 						<div>
 							<Text className={classNames.ttmtitle}>Position Size</Text>
-							<Text fontSize="14px">{unit.allocation}%</Text>
+							<Text fontSize="14px">{positionSize <= 100 ? `${positionSize}%` : '100%'}</Text>
 						</div>
 						<div>
 							<Text className={classNames.ttmtitle}>Leverage</Text>
@@ -284,7 +284,7 @@ function TableRows(props: { unit: Trade; breakpoint: string; index: number }): J
 							{(value: number) => ( */}
 						<CircularProgressbar
 							value={positionSize}
-							text={`${positionSize}%`}
+							text={positionSize <= 100 ? `${positionSize}%` : '100%'}
 							styles={buildStyles({
 								textSize: '1.5rem',
 								strokeLinecap: 'round',
