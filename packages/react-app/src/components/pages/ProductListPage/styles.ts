@@ -8,7 +8,7 @@ export const BUTTON_STYLES: ButtonStyleProps = {
 		imageTop: '-0.5rem',
 		active: {
 			color: '#8EC7D2',
-			bgColor: '#301FA0',
+			bgColor: '#141C3F',
 			borderColor: 'transparent',
 		},
 		inactive: {
@@ -22,7 +22,7 @@ export const BUTTON_STYLES: ButtonStyleProps = {
 		image: '/images/green-gem.png',
 		active: {
 			color: '#FFCC50',
-			bgColor: '#301FA0',
+			bgColor: '#141C3F',
 			borderColor: 'transparent',
 		},
 		inactive: {
@@ -36,7 +36,7 @@ export const BUTTON_STYLES: ButtonStyleProps = {
 		image: '/images/purple-gem.png',
 		active: {
 			color: '#E24EFF',
-			bgColor: '#301FA0',
+			bgColor: '#141C3F',
 			borderColor: 'transparent',
 		},
 		inactive: {
@@ -52,7 +52,7 @@ export const BUTTON_STYLES: ButtonStyleProps = {
 		imageTop: '-0.5rem',
 		active: {
 			color: '#43A047',
-			bgColor: '#301FA0',
+			bgColor: '#141C3F',
 			borderColor: 'transparent',
 		},
 		inactive: {
@@ -66,7 +66,7 @@ export const BUTTON_STYLES: ButtonStyleProps = {
 		image: '/images/blue-gem.png',
 		active: {
 			color: '#23CBFF',
-			bgColor: '#301FA0',
+			bgColor: '#141C3F',
 			borderColor: 'transparent',
 		},
 		inactive: {

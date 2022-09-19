@@ -15,7 +15,7 @@ export function HeaderLink({ page, url, isActive, variant = 'nav' }: HeaderLinkP
 	const textProps: any =
 		variant === 'list'
 			? {
-					textColor: isActive ? 'white' : 'bodytext',
+					textColor: isActive ? 'white' : 'white',
 					fontSize: 'xl',
 					_hover: { color: 'white', textDecoration: 'underline' },
 					mb: '16px',

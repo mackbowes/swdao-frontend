@@ -53,7 +53,7 @@ export function PriceAndDateHeader(props: PriceAndDateHeaderProps): JSX.Element 
 				pos="relative"
 				justifyContent="space-between"
 			>
-				<Text alignSelf="flex-end" color="white" fontSize="2rem">
+				<Text alignSelf="flex-end" color="#151C3F" fontSize="2rem">
 					{price === 0
 						? '$0.00'
 						: price.toLocaleString(undefined, {

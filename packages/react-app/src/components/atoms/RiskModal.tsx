@@ -17,7 +17,7 @@ export default function RiskModal({ symbol }: RiskModal) {
 	const risk = PRODUCTS_BY_SYMBOL[symbol].risk;
 	const breakpoint = useRecoilValue(breakpointState);
 	const lalbeColor = {
-		color: 'white',
+		color: '#151C3F',
 	};
 	if (modalOpen) {
 		$('.recharts-wrapper').css('position', 'unset');
@@ -99,7 +99,7 @@ export default function RiskModal({ symbol }: RiskModal) {
 				</table>
 				<Box
 					onClick={() => setModalOpen(!modalOpen)}
-					color="white"
+					color="#151C3F"
 					cursor="pointer"
 					alignSelf="center"
 				>

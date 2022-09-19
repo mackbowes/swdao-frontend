@@ -120,7 +120,7 @@ export function TokenPriceTable(props: TokenPriceTableProps): JSX.Element {
 		[onSort, sort],
 	);
 
-	const borderRadius = useMemo(() => (isLarge ? '2em 2em 0 0' : '2em'), [isLarge]);
+	const borderRadius = useMemo(() => (isLarge ? '2em 2em 0 0' : '2em 2em 0 0'), [isLarge]);
 
 	return (
 		<Box width="100%">
@@ -134,7 +134,7 @@ export function TokenPriceTable(props: TokenPriceTableProps): JSX.Element {
 			)}
 			<Box
 				bgColor="transparent"
-				border="2px solid #120046"
+				border="2px solid #151C3F"
 				borderRadius="0 0 2em 2em"
 				borderTop="0"
 			>

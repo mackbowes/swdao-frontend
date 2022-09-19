@@ -56,7 +56,7 @@ export default function CategoryButton({
 		width: '24%',
 		height: '66px',
 		cursor: 'pointer',
-		border: '1px solid #D9D7E1',
+		border: '1px solid #141C3F',
 		borderRadius: '12px',
 		padding: '16px',
 	};

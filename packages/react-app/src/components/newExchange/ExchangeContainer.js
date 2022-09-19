@@ -795,7 +795,7 @@ export default function ExchangeContainer(props) {
 							gap: `1rem`,
 							width: `100%`,
 							height: `64px`,
-							backgroundColor: `var(--chakra-colors-blue5)`,
+							backgroundColor: `#DEE0F6`,
 							justifyContent: `center`,
 							alignItems: `center`,
 						}}

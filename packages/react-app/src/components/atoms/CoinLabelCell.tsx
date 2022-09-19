@@ -77,7 +77,7 @@ export function CoinLabelCell({
 						<Text
 							as="span"
 							fontSize={fontSize}
-							color={hover ? 'white' : color}
+							color={hover ? 'rgba(33, 47, 99, 0.5)' : color}
 							display="inline-flex"
 							alignItems="center"
 						>
@@ -99,7 +99,7 @@ export function CoinLabelCell({
 						<Text
 							as="span"
 							fontSize={fontSize}
-							color={hover ? 'white' : color}
+							color={hover ? 'rgba(33, 47, 99, 0.5)' : color}
 							display="inline-flex"
 							alignItems="center"
 						>

@@ -41,7 +41,7 @@ export function ProductDetailHeader({
 			<Flex flexWrap="wrap" alignItems={alignItems} flexDir={flexDir}>
 				<Box display="flex" alignItems="center">
 					<Image d="inline-block" src={src} alt={`${symbol} Icon`} h={height} ml={ml} />
-					<Box pr="1rem" color="#fff" fontWeight={500} fontSize={fontSize}>
+					<Box pr="1rem" color="#151C3F" fontWeight={500} fontSize={fontSize}>
 						{name}
 					</Box>
 					<Box fontWeight={500} color="#43A7FD" fontSize={fontSize}>

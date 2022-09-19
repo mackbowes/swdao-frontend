@@ -86,7 +86,7 @@ export function AllocationTable(props: AllocationTableProps): JSX.Element {
 				return;
 			}
 			return (
-				<Tr key={symbol} color="purple">
+				<Tr key={symbol} color="white">
 					<Td padding="0 0rem .2rem .4rem" className="nobreak coin">
 						<CoinIcon symbol={symbol} src={getTokenUrl(symbol)[0]} height="1rem" />
 						<Text fontSize="1rem0.9rem" d="inline-block" className="symbol">
@@ -117,30 +117,30 @@ export function AllocationTable(props: AllocationTableProps): JSX.Element {
 	return (
 		<Table
 			variant="unstyled"
-			bgColor="blue5"
+			bgColor="blue7"
 			className="token"
 			fontSize="0.9rem"
 			borderRadius="1em"
 		>
 			<Thead>
 				<Tr color="alttext" textAlign="center">
-					<Th textAlign="center" bgColor="bodydark" borderRadius="1em 0 0 0">
+					<Th textAlign="center" bgColor="bodytext" color="white" borderRadius="1em 0 0 0">
 						Name
 					</Th>
 					{breakpoint !== 'sm' && (
-						<Th textAlign="center" bgColor="bodydark">
+						<Th textAlign="center" bgColor="bodytext" color="white">
 							Quantity per token
 						</Th>
 					)}
 					{breakpoint !== 'sm' && (
-						<Th textAlign="center" bgColor="bodydark">
+						<Th textAlign="center" bgColor="bodytext" color="white">
 							Value per token
 						</Th>
 					)}
-					<Th textAlign="center" bgColor="bodydark">
+					<Th textAlign="center" bgColor="bodytext" color="white">
 						Allocation
 					</Th>
-					<Th textAlign="center" bgColor="bodydark" borderRadius="0 1em 0 0">
+					<Th textAlign="center" bgColor="bodytext" color="white" borderRadius="0 1em 0 0">
 						24hr Change
 					</Th>
 				</Tr>

@@ -136,8 +136,8 @@ export default function ProductListHeader({
 		<Flex
 			id="mainheader"
 			width="100%"
-			borderRadius={borderRadius}
-			bgColor="#060119"
+			// borderRadius={borderRadius}
+			bgColor="#F5F5F5"
 			padding="1rem"
 			mb={mb}
 			pos="relative"
@@ -148,7 +148,7 @@ export default function ProductListHeader({
 			<TimeButton period={period} onClick={onTimeToggle} />
 			{isTimeOpen && (
 				<VStack
-					border="1px solid #3861F7"
+					border="1px solid #151C3F"
 					bgColor="blue5"
 					borderRadius="12px"
 					pos="absolute"
@@ -158,7 +158,7 @@ export default function ProductListHeader({
 					zIndex={1}
 				>
 					<Button
-						_hover={{ color: '#120046', bgColor: 'alttext' }}
+						_hover={{ color: '#151C3F', bgColor: 'alttext' }}
 						alignSelf="left"
 						bgColor="transparent"
 						borderColor="alttext"

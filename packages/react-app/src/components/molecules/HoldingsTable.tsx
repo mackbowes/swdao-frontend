@@ -204,25 +204,31 @@ function TokenHeader({ first = true }) {
 		return (
 			<Tr>
 				{/* <Th bgColor="lightline"></Th> */}
-				<Th bgColor="lightline" paddingInlineStart="0px" paddingInlineEnd="0px" textAlign="center">
+				<Th
+					bgColor="lightline"
+					color="white"
+					paddingInlineStart="0px"
+					paddingInlineEnd="0px"
+					textAlign="center"
+				>
 					Name
 				</Th>
-				<Th bgColor="lightline" paddingInlineStart="0px" textAlign="center">
+				<Th bgColor="lightline" color="white" paddingInlineStart="0px" textAlign="center">
 					Ticker
 				</Th>
-				<Th bgColor="lightline" paddingInlineStart="0px" textAlign="center">
+				<Th bgColor="lightline" color="white" paddingInlineStart="0px" textAlign="center">
 					Amount
 				</Th>
-				<Th bgColor="lightline" paddingInlineStart="0px" textAlign="center">
+				<Th bgColor="lightline" color="white" paddingInlineStart="0px" textAlign="center">
 					Price
 				</Th>
-				<Th bgColor="lightline" paddingInlineStart="0px" textAlign="center">
+				<Th bgColor="lightline" color="white" paddingInlineStart="0px" textAlign="center">
 					Total
 				</Th>
-				<Th bgColor="lightline" paddingInlineStart="0px" textAlign="center">
+				<Th bgColor="lightline" color="white" paddingInlineStart="0px" textAlign="center">
 					<Tooltip label="For selected chart timeframe">Price Change 𝓲</Tooltip>
 				</Th>
-				<Th bgColor="lightline" paddingInlineStart="0px" textAlign="center">
+				<Th bgColor="lightline" color="white" paddingInlineStart="0px" textAlign="center">
 					Trade
 				</Th>
 			</Tr>

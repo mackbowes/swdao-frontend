@@ -25,11 +25,11 @@ const config = {
 			900: '#06021b',
 		},
 		accent: '#bde5fe',
-		bodytext: '#AADCFE',
+		bodytext: '#212F63',
 		tableheader: '#7077fe',
 		alttext: '#5E69FF',
-		highlight: '#c34aff',
-		bodydark: '#0d0029',
+		highlight: '#212F63',
+		bodydark: '#151C3F',
 		shadowsOutline: '', // more removing that blue outline
 		lightline: '#120046',
 		ethcolor: '#2A9D8F',
@@ -37,14 +37,14 @@ const config = {
 		ethblue: '#00A2FF',
 		btcorange: '#E76F51',
 		swdblue: '#43a7fd',
-		purple: '#857AFD',
-		blue5: '#1D1055',
-		blue7: '#150637',
+		purple: '#374B93',
+		blue5: '#F5F5F5',
+		blue7: '#141C3F',
 		sunsetblue: '#3861F7',
 		whitish: '#FCFCFC',
 		page: {
-			button: '#DE2DFF',
-			bg: '#070019',
+			button: '#151C3F',
+			bg: '#F5F5F5',
 		},
 	},
 	components: {
@@ -124,11 +124,11 @@ const config = {
 			},
 
 			html: {
-				backgroundColor: '#070019',
+				backgroundColor: '#151C3F',
 				overflowX: 'hidden',
 			},
 			body: {
-				backgroundColor: '#070019',
+				backgroundColor: '#151C3F',
 				backgroundPosition: 'top left',
 				backgroundRepeat: 'repeat-x',
 				marginRight: '0 !important',
@@ -203,16 +203,18 @@ const config = {
 					fontSize: ['xs', 'xs', 'sm', 'sm'],
 				},
 				'.link': {
-					color: 'bodytext',
+					color: 'white',
 					'.active': {
 						color: 'white',
 					},
 					_hover: {
-						color: 'white',
+						color: '#DEE0F6',
+						scale: '1.1',
 					},
 				},
 				'.activelink': {
 					color: 'white',
+					scale: '1.1',
 					textShadow: '.5px 0 .5px white',
 				},
 			},
@@ -471,9 +473,9 @@ const config = {
 				alignItems: 'center',
 				position: 'relative',
 				'&:hover': {
-					bgColor: '#2c1e4b',
+					filter: `brightness(1.2)`,
 					'.suggested-title': {
-						bgColor: '#332766',
+						bgColor: '#0a1953',
 					},
 				},
 			},

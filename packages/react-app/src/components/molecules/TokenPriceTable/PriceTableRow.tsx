@@ -43,7 +43,7 @@ export default function PriceTableRow({
 			color: '#fff',
 		};
 		if (!last) {
-			p.borderBottom = '2px solid #120046';
+			p.borderBottom = '2px solid #141C3F';
 		}
 		if (!isLarge) {
 			p.bgColor = 'blue5';

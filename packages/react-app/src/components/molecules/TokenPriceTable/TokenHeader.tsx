@@ -79,7 +79,7 @@ export function TokenHeader({
 			// mb="0.5rem"
 			bgColor="blue5"
 			color="purple"
-			border="2px solid #120046"
+			border="2px solid #151C3F"
 			borderRadius="1em 1em 0 0"
 		>
 			<Box {...firstProps} {...styles.name} cursor="pointer" onClick={() => onSort('name')}>

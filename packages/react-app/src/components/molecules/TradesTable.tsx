@@ -298,8 +298,12 @@ function TableRows(props: { unit: Trade; breakpoint: string; index: number }): J
 					</Box>
 				</Center>
 			</Td>
-			<Td textAlign="center">{entryPrice}</Td>
-			<Td textAlign="center">{closePrice}</Td>
+			<Td textAlign="center" color="white">
+				{entryPrice}
+			</Td>
+			<Td textAlign="center" color="white">
+				{closePrice}
+			</Td>
 			<Td textAlign="center">
 				<Center>
 					<Leverage title={leverage} />
@@ -501,42 +505,42 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 				<Table
 					marginTop="2rem"
 					variant="unstyled"
-					bgColor="blue5"
+					bgColor="blue7"
 					className="token"
 					fontSize="0.9rem"
 					borderRadius="2em"
 				>
 					<Thead>
 						<Tr>
-							<Th textAlign="center" bgColor="bodydark">
+							<Th textAlign="center" bgColor="bodytext" color="white" borderRadius="13px 0 0 0">
 								Entered
 							</Th>
-							<Th textAlign="center" bgColor="bodydark">
+							<Th textAlign="center" bgColor="bodytext" color="white">
 								Status
 							</Th>
-							<Th textAlign="center" bgColor="bodydark">
+							<Th textAlign="center" bgColor="bodytext" color="white">
 								Side
 							</Th>
-							<Th textAlign="center" bgColor="bodydark">
+							<Th textAlign="center" bgColor="bodytext" color="white">
 								<Tooltip label="Time of Entry" placement="top">
 									Position Size
 								</Tooltip>
 							</Th>
-							<Th textAlign="center" bgColor="bodydark">
+							<Th textAlign="center" bgColor="bodytext" color="white">
 								Entry Price
 							</Th>
-							<Th textAlign="center" bgColor="bodydark">
+							<Th textAlign="center" bgColor="bodytext" color="white">
 								Close Price
 							</Th>
-							<Th textAlign="center" bgColor="bodydark">
+							<Th textAlign="center" bgColor="bodytext" color="white">
 								Leverage
 							</Th>
-							<Th textAlign="center" bgColor="bodydark">
+							<Th textAlign="center" bgColor="bodytext" color="white">
 								<Tooltip label="Calculated from Entry & Close Price" placement="top">
 									Profit/Loss %
 								</Tooltip>
 							</Th>
-							<Th textAlign="center" bgColor="bodydark">
+							<Th textAlign="center" bgColor="bodytext" color="white" borderRadius="0 13px 0 0">
 								Closed
 							</Th>
 						</Tr>
@@ -568,7 +572,7 @@ export function TradesTable(props: { symbol: string }): JSX.Element {
 					</Button>
 					<Text
 						padding=".5rem"
-						textColor="white"
+						textColor="bodytext"
 						gridColumn="3"
 						minWidth=""
 						maxWidth="7.5rem"

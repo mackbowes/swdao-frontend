@@ -300,7 +300,7 @@ export default function TokenContainer(props) {
 						name="container"
 						style={{
 							position: `relative`,
-							border: `2px solid #1D1055`,
+							border: `2px solid #151C3F`,
 							borderRadius: `1.3em`,
 							gridColumn: `span 2`,
 							width: `100%`,
@@ -308,7 +308,7 @@ export default function TokenContainer(props) {
 							overflow: `hidden`,
 							flexDirection: `column`,
 							justifyContent: `space-between`,
-							backgroundColor: `#150637`,
+							backgroundColor: `#151C3F`,
 						}}
 					>
 						<div
@@ -322,7 +322,7 @@ export default function TokenContainer(props) {
 								fontWeight: `500`,
 								justifyContent: `space-around`,
 								alignItems: `center`,
-								borderRadius: '1.25em 1.25em 0 0',
+								borderRadius: '1em 1em 0 0',
 							}}
 						>
 							{timeButtons}

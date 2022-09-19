@@ -138,7 +138,7 @@ export function AboutTokenSet(props: AboutTokenSetProps): JSX.Element {
 			{...rest}
 			color="bodytext"
 		>
-			<Heading fontSize="1.5rem" textAlign="center">
+			<Heading fontSize="1.5rem" textAlign="center" color="bodytext">
 				About {symbol}
 			</Heading>
 			{breakpoint === 'sm' && (

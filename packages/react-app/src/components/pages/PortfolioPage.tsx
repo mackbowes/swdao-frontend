@@ -296,7 +296,7 @@ export function PortfolioPage(): JSX.Element {
 		setPeriodState(p);
 	};
 	return (
-		<FullHeightPage pageKey="portfoliopage">
+		<FullHeightPage pageKey="portfoliopage" bgColor="#212F63">
 			<Center>
 				<StyledSection
 					id="portfolio"
@@ -304,11 +304,11 @@ export function PortfolioPage(): JSX.Element {
 					paddingRight="3rem"
 					paddingLeft="3rem"
 					marginBottom="3rem"
-					width="max(90%, 28rem)"
+					width="max(100%, 28rem)"
 				>
 					<VStack spacing="2rem" align="left" className="bodycontent">
 						<Box textAlign="left" className="overwrite-leftAlign">
-							<Heading fontSize="2rem">
+							<Heading fontSize="2rem" color="bodytext">
 								Portfolio Balance
 								<ReloadIcon
 									color="bodytext"
@@ -363,6 +363,7 @@ export function PortfolioPage(): JSX.Element {
 								padding="0"
 								borderTop="1px solid #120046"
 								borderColor="#120046"
+								marginBottom="2rem"
 							>
 								<TabPanel p="0" key={'1'}>
 									<HoldingsTable

@@ -24,11 +24,11 @@ const styles = {
 		backgroundRepeat: 'no-repeat',
 		backgroundSize: 'cover',
 		backgroundPosition: 'top left',
-		backgroundColor: '#070019',
+		backgroundColor: 'bg',
 		paddingTop: '100px',
 	},
 	body: {
-		bgGradient: 'linear(to-b,page.bg,#060119)',
+		bgGradient: 'linear(to-b,page.bg,page.bg)',
 		paddingTop: '0.5rem',
 	},
 	purple: {
